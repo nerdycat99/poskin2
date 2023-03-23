@@ -1,0 +1,7 @@
+require "test_helper"
+
+class Catalogue::SuppliersControllerTest < ActionDispatch::IntegrationTest
+  # test "the truth" do
+  #   assert true
+  # end
+end

@@ -1,0 +1,2 @@
+module Catalogue::ProductsHelper
+end
