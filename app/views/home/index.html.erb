@@ -1,0 +1,49 @@
+<% if user_signed_in? %>
+  <div class="p-10 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-5">
+    <!--Card 1-->
+    <div class="rounded overflow-hidden shadow-lg content-center">
+      <!-- <img class="w-full" src="/mountain.jpg" alt="Mountain"> -->
+      <div class="px-6 py-4">
+        <div class="mb-4 text-3xl font-black">Sell</div>
+        <p class="text-gray-700 text-base">
+          Point of Sale app, raise a new sale and create record for a new Customer
+        </p>
+      </div>
+      <div class="px-6 pt-4 pb-2">
+        <%= link_to '<button class="bg-blue-500 hover:bg-blue-700 text-white font-bold w-1/3 lg:w-full py-2">Continue</button>'.html_safe, sales_path %>
+      </div>
+    </div>
+    <!--Card 2-->
+    <div class="rounded overflow-hidden shadow-lg">
+      <!-- <img class="w-full" src="/river.jpg" alt="River"> -->
+      <div class="px-6 py-4">
+        <div class="mb-4 text-3xl font-black">Catalogue</div>
+        <p class="text-gray-700 text-base">
+          View and manage Products, add New Products or Suppliers and Print Stickers.
+        </p>
+      </div>
+      <div class="px-6 pt-4 pb-2">
+        <%= link_to '<button class="bg-blue-500 hover:bg-blue-700 text-white font-bold w-1/3 lg:w-full py-2">Continue</button>'.html_safe, catalogue_index_path %>
+      </div>
+    </div>
+
+    <!--Card 3-->
+    <div class="rounded overflow-hidden shadow-lg">
+      <!-- <img class="w-full" src="/forest.jpg" alt="Forest"> -->
+      <div class="px-6 py-4">
+        <div class="mb-4 text-3xl font-black">Inventory</div>
+        <p class="text-gray-700 text-base">
+          Register new stock received and handle returns.
+        </p>
+      </div>
+      <div class="px-6 pt-4 pb-2">
+        <%= link_to '<button class="bg-blue-500 hover:bg-blue-700 text-white font-bold w-1/3 lg:w-full py-2">Continue</button>'.html_safe, inventories_path %>
+      </div>
+    </div>
+  </div>
+<% else %>
+  <div class="max-w-lg mx-auto mt-16 text-center max-w-sm rounded overflow-hidden shadow-lg p-10">
+    <h1 class="mb-4 text-3xl font-black">Welcome to Poskin!!</h1>
+    <p class="text-lg leading-snug">why don't you buy this product??</p>
+  </div>
+<% end %>

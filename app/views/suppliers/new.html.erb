@@ -1,0 +1,32 @@
+<main class="p-12 mx-auto text-gray-800 max-w-7xl">
+  <% if @supplier.errors.any? %>
+    <% @supplier.errors.full_messages.each do |message|%>
+       <p class="text-red-700 text-base"><%= message %> </p>
+    <%end%>
+    <br />
+  <%end%>
+
+  <%= simple_form_for @supplier, builder: TailwindFormBuilder, class: "mt-6", url: suppliers_path do |f| %>
+    <%= f.label "Suppliers Name" %>
+    <%= f.text_field :name, placeholder: 'My Supplier Ltd' %>
+    <br />
+    <%= f.label "Suppliers Email" %>
+    <%= f.text_field :email, placeholder: 'person@supplier.com' %>
+    <br />
+    <%= f.label "Suppliers Contact Number" %>
+    <%= f.text_field :phone, placeholder: '0414 444 444' %>
+    <br />
+    <%= f.label "Notes" %>
+    <%= f.text_field :notes, placeholder: 'anything you like in here' %>
+    <br />
+    <%= f.label "Applicable GST Rate" %>
+    <%= f.collection_select :tax_rate_id, TaxRate.order(:name),:id,:name, include_blank: true %>
+    <%= f.hidden_field :address_id, :value =>1 %>
+    <br />
+    <br />
+    <row>
+    <%= f.submit_button "Create Supplier" %>
+  <% end %>
+    <%= link_to "Cancel", suppliers_path, class: "btn btn-outline-secondary" %>
+  </row>
+</main>

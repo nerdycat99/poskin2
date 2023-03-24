@@ -1,0 +1,33 @@
+<main class="p-12 mx-auto text-gray-800 max-w-7xl">
+  <% if @supplier.errors.any? %>
+    <% @supplier.errors.full_messages.each do |message|%>
+       <p class="text-red-700 text-base"><%= message %> </p>
+    <%end%>
+    <br />
+  <%end%>
+  <%= simple_form_for @supplier, builder: TailwindFormBuilder, class: "mt-6", url: catalogue_suppliers_path do |f| %>
+    <%= f.label "Suppliers Name" %>
+    <%= f.text_field :name, placeholder: 'My Supplier Ltd' %>
+    <br />
+    <%= f.label "Suppliers Email" %>
+    <%= f.text_field :email, placeholder: 'person@supplier.com' %>
+    <br />
+    <%= f.label "Suppliers Contact Number" %>
+    <%= f.text_field :phone, placeholder: '0414 444 444' %>
+    <br />
+    <%= f.label "Notes" %>
+    <%= f.text_field :notes, placeholder: 'anything you like in here' %>
+    <br />
+    <%= f.label "Applicable GST Rate" %>
+    <%= f.collection_select :tax_rate_id, TaxRate.order(:name),:id,:name, include_blank: true %>
+    <%= f.hidden_field :address_id, :value =>1 %>
+    <br />
+    <br />
+    <%= link_to '<button class="bg-blue-500 hover:bg-blue-700 text-white font-bold w-1/4 lg:w-1/4 py-2 flex flex-col items-center justify-center">Create Supplier</button>'.html_safe, catalogue_suppliers_path, method: :post %>
+    <%= f.submit_button "Create Supplier" %>
+<!--     <div class="pt-5">
+      <%= f.submit "Begin" %>
+    </div> -->
+  <% end %>
+      <%= link_to '<button class="bg-blue-500 hover:bg-blue-700 text-white font-bold w-1/4 lg:w-1/4 py-2 flex flex-col items-center justify-center">Back to Suppliers</button>'.html_safe, catalogue_suppliers_path, method: :get %>
+</main>

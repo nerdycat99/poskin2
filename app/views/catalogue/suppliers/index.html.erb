@@ -1,0 +1,14 @@
+<div class="p-12 mx-auto text-gray-800 max-w-7xl">
+  <h2>Create or Edit Products and Variants for a Supplier</h2>
+  <br />
+  <%= simple_form_for @supplier, builder: TailwindFormBuilder, class: "mt-6", url: catalogue_suppliers_path do |f| %>
+    <%= f.label "Select the Supplier then click Next" %>
+    <%= f.collection_select :id, Supplier.order(:name),:id,:name, include_blank: true %>
+    <br />
+    <br />
+    <p> You can add new suppliers from the Supplier section of the catalogue. Click Back then select Suppliers</p>
+    <br />
+    <%= f.submit_button "Next" %>
+    <%= link_to "Back", catalogue_index_path, class: "btn btn-outline-secondary" %>
+  <% end %>
+</div>

@@ -6,6 +6,6 @@ export default class extends Controller {
   }
 
   testMe() {
-    console.log("hello to you")
+    alert('Naughty Nerdy you have to build this!!')
   }
 }
