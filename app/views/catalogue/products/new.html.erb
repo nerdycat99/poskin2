@@ -6,7 +6,6 @@
          <p class="text-red-700 text-base"><%= message %> </p>
       <%end%>
     <%end%>
-    <%= @product.display_cost_price %>
     <%= simple_form_for @product, builder: TailwindFormBuilder, class: "mt-6", url: catalogue_supplier_products_path do |f| %>
       <%= f.label "Product Title" %>
       <%= f.text_field :title, placeholder: 'My Product' %>
@@ -21,10 +20,7 @@
       <%= f.text_field :sku_code, value: @product.sku_code %>
       <br />
       <button data-action="click->hello#testMe", class="btn btn-outline-secondary">Add Variants</button>
-<!--       <%= f.simple_fields_for :variants do |variant_fields| %>
-        <%= variant_fields.text_field :quantity, placeholder: '10' %>
-        <br />
-      <% end %> -->
+
       <br />
       <br />
       <%= f.input :publish, as: :select, collection: ['Yes', 'No'], required: true, include_blank: false, label: 'Publish this Product?  ', selected: @product.display_published %>
@@ -43,24 +39,3 @@
     <% end %>
   </div>
 </div>
-
-<script>
-
-  const addBook = ()=> {
-    console.log("hello to you")
-    // const createButton = document.getElementById("addBook");
-    // createButton.addEventListener("click", () => {
-    //   const lastId = document.querySelector('#fieldsetContainer')
-    //                   .lastElementChild.id
-    //   const newId = parseInt(lastId, 10) + 1;
-    //   const newFieldset = document
-    //                           .querySelector('[id="0"]')
-    //                           .outerHTML
-    //                           .replace(/0/g,newId)
-    //   document.querySelector("#fieldsetContainer").insertAdjacentHTML(
-    //       "beforeend", newFieldset
-    //   );
-    // });
-  }
-  // export { addBook }
-</script>

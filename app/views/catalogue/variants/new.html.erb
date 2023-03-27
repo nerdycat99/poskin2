@@ -1,0 +1,38 @@
+<div class="p-12 mx-auto text-gray-800 max-w-7xl">
+  <h2>Create a Variant for Product: <%= @product.title %></h2>
+  <div data-controller="hello">
+    <% if @variant.errors.any? %>
+      <% @variant.errors.full_messages.each do |message|%>
+         <p class="text-red-700 text-base"><%= message %> </p>
+      <%end%>
+    <%end%>
+    <%= simple_form_for @variant, builder: TailwindFormBuilder, class: "mt-6", url: catalogue_supplier_product_variants_path do |f| %>
+      <%= f.hiden_field :quantity, value: 0 %>
+      <br />
+      <% index = 0 %>
+      <%= f.label "Variant Attributes" %>
+      <br />
+      <%= f.simple_fields_for :product_attributes_variants do |attribute_fields| %>
+        <% if index.zero? %>
+          <%= attribute_fields.label "Size" %>
+          <%= attribute_fields.collection_select :product_attribute_id, ProductAttribute.magnitude.order(:id),:id,:value, include_blank: true %>
+        <% else %>
+          <%= attribute_fields.label "Colour" %>
+          <%= attribute_fields.collection_select :product_attribute_id, ProductAttribute.colour.order(:id),:id,:value, include_blank: true %>
+        <% end %>
+        <% index += 1 %>
+        <br />
+      <% end %>
+      <br />
+      <button data-action="click->hello#testMe", class="btn btn-outline-secondary">Add Attributes</button>
+      <br />
+      <br />
+      <%= f.label "SKU Code" %>
+      <%= f.text_field :sku_code, value: @variant.sku_code %>
+      <br />
+      <br />
+      <%= f.submit_button "Create Variant" %>
+      <%= link_to "Cancel", catalogue_supplier_path(@product.supplier.id), class: "btn btn-outline-secondary" %>
+    <% end %>
+  </div>
+</div>

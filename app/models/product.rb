@@ -2,13 +2,12 @@
 
 class Product < ApplicationRecord
   include ActionView::Helpers::NumberHelper
+  include ApplicationHelper
 
   belongs_to :supplier
   has_and_belongs_to_many :category_tags
-  # has_many :variants, dependent: :destroy
-  # accepts_nested_attributes_for :variants, :reject_if => lambda { |a| a[:content].blank? }, :allow_destroy => true
   has_many :variants
-  accepts_nested_attributes_for :variants
+  # accepts_nested_attributes_for :variants
 
   # Product.category_tags  #=> [<CategoryTag @name="Sports">, ...]
   # CategoryTag.products   #=> [<Product @name="UserA">, ...]
@@ -35,8 +34,15 @@ class Product < ApplicationRecord
   end
 
   def generated_sku
-    candidate_sku = (SecureRandom.random_number(9e5) + 1e5).to_i
-    generated_sku if Product.all.map(&:sku_code).include?(candidate_sku)
-    candidate_sku
+    unique_sku
+  end
+
+  def display_sku
+    variants.none? ? sku_code : nil
+  end
+
+  def display_title
+    variants.none? ? "#{title} - #{sku_code}": "#{title}
+    "#{title}"
   end
 end

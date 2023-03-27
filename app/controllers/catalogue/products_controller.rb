@@ -5,15 +5,10 @@ class Catalogue::ProductsController < ApplicationController
   before_action :product_with_sku_code, only: [:new]
 
   def new
-    # @product = supplier.products.new
-    @product.variants.build
-    @product.variants.build
   end
 
   def create
     @product = supplier.products.new(product_params)
-    @variant = @product.variants.new
-    # @product.variants.build
     if @product.save
       redirect_to catalogue_supplier_path(supplier.id)
     else
@@ -37,7 +32,7 @@ class Catalogue::ProductsController < ApplicationController
   end
 
   def sanitize_params
-    params.require(:product).permit(:supplier_id, :accounting_code_id, :title, :description, :notes, :sku_code, :publish, :markup, :cost_price, variants_attributes: [:quantity])
+    params.require(:product).permit(:supplier_id, :accounting_code_id, :title, :description, :notes, :sku_code, :publish, :markup, :cost_price)
 
     params[:product]['markup'] = markup
     params[:product]['publish'] = publish
