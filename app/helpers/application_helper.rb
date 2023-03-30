@@ -13,4 +13,19 @@ module ApplicationHelper
     Variant.all.map(&:sku_code)
   end
 
+  # def convert_date(date)
+  #   date.to_date
+  # rescue Date::Error => e
+  #   e
+  # end
+
+  # def convert_to_datetime(date)
+  #   date.to_datetime
+  # rescue Date::Error => e
+  #   e
+  # end
+
+  def date_formatter(date, format = '%Y-%m-%d')
+    date.strftime(format)
+  end
 end

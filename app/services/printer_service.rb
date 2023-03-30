@@ -6,7 +6,19 @@ class PrinterService
   # attr_accessor :layer, :layer_uid, :responses, :assessment
 
   def initialize
+        #     pdf = ReferralPdf.new(@content, @date)
 
+        # send_data pdf.render,
+        #           filename: "referral_#{current_user.identifier}.pdf",
+        #           type: 'application/pdf',
+        #           disposition: 'inline'
+        # pdf.render_file(Rails.root.join('public', "order_#{@order.id}.pdf"))
+  end
+
+  def pdf_document
+    content = ["this is the text to insert into the document"]
+    date = DateTime.current
+    @pdf_document = ReferralPdf.new(content, date)
   end
 
   def printers
@@ -22,7 +34,8 @@ class PrinterService
   end
 
   def print_file
-    printer.print_file('./tmp/tester.pdf', options)
+    printer.print_file('./public/receipt.pdf', options)
+    # printer.print_file('./tmp/tester.pdf', options)
   end
 
   def options
