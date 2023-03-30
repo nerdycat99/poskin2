@@ -27,6 +27,9 @@ gem "stimulus-rails"
 # FE
 gem 'simple_form'
 
+# printing
+gem 'cupsffi'
+
 # Bundle and process CSS [https://github.com/rails/cssbundling-rails]
 gem "cssbundling-rails"
 
