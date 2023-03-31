@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 class Catalogue::ProductAttributesController < ApplicationController
+  before_action :attribute_types, only: [:new, :create]
+
   def new
     @product_attribute = ProductAttribute.new
-    @attribute_types = ProductAttribute::VALID_ATTRIBUTE_TYPES
   end
 
   def create
@@ -14,6 +15,10 @@ class Catalogue::ProductAttributesController < ApplicationController
   end
 
   private
+
+  def attribute_types
+    @attribute_types = ProductAttribute.valid_attribute_types
+  end
 
   def supplier_id
     params['supplier_id']

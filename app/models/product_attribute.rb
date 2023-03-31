@@ -1,10 +1,13 @@
 # frozen_string_literal: true
 
 class ProductAttribute < ApplicationRecord
-  # has_and_belongs_to_many :variants # this feels wrong, these shoudl be associated to the prod_attr_variants
-  VALID_ATTRIBUTE_TYPES = ProductAttributeType.all.map(&:name)
+  validates :name, presence: true
 
   def self.atributes_for(type)
-    ProductAttribute.where(name: type) if VALID_ATTRIBUTE_TYPES.include?(type)
+    ProductAttribute.where(name: type) if valid_attribute_types.include?(type)
+  end
+
+  def self.valid_attribute_types
+    ProductAttributeType.all.map(&:name)
   end
 end
