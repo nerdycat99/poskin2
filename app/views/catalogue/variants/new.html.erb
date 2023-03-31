@@ -20,6 +20,7 @@
       <% end %>
 
       <br />
+      <%= link_to '<button type="button" class="btn btn-outline-secondary">New Attribute Type</button>'.html_safe, new_catalogue_supplier_product_product_attribute_type_path(@product.supplier.id, @product) %>
       <%= link_to '<button type="button" class="btn btn-outline-secondary">Add Attribute Values</button>'.html_safe, new_catalogue_supplier_product_product_attribute_path(@product.supplier.id, @product) %>
       <br />
       <br />

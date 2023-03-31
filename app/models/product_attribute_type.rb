@@ -1,5 +1,17 @@
 # frozen_string_literal: true
 
 class ProductAttributeType < ApplicationRecord
-  # users can create these e.g colour, size, artists_code
+
+  validates :name, presence: true
+
+  before_save :parameterize_name
+  after_create :blank_product_attribute_for_type
+
+  def parameterize_name
+    self.name = self.name.parameterize(separator: '_')
+  end
+
+  def blank_product_attribute_for_type
+    ProductAttribute.create(name: self.name, value: '')
+  end
 end

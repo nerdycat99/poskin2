@@ -1,0 +1,2 @@
+module Catalogue::ProductAttributeTypesHelper
+end

@@ -4,7 +4,7 @@ class Catalogue::VariantsController < ApplicationController
   before_action :variant_with_sku_code, only: [:new]
 
   def new
-    @attribute_types = ProductAttribute::VALID_ATTRIBUTE_TYPES
+    @attribute_types = ProductAttribute.valid_attribute_types
     0.upto(@attribute_types.count - 1) do |_loop_index|
       @variant.product_attributes_variants.build
     end
