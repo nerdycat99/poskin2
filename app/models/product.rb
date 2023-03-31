@@ -41,8 +41,8 @@ class Product < ApplicationRecord
     variants.none? ? sku_code : nil
   end
 
-  def display_title
-    variants.none? ? "#{title} - #{sku_code}": "#{title}
-    "#{title}"
-  end
+  # def display_title
+  #   variants.none? ? "#{title} - #{sku_code}": "#{title}
+  #   "#{title}"
+  # end
 end

@@ -12,11 +12,9 @@ class SuppliersController < ApplicationController
 
   def create
     @supplier = Supplier.new(supplier_params)
-    if @supplier.save
-      redirect_to suppliers_path
-    else
-      return render(:new, status: :unprocessable_entity)
-    end
+    return render(:new, status: :unprocessable_entity) unless @supplier.save
+
+    redirect_to suppliers_path
   end
 
   private

@@ -37,20 +37,19 @@ class ReferralPdf < BasePdf
   end
 
   def company_info
-    indent(22,0) do
+    indent(22, 0) do
       text 'ABN 123 456 789', size: 7, style: :light, color: BOX_TEXT_COLOUR
     end
     move_down 3
-    indent(16,0) do
+    indent(16, 0) do
       text 'www.australian-glass.com.au', size: 5, style: :light, color: BOX_TEXT_COLOUR
     end
   end
 
   def transaction_timestamp
-    indent(10,0) do
+    indent(10, 0) do
       text @date, size: 7, style: :light, color: BOX_TEXT_COLOUR
     end
-
   end
 
   def notification_text
@@ -90,11 +89,14 @@ class ReferralPdf < BasePdf
       text 'About S-Check', size: 18, style: :bold, color: TITLE_COLOUR
       move_down 12
       formatted_text [
-        { text: 'S-Check is an app designed to support people to monitor their methamphetamine use and understand the impact it has on their health and wellbeing. You can find out more about the app and the research behind it at ', color: TEXT_COLOUR },
+        {
+          text: 'S-Check is an app designed to support people to monitor their methamphetamine use and understand the impact it has on their health and wellbeing. You can find out more about the app and the research behind it at ', color: TEXT_COLOUR
+        },
         { text: 'https://scheckapp.org.au', link: 'https://scheckapp.org.au', color: LINK_COLOUR }
       ], leading: 5, size: 12, style: :normal
       move_down 12
-      text "It is based on the S-Check model of care, a low-threshold intervention developed and used at St Vincent's Hospital, Sydney.", size: 12, leading: 5, style: :normal, color: TEXT_COLOUR
+      text "It is based on the S-Check model of care, a low-threshold intervention developed and used at St Vincent's Hospital, Sydney.", size: 12,
+                                                                                                                                          leading: 5, style: :normal, color: TEXT_COLOUR
     end
   end
 
@@ -128,7 +130,7 @@ class ReferralPdf < BasePdf
 
   def header_logo(width:, image:)
     logo = Rails.root.join("app/assets/images/#{image}.png")
-    image logo, width: width
+    image logo, width:
   rescue StandardError => e
     Rails.logger.error "header image error: #{e.message}"
   end
@@ -145,7 +147,7 @@ class ReferralPdf < BasePdf
     move_down 0
     # move_down 30
     indent(14, 0) do
-    # indent(30, 0) do
+      # indent(30, 0) do
       header_logo(width: logo_width, image: 'ag_logo')
       move_cursor_to bounds.height
     end
