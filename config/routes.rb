@@ -25,6 +25,7 @@ Rails.application.routes.draw do
       # end
       resources :products, only: [:index, :new, :create] do
         resources :variants, only: [:new, :create]
+        resources :product_attributes, only: [:new, :create]
       end
     end
   end

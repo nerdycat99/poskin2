@@ -15,7 +15,7 @@ class Catalogue::SuppliersController < ApplicationController
       redirect_to catalogue_supplier_path(existing_supplier.id)
     else
       flash.now.alert = 'Please select a supplier from the list'
-      return render(:index, status: :unprocessable_entity)
+      render(:index, status: :unprocessable_entity)
     end
   end
 
