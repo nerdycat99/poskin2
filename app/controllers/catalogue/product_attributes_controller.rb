@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Catalogue::ProductAttributesController < ApplicationController
-  before_action :attribute_types, only: [:new, :create]
+  before_action :attribute_types, only: %i[new create]
 
   def new
     @product_attribute = ProductAttribute.new

@@ -5,9 +5,11 @@ class Variant < ApplicationRecord
 
   belongs_to :product
   has_many :product_attributes_variants
+  has_many :stock_adjustments
+
   accepts_nested_attributes_for :product_attributes_variants
 
-  validates :quantity, numericality: { greater_than_or_equal_to: 0, only_integer: true }
+  # validates :quantity, numericality: { greater_than_or_equal_to: 0, only_integer: true }
 
   # when deleting Variants remove .product_attributes_variants (these contain a variant_id and a product_attribute_id
   # ProductAttributesVariant.where(variant_id: 19).delete_all
@@ -28,5 +30,9 @@ class Variant < ApplicationRecord
 
   def tagged_attributes
     @tagged_attributes ||= product_attributes_variants.map(&:product_attribute)
+  end
+
+  def stock_count
+    stock_adjustments.map(&:quantity_by_type).compact.sum
   end
 end
