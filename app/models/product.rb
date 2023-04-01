@@ -41,8 +41,7 @@ class Product < ApplicationRecord
     variants.none? ? sku_code : nil
   end
 
-  # def display_title
-  #   variants.none? ? "#{title} - #{sku_code}": "#{title}
-  #   "#{title}"
-  # end
+  def stock_count
+    variants.map(&:stock_count).compact.sum
+  end
 end

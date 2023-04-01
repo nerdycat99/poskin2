@@ -26,4 +26,3 @@ class Catalogue::ProductAttributeTypesController < ApplicationController
     params.require(:product_attribute_type).permit(:name)
   end
 end
-

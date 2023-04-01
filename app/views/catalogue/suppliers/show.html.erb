@@ -28,7 +28,7 @@
                 <tr>
                   <td><%= product.display_sku %></td>
                   <td colspan="2"><%= product.description %></td>
-                  <td>22</td>
+                  <td><%= product.stock_count %></td>
                   <td colspan="3">
                     <%= link_to "Edit Product", new_catalogue_supplier_product_path(@supplier.id), class: "btn btn-primary" %>
                     <%= link_to "Add Variants", new_catalogue_supplier_product_variant_path(@supplier.id, product.id), class: "btn btn-secondary" %>
@@ -41,7 +41,7 @@
                     <tr>
                       <td><%= variant.sku_code %></td>
                       <td colspan="2"><%= variant.display_characteristics %></td>
-                      <td><%= variant.quantity %></td>
+                      <td><%= variant.stock_count %></td>
                       <td colspan="3">
                         <%= link_to "Edit Variant", root_path(@supplier.id) %>
                         &nbsp; &nbsp;
