@@ -26,5 +26,15 @@ Rails.application.routes.draw do
       end
     end
   end
+
+  namespace :inventory do
+    resources :suppliers, only: [:index, :new, :create, :show] do
+      resources :products, only: [] do
+        resources :variants, only: [] do
+          resources :adjustments, only: [:new, :create, :index]
+        end
+      end
+    end
+  end
   resources :inventories, only: [:index]
 end

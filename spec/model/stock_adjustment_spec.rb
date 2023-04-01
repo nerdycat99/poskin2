@@ -50,7 +50,7 @@ describe StockAdjustment do
         let(:adjustment_type) { 'purchased' }
         let(:quantity) { 1 }
         it 'substracts from the variant stock_count' do
-          variant.stock_adjustments.create(quantity: 2, adjustment_type: 'received', user_id: 1) #first set the count to 2 for stock
+          variant.stock_adjustments.create(quantity: 2, adjustment_type: 'received', user_id: 1) # first set the count to 2 for stock
           create_stock_adjustment
           expect(variant.reload.stock_count).to eq(1)
         end
@@ -59,7 +59,7 @@ describe StockAdjustment do
         let(:adjustment_type) { 'returned' }
         let(:quantity) { 1 }
         it 'substracts from the variant stock_count' do
-          variant.stock_adjustments.create(quantity: 2, adjustment_type: 'received', user_id: 1) #first set the count to 2 for stock
+          variant.stock_adjustments.create(quantity: 2, adjustment_type: 'received', user_id: 1) # first set the count to 2 for stock
           create_stock_adjustment
           expect(variant.reload.stock_count).to eq(1)
         end

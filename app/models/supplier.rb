@@ -10,7 +10,5 @@ class Supplier < ApplicationRecord
   validates :name, :phone, presence: true
   validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
 
-  def display_address
-    address.display_address
-  end
+  delegate :display_address, to: :address
 end
