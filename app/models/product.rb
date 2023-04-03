@@ -9,13 +9,23 @@ class Product < ApplicationRecord
   has_many :variants, dependent: :destroy
   # accepts_nested_attributes_for :variants
 
+  validates :accounting_code_id, :title, :description, :sku_code, :markup, presence: true
+  validates :cost_price, presence: true, numericality: { greater_than_or_equal_to: 1, only_integer: true }
+  validates :publish, inclusion: { in: [true, false] }
+
+  scope :without_variants, lambda {
+    where(variants: nil)
+  }
+
   scope :published, lambda {
     where(publish: true)
   }
 
-  validates :accounting_code_id, :title, :description, :sku_code, :markup, presence: true
-  validates :publish, inclusion: { in: [true, false] }
-  validates :cost_price, presence: true, numericality: { greater_than_or_equal_to: 1, only_integer: true }
+  def self.search(target)
+    return unless target.present?
+
+    Product.without_variants.includes(:variants).find_by_sku_code(target) || Variant.search(target)
+  end
 
   delegate :registered_for_sales_tax?, to: :supplier, prefix: true
 

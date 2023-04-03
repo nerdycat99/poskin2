@@ -10,6 +10,18 @@ class Variant < ApplicationRecord
 
   accepts_nested_attributes_for :product_attributes_variants
 
+  def self.search(target)
+    return unless target.present?
+
+    Variant.find_by_sku_code(target)
+  end
+
+  # when deleting Variants remove .product_attributes_variants (these contain a variant_id and a product_attribute_id
+  # ProductAttributesVariant.where(variant_id: 19).delete_all
+
+  # we need to add an attribute type when the user sets up attributes a variant can have like size, colour or artists code
+  # when the user hits Add Attribute Values we shouls use this to control what they can add avlues for (eg: colour blue)
+
   def generated_sku
     unique_sku
   end

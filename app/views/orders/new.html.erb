@@ -1,0 +1,31 @@
+<div class="p-12 mx-auto text-gray-800 max-w-7xl">
+  <h2>New Sale - Enter Customer Details</h2>
+  <div data-controller="hello">
+    <% if @order.errors.any? %>
+      <% @order.errors.full_messages.each do |message|%>
+         <p class="text-red-700 text-base"><%= message %> </p>
+      <%end%>
+    <%end%>
+    <%= simple_form_for @order, builder: TailwindFormBuilder, class: "mt-6", url: orders_path do |f| %>
+      <%= f.hidden_field :state, :value =>'raised' %>
+      <%= f.label "Customer Email" %>
+      <%= f.text_field :email_address, placeholder: 'optional' %>
+      <br />
+      <br />
+      <%= f.label "Customer Phone Number" %>
+      <%= f.text_field :phone_number, placeholder: 'optional' %>
+      <br />
+      <br />
+      <%= f.label "Customer First Name" %>
+      <%= f.text_field :first_name, placeholder: 'optional' %>
+      <br />
+      <br />
+      <%= f.label "Customer Last Name" %>
+      <%= f.text_field :last_name, placeholder: 'optional' %>
+      <br />
+      <br />
+      <%= f.submit_button "Next" %>
+      <%= link_to "Cancel", sales_path, class: "btn btn-outline-secondary" %>
+    <% end %>
+  </div>
+</div>
