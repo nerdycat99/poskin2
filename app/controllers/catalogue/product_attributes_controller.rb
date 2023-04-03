@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Catalogue::ProductAttributesController < ApplicationController
+  before_action :authenticate_user!
   before_action :attribute_types, only: %i[new create]
 
   def new

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Catalogue::SuppliersController < ApplicationController
+  before_action :authenticate_user!
   before_action :supplier, only: %i[index create]
 
   def index; end

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Inventory::AdjustmentsController < ApplicationController
+  before_action :authenticate_user!
+
   def index
     @adjustments = variant.stock_adjustments
     @variant = variant

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Catalogue::ProductsController < ApplicationController
+  before_action :authenticate_user!
   before_action :sanitize_params, only: [:create]
   before_action :product_with_sku_code, only: [:new]
 

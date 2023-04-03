@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class SuppliersController < ApplicationController
+  before_action :authenticate_user!
   before_action :existing_supplier, only: %i[edit update]
 
   def index
