@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Catalogue::VariantsController < ApplicationController
+  before_action :authenticate_user!
   before_action :variant_with_sku_code, only: [:new]
 
   def new
