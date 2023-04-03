@@ -1,0 +1,27 @@
+<div class="p-12 mx-auto text-gray-800 max-w-7xl">
+  <h2>Add Value for an Attribute Type</h2>
+  <div data-controller="hello">
+    <% if @product_attribute.errors.any? %>
+      <% @product_attribute.errors.full_messages.each do |message|%>
+         <p class="text-red-700 text-base"><%= message %> </p>
+      <%end%>
+    <%end%>
+
+    <%= simple_form_for @product_attribute, builder: TailwindFormBuilder, class: "mt-6", url: catalogue_supplier_product_product_attributes_path do |f| %>
+      <br />
+      <%= f.label "Select Attribute Type" %>
+
+
+      <%= f.collection_select :name, @attribute_types, :to_s, :titleize, include_blank: true %>
+
+      <br />
+      <br />
+      <%= f.label "New Value for Attribute" %>
+      <%= f.text_field :value, placeholder: 'e.g Red if type is Colour' %>
+      <br />
+      <br />
+      <%= f.submit_button "Add Value" %>
+      <%= link_to 'Back', url_for(:back), class: "btn btn-outline-secondary" %>
+    <% end %>
+  </div>
+</div>

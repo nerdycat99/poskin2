@@ -87,6 +87,8 @@ GEM
     crass (1.0.6)
     cssbundling-rails (1.1.2)
       railties (>= 6.0.0)
+    cupsffi (0.1.9)
+      ffi
     date (3.3.3)
     debug (1.7.1)
       irb (>= 1.5.0)
@@ -99,6 +101,7 @@ GEM
       warden (~> 1.2.3)
     diff-lcs (1.5.0)
     erubi (1.12.0)
+    ffi (1.15.5)
     globalid (1.1.0)
       activesupport (>= 5.0)
     i18n (1.12.0)
@@ -142,7 +145,11 @@ GEM
     parallel (1.22.1)
     parser (3.2.1.1)
       ast (~> 2.4.1)
+    pdf-core (0.9.0)
     pg (1.4.6)
+    prawn (2.4.0)
+      pdf-core (~> 0.9.0)
+      ttfunk (~> 1.7)
     public_suffix (5.0.1)
     puma (5.6.5)
       nio4r (~> 2.0)
@@ -243,6 +250,7 @@ GEM
       railties (>= 6.0.0)
     thor (1.2.1)
     timeout (0.3.2)
+    ttfunk (1.7.0)
     turbo-rails (1.0.1)
       actionpack (>= 6.0.0)
       railties (>= 6.0.0)
@@ -275,11 +283,13 @@ DEPENDENCIES
   bootsnap
   capybara
   cssbundling-rails
+  cupsffi
   debug
   devise
   jbuilder
   jsbundling-rails
   pg (~> 1.1)
+  prawn
   puma (~> 5.0)
   rails (~> 7.0.4, >= 7.0.4.3)
   redis (~> 4.0)

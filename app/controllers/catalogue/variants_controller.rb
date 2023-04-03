@@ -1,20 +1,21 @@
 # frozen_string_literal: true
 
 class Catalogue::VariantsController < ApplicationController
+  before_action :authenticate_user!
   before_action :variant_with_sku_code, only: [:new]
 
   def new
-    @variant.product_attributes_variants.build
-    @variant.product_attributes_variants.build
+    @attribute_types = ProductAttribute.valid_attribute_types
+    0.upto(@attribute_types.count - 1) do |_loop_index|
+      @variant.product_attributes_variants.build
+    end
   end
 
   def create
     @variant = product.variants.new(variant_params)
-    if @variant.save
-      redirect_to catalogue_supplier_path(supplier.id)
-    else
-      return render(:new, status: :unprocessable_entity)
-    end
+    return render(:new, status: :unprocessable_entity) unless @variant.save
+
+    redirect_to catalogue_supplier_path(supplier.id)
   end
 
   private

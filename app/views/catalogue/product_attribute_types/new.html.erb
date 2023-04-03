@@ -1,0 +1,21 @@
+<div class="p-12 mx-auto text-gray-800 max-w-7xl">
+  <h2>Create a New Attribute Type</h2>
+  <h5>These will appear as attributes than can be selected for a variant, such as colour or size.</h5>
+  <div data-controller="hello">
+    <% if @product_attribute_type.errors.any? %>
+      <% @product_attribute_type.errors.full_messages.each do |message|%>
+         <p class="text-red-700 text-base"><%= message %> </p>
+      <%end%>
+    <%end%>
+
+    <%= simple_form_for @product_attribute_type, builder: TailwindFormBuilder, class: "mt-6", url: catalogue_supplier_product_product_attribute_types_path do |f| %>
+      <br />
+      <%= f.label "Attribute Type Name" %>
+      <%= f.text_field :name, placeholder: 'e.g Colour' %>
+      <br />
+      <br />
+      <%= f.submit_button "Create Attribute Type" %>
+      <%= link_to 'Back', url_for(:back), class: "btn btn-outline-secondary" %>
+    <% end %>
+  </div>
+</div>

@@ -16,6 +16,21 @@
     <%= f.label "Suppliers Contact Number" %>
     <%= f.text_field :phone, placeholder: '0414 444 444' %>
     <br />
+    <%= f.simple_fields_for :address do |address_fields| %>
+      <%= address_fields.label "Address Line 1" %>
+      <%= address_fields.text_field :first_line, placeholder: 'Unit 2 The Courtyard' %>
+      <%= address_fields.label "Address Line 2" %>
+      <%= address_fields.text_field :second_line, placeholder: '123, High Street' %>
+      <%= address_fields.label "City" %>
+      <%= address_fields.text_field :city, placeholder: 'Sydney' %>
+      <%= address_fields.label "State" %>
+      <%= address_fields.text_field :city, placeholder: 'NSW' %>
+      <%= address_fields.label "Postal Code" %>
+      <%= address_fields.text_field :postcode, placeholder: '2001' %>
+      <%= address_fields.label "Country" %>
+      <%= address_fields.collection_select :country_id, Country.all.order(:country),:id, :country, include_blank: true %>
+    <% end %>
+    <br /><br />
     <%= f.label "Notes" %>
     <%= f.text_field :notes, placeholder: 'anything you like in here' %>
     <br />

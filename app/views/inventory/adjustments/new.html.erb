@@ -1,0 +1,20 @@
+<div class="p-12 mx-auto text-gray-800 max-w-7xl">
+  <h2>Receive Stock for <%= @stock_adjustment.variant.product.title %> - <%= @stock_adjustment.variant.display_characteristics%> </h2>
+  <div data-controller="hello">
+    <% if @stock_adjustment.errors.any? %>
+      <% @stock_adjustment.errors.full_messages.each do |message|%>
+         <p class="text-red-700 text-base"><%= message %> </p>
+      <%end%>
+    <%end%>
+    <%= simple_form_for @stock_adjustment, builder: TailwindFormBuilder, class: "mt-6", url: inventory_supplier_product_variant_adjustments_path do |f| %>
+      <%= f.hidden_field :adjustment_type, :value =>'received' %>
+      <%= f.hidden_field :user_id, :value =>1 %>
+      <%= f.label "Number of Items Received" %>
+      <%= f.text_field :quantity, placeholder: '5' %>
+      <br />
+      <br />
+      <%= f.submit_button "Receive" %>
+      <%= link_to "Cancel", inventory_supplier_path(@stock_adjustment.variant.product.supplier.id), class: "btn btn-outline-secondary" %>
+    <% end %>
+  </div>
+</div>

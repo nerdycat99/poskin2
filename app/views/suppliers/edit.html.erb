@@ -1,0 +1,33 @@
+<div class="p-12 mx-auto text-gray-800 max-w-7xl">
+  <h2>Update Details for: <%= @existing_supplier.name %></h2>
+  <% if @existing_supplier.errors.any? %>
+    <% @existing_supplier.errors.full_messages.each do |message|%>
+       <p class="text-red-700 text-base"><%= message %> </p>
+    <%end%>
+    <br />
+  <%end%>
+
+  <%= simple_form_for @existing_supplier, builder: TailwindFormBuilder, class: "mt-6", url: supplier_path do |f| %>
+    <%= f.label "Suppliers Name" %>
+    <%= f.text_field :name %>
+    <br />
+    <%= f.label "Suppliers Email" %>
+    <%= f.text_field :email %>
+    <br />
+    <%= f.label "Suppliers Contact Number" %>
+    <%= f.text_field :phone %>
+    <br />
+    <%= f.label "Notes" %>
+    <%= f.text_field :notes %>
+    <br />
+    <%= f.label "Applicable GST Rate" %>
+    <%= f.collection_select :tax_rate_id, TaxRate.order(:name),:id,:name, include_blank: true %>
+    <%= f.hidden_field :address_id, :value =>1 %>
+    <br />
+    <br />
+    <row>
+    <%= link_to "Cancel", suppliers_path, class: "btn btn-outline-secondary" %>
+    <%= f.submit_button "Save" %>
+  <% end %>
+  </row>
+</div>

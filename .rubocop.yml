@@ -1,0 +1,91 @@
+require:
+  - rubocop-rails
+  # - rubocop-rspec
+
+AllCops:
+  NewCops: enable
+  SuggestExtensions: false
+
+  # exclude default rails code
+  # otherwise is a pain to patch in the rails update
+  Exclude:
+    - "db/**/*"
+    - "config/**/*"
+    - "script/**/*"
+    - "bin/{rails,rake,bundle,setup,yarn,webpack,webpack-dev-server,delayed_job}"
+    - "spec/{spec,rails}_helper.rb"
+    - "Rakefile"
+    - "config.ru"
+    - "vendor/bundle/**/*"
+
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Layout/LineLength:
+  Max: 150
+  Exclude:
+    - app/helpers/tailwind_form_builder.rb
+    - spec/requests/catalogue/products_spec.rb
+    - spec/requests/catalogue/products_spec.rb
+
+Rails/HasAndBelongsToMany:
+  Exclude:
+    - app/models/variant.rb
+    - app/models/category_tag.rb
+    - app/models/product.rb
+    - app/models/product_attribute.rb
+
+Rails/HasManyOrHasOneDependent:
+  Exclude:
+    - app/models/supplier.rb
+Metrics/AbcSize:
+  Exclude:
+
+
+Metrics/CyclomaticComplexity:
+  Exclude:
+
+Lint/DuplicateBranch:
+  Exclude:
+    - app/helpers/tailwind_form_builder.rb
+
+Rails/OutputSafety:
+  Exclude:
+    - app/helpers/tailwind_form_builder.rb
+
+Naming/PredicateName:
+  Exclude:
+    - app/helpers/tailwind_form_builder.rb
+
+Metrics/PerceivedComplexity:
+  Exclude:
+
+
+Metrics/BlockLength:
+  Max: 100
+  Exclude:
+
+Rails/TransactionExitStatement:
+  Exclude:
+
+Metrics/MethodLength:
+  Max: 60
+  Exclude:
+
+Metrics/ClassLength:
+  Max: 400
+  Exclude:
+
+Naming/VariableNumber:
+  Enabled: false
+
+Naming/MethodParameterName:
+  MinNameLength: 1
+
+Rails/HasManyOrHasOneDependent:
+  Exclude:
+    - app/models/product.rb
+    - app/models/variant.rb

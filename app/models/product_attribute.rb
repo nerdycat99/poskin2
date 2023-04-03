@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 class ProductAttribute < ApplicationRecord
-  # has_and_belongs_to_many :variants # this feels wrong, these shoudl be associated to the prod_attr_variants
+  validates :name, presence: true
 
-  scope :magnitude, lambda {
-    where(name: 'size')
-  }
+  def self.atributes_for(type)
+    ProductAttribute.where(name: type) if valid_attribute_types.include?(type)
+  end
 
-  scope :colour, lambda {
-    where(name: 'colour')
-  }
+  def self.valid_attribute_types
+    ProductAttributeType.all.map(&:name)
+  end
 end

@@ -1,19 +1,17 @@
 # frozen_string_literal: true
 
 class Catalogue::ProductsController < ApplicationController
+  before_action :authenticate_user!
   before_action :sanitize_params, only: [:create]
   before_action :product_with_sku_code, only: [:new]
 
-  def new
-  end
+  def new; end
 
   def create
     @product = supplier.products.new(product_params)
-    if @product.save
-      redirect_to catalogue_supplier_path(supplier.id)
-    else
-      return render(:new, status: :unprocessable_entity)
-    end
+    return render(:new, status: :unprocessable_entity) unless @product.save
+
+    redirect_to catalogue_supplier_path(supplier.id)
   end
 
   private

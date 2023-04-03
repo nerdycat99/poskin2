@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Catalogue::SuppliersController < ApplicationController
+  before_action :authenticate_user!
   before_action :supplier, only: %i[index create]
 
   def index; end
@@ -15,7 +16,7 @@ class Catalogue::SuppliersController < ApplicationController
       redirect_to catalogue_supplier_path(existing_supplier.id)
     else
       flash.now.alert = 'Please select a supplier from the list'
-      return render(:index, status: :unprocessable_entity)
+      render(:index, status: :unprocessable_entity)
     end
   end
 

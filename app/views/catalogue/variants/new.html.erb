@@ -7,24 +7,21 @@
       <%end%>
     <%end%>
     <%= simple_form_for @variant, builder: TailwindFormBuilder, class: "mt-6", url: catalogue_supplier_product_variants_path do |f| %>
-      <%= f.hiden_field :quantity, value: 0 %>
+      <%= f.hidden_field :quantity, value: 0 %>
       <br />
+
       <% index = 0 %>
-      <%= f.label "Variant Attributes" %>
-      <br />
+      <h5><%= f.label "Please select applicable attributes for this variant" %></h5>
       <%= f.simple_fields_for :product_attributes_variants do |attribute_fields| %>
-        <% if index.zero? %>
-          <%= attribute_fields.label "Size" %>
-          <%= attribute_fields.collection_select :product_attribute_id, ProductAttribute.magnitude.order(:id),:id,:value, include_blank: true %>
-        <% else %>
-          <%= attribute_fields.label "Colour" %>
-          <%= attribute_fields.collection_select :product_attribute_id, ProductAttribute.colour.order(:id),:id,:value, include_blank: true %>
-        <% end %>
+        <%= attribute_fields.label @attribute_types[index] %>
+        <%= attribute_fields.collection_select :product_attribute_id, ProductAttribute.atributes_for(@attribute_types[index]).order(:value),:id,:value, include_blank: false %>
         <% index += 1 %>
         <br />
       <% end %>
+
       <br />
-      <button data-action="click->hello#testMe", class="btn btn-outline-secondary">Add Attributes</button>
+      <%= link_to '<button type="button" class="btn btn-outline-secondary">New Attribute Type</button>'.html_safe, new_catalogue_supplier_product_product_attribute_type_path(@product.supplier.id, @product) %>
+      <%= link_to '<button type="button" class="btn btn-outline-secondary">Add Attribute Values</button>'.html_safe, new_catalogue_supplier_product_product_attribute_path(@product.supplier.id, @product) %>
       <br />
       <br />
       <%= f.label "SKU Code" %>
