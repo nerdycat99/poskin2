@@ -1,0 +1,12 @@
+<div class="p-12 mx-auto text-gray-800 max-w-7xl">
+  <h2>Receive Stock for a Supplier's Products and Variants</h2>
+  <br />
+  <%= simple_form_for @supplier, builder: TailwindFormBuilder, class: "mt-6", url: inventory_suppliers_path do |f| %>
+    <%= f.label "Select the Supplier then click Next" %>
+    <%= f.collection_select :id, Supplier.order(:name),:id,:name, include_blank: true %>
+    <br />
+    <br />
+    <%= f.submit_button "Next" %>
+    <%= link_to "Back", inventories_path, class: "btn btn-outline-secondary" %>
+  <% end %>
+</div>

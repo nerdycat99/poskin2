@@ -1,0 +1,29 @@
+<div class="p-10">
+  <h2>Showing Actionss for Variant <%= @variant.product.title %> - <%= @variant.display_characteristics%></h2>
+  <table class="min-w-full table-auto">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Type of Action</th>
+        <th>Quantity Added / Removed</th>
+        <th>User Responsible</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @adjustments.each do |action| %>
+        <tr>
+          <td><%= action.created_at %></td>
+          <td><%= action.adjustment_type.titleize %></td>
+          <td><%= action.quantity_by_type %></td>
+          <td>Nerdy Cat</td>
+        </tr>
+      <% end %>
+      <tr><td colspan="4">&nbsp;</td></tr>
+      <tr><td colspan="4"><h6>Current Stock Quantity: <%= @variant.stock_count %></h6></td></tr>
+    </tbody>
+  </table>
+
+  <br />
+  <%= link_to "Back", inventory_supplier_path(@supplier.id), class: "btn btn-outline-secondary" %>
+</div>

@@ -1,0 +1,43 @@
+<div class="p-10">
+  <h2>Showing Products for <%= @supplier.name %></h2>
+  <table class="min-w-full table-auto">
+    <thead>
+      <tr>
+        <th>Product Name / sku</th>
+        <th>Description and Variants</th>
+        <th>Stock Level</th>
+        <th colspan="3"></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @products.each do |product| %>
+        <tr>
+          <td><%= product.title %></td>
+          <td><%= product.description %></td>
+          <td><%= product.stock_count %></td>
+          <td colspan="3">
+          </td>
+        </tr>
+        <tr><td colspan="7">Notes: <%= product.notes %></td></tr>
+        <% product.variants.each do |variant| %>
+          <tr>
+            <td><%= variant.sku_code %></td>
+            <td><%= variant.display_characteristics %></td>
+            <td><%= variant.stock_count %></td>
+            <td colspan="3">
+              <%= link_to "Receive Stock", new_inventory_supplier_product_variant_adjustment_path(@supplier.id, product.id, variant.id), class: "btn btn-primary" %>
+              <%= link_to "View History", inventory_supplier_product_variant_adjustments_path(@supplier.id, product.id, variant.id), class: "btn btn-outline-secondary" %>
+            </td>
+          </tr>
+        <% end %>
+        <br />
+        <tr><td colspan="7"><hr></td></tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <br />
+  <%= link_to "Select another Supplier", inventory_suppliers_path(@supplier.id), class: "btn btn-outline-secondary" %>
+  <%= link_to "Back to Catalogue", inventories_path(@supplier.id), class: "btn btn-outline-secondary" %>
+</div>
