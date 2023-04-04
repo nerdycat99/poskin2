@@ -18,6 +18,6 @@ TaxRate.find_or_create_by({ rate: "0", name: "none" })
 AccountingCode.find_or_create_by({ name: "CONS001", enabled: true, description: "Consignment" })
 
 # Default Product Attribute Types
-AccountingCode.find_or_create_by({ name: "size" })
-AccountingCode.find_or_create_by({ name: "colour" })
-AccountingCode.find_or_create_by({ name: "artists_code" })
+ProductAttributeType.find_or_create_by({ name: "size" })
+ProductAttributeType.find_or_create_by({ name: "colour" })
+ProductAttributeType.find_or_create_by({ name: "artists_code" })
