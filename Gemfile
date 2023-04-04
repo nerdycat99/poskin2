@@ -29,8 +29,8 @@ gem 'stimulus-rails'
 # FE
 gem 'simple_form'
 
-# printing
-gem 'cupsffi'
+# printing - removed to deploy to heroku
+# gem 'cupsffi'
 
 # PDF Generation
 gem 'prawn'
@@ -46,6 +46,9 @@ gem 'redis', '~> 4.0'
 
 # security
 gem 'devise'
+
+# added to resolve heroku deploy error
+gem "matrix"
 
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"
