@@ -47,6 +47,9 @@ gem 'redis', '~> 4.0'
 # security
 gem 'devise'
 
+# added to resolve heroku deploy error
+gem "matrix"
+
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"
 
