@@ -140,6 +140,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_31_232742) do
     t.integer "quantity"
     t.string "sku_code"
     t.string "barcode"
+    t.string "markup"
+    t.integer "cost_price"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["product_id"], name: "index_variants_on_product_id"

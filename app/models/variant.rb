@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Variant < ApplicationRecord
+  include ActionView::Helpers::NumberHelper
   include ApplicationHelper
 
   belongs_to :product
@@ -23,6 +24,14 @@ class Variant < ApplicationRecord
 
   def tagged_attributes
     @tagged_attributes ||= product_attributes_variants.map(&:product_attribute)
+  end
+
+  def display_cost_price
+    number_to_currency(format('%.2f', (cost_price.to_f / 100))) unless cost_price.nil?
+  end
+
+  def display_markup
+    "#{markup}%" if markup.present?
   end
 
   def attribute_types_set
