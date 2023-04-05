@@ -83,7 +83,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_31_232742) do
     t.text "notes"
     t.string "sku_code"
     t.string "barcode"
-    t.boolean "publish", default: false
+    t.boolean "publish"
     t.string "markup"
     t.integer "cost_price"
     t.datetime "created_at", null: false
@@ -108,6 +108,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_31_232742) do
     t.string "email"
     t.json "phone"
     t.text "notes"
+    t.boolean "sales_tax_registered"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "tax_rate_id"

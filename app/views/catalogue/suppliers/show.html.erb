@@ -21,6 +21,7 @@
                   <th>SKU Code</th>
                   <th colspan="2">Description / Variants</th>
                   <th>Quantity</th>
+                  <th>Published?</th>
                   <th colspan="3"></th>
                 </tr>
               </thead>
@@ -29,10 +30,11 @@
                   <td><%= product.display_sku %></td>
                   <td colspan="2"><%= product.description %></td>
                   <td><%= product.stock_count %></td>
+                  <td><%= product.publish %></td>
                   <td colspan="3">
-                    <%= link_to "Edit Product", new_catalogue_supplier_product_path(@supplier.id), class: "btn btn-primary" %>
-                    <%= link_to "Add Variants", new_catalogue_supplier_product_variant_path(@supplier.id, product.id), class: "btn btn-secondary" %>
-                    <%= link_to "Remove Product", catalogue_suppliers_path(@supplier.id), class: "btn btn-outline-secondary" %>
+                    <%= link_to "Add Variants", new_catalogue_supplier_product_variant_path(@supplier.id, product.id), class: "btn btn-primary" %>
+                    <%= link_to "Edit Product", edit_catalogue_supplier_product_path(@supplier.id, product.id), class: "btn btn-secondary" %>
+                    <%= link_to '<button type="button" class="btn btn-danger">Remove Product</button>'.html_safe, catalogue_supplier_product_path(@supplier.id, product.id), data: {turbo_method: :delete, turbo_confirm: 'Are you sure you want to try and delete this Product?'} %>
                   </td>
                 </tr>
                 <tr><td colspan="7">&nbsp;</td></tr>
@@ -42,10 +44,11 @@
                       <td><%= variant.sku_code %></td>
                       <td colspan="2"><%= variant.display_characteristics %></td>
                       <td><%= variant.stock_count %></td>
+                      <td><%= product.publish %></td>
                       <td colspan="3">
-                        <%= link_to "Edit Variant", root_path(@supplier.id) %>
-                        &nbsp; &nbsp;
-                        <%= link_to "Remove Variant", root_path(@supplier.id) %>
+                        <%= link_to "Show", edit_catalogue_supplier_product_variant_path(@supplier.id, product.id, variant.id), class: "btn btn-outline-primary" %>
+                        <%= link_to "Edit", edit_catalogue_supplier_product_variant_path(@supplier.id, product.id, variant.id), class: "btn btn-outline-secondary" %>
+                        <%= link_to '<button type="button" class="btn btn-outline-danger">Remove</button>'.html_safe, catalogue_supplier_product_variant_path(@supplier.id, product.id, variant.id), data: {turbo_method: :delete, turbo_confirm: 'Are you sure you want to delete this Variant?'} %>
                       </td>
                     </tr>
                   <% end %>

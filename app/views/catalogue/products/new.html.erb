@@ -23,7 +23,7 @@
 
       <br />
       <br />
-      <%= f.input :publish, as: :select, collection: ['Yes', 'No'], required: true, include_blank: false, label: 'Publish this Product?  ', selected: @product.display_published %>
+      <%= f.input :publish, as: :select, collection: ['Yes', 'No'], required: true, include_blank: false, label: 'Publish this Product?', selected: @product.display_published %>
       <br />
       <%= f.label "Cost price" %>
       <%= f.text_field :cost_price, placeholder: '100.99', value: @product.display_cost_price %>

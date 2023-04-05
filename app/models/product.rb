@@ -6,19 +6,15 @@ class Product < ApplicationRecord
 
   belongs_to :supplier
   has_and_belongs_to_many :category_tags
-  has_many :variants
+  has_many :variants, dependent: :destroy
   # accepts_nested_attributes_for :variants
-
-  # Product.category_tags  #=> [<CategoryTag @name="Sports">, ...]
-  # CategoryTag.products   #=> [<Product @name="UserA">, ...]
-  # Product.category_tags.empty?
 
   scope :published, lambda {
     where(publish: true)
   }
 
-  validates :accounting_code_id, :title, :description, :sku_code, :publish, :markup, presence: true
-
+  validates :accounting_code_id, :title, :description, :sku_code, :markup, presence: true
+  validates :publish, inclusion: { in: [true, false] }
   validates :cost_price, presence: true, numericality: { greater_than_or_equal_to: 1, only_integer: true }
 
   def display_cost_price
@@ -42,7 +38,11 @@ class Product < ApplicationRecord
   end
 
   def display_published
-    publish ? 'Yes' : 'No'
+    if publish.nil?
+      'Yes'
+    else
+      publish ? 'Yes' : 'No'
+    end
   end
 
   def generated_sku
@@ -55,5 +55,20 @@ class Product < ApplicationRecord
 
   def stock_count
     variants.map(&:stock_count).compact.sum
+  end
+
+  def stock?
+    stock_count.positive?
+  end
+
+  def been_sold?
+    variants.includes(:stock_adjustments).map(&:been_sold?).compact.any?
+  end
+
+  def remove!
+    Product.transaction do
+      variants.includes(:product_attributes_variants).map(&:remove!)
+      delete
+    end
   end
 end

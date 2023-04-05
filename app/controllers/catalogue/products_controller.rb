@@ -2,10 +2,13 @@
 
 class Catalogue::ProductsController < ApplicationController
   before_action :authenticate_user!
-  before_action :sanitize_params, only: [:create]
+  before_action :sanitize_params, only: %i[create update]
   before_action :product_with_sku_code, only: [:new]
+  before_action :existing_product, only: %i[edit update destroy]
 
   def new; end
+
+  def edit; end
 
   def create
     @product = supplier.products.new(product_params)
@@ -14,7 +17,32 @@ class Catalogue::ProductsController < ApplicationController
     redirect_to catalogue_supplier_path(supplier.id)
   end
 
+  def update
+    return render(:edit, status: :unprocessable_entity) unless @existing_product.update(product_params)
+
+    redirect_to catalogue_supplier_path(supplier.id)
+  end
+
+  # rubocop:disable Layout/LineLength
+  def destroy
+    alert_message = 'Product and all of its Variants have been deleted'
+    if @existing_product.stock? || @existing_product.been_sold?
+      alert_message = 'Unable to delete Product, a variant of this Product has existing stock or has been sold one or more times. Product has been unpublished instead.'
+      @existing_product.update(publish: false)
+    else
+      @existing_product.remove!
+    end
+
+    flash[:notice] = alert_message
+    redirect_to catalogue_supplier_path(supplier.id)
+  end
+  # rubocop:enable Layout/LineLength
+
   private
+
+  def existing_product
+    @existing_product = supplier.products.find_by(id: params['id'])
+  end
 
   def product
     @product ||= supplier.products.new
