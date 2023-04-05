@@ -14,7 +14,7 @@ RSpec.describe 'Catalogue::Suppliers', type: :request do
   let(:supplier_name) { 'Supplier Ltd' }
   let(:supplier_email) { 'supplier@qwerty.com' }
   let(:tax_rate) { TaxRate.create(rate: '10', name: 'basic rate') }
-  let(:supplier) { Supplier.create(name: supplier_name, email: supplier_email, phone: '123456789', address_id: address.id, tax_rate_id: tax_rate.id) }
+  let(:supplier) { Supplier.create(name: supplier_name, email: supplier_email, phone: '123456789', address_id: address.id, tax_rate_id: tax_rate.id, sales_tax_registered: true) }
 
   let(:good_params) { { supplier: { id: supplier.id } } }
   let(:bad_params) { { supplier: { id: 9999 } } }

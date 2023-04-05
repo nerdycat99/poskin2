@@ -15,7 +15,7 @@ RSpec.describe 'Suppliers', type: :request do
   let(:good_params) do
     {
       supplier: {
-        name: 'Mr Supplier', email: 'qwerty@werty.com', phone: '0123456789', tax_rate_id: tax_rate.id, address_id: address.id
+        name: 'Mr Supplier', email: 'qwerty@werty.com', phone: '0123456789', tax_rate_id: tax_rate.id, address_id: address.id, sales_tax_registered: true
       }
     }
   end

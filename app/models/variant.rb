@@ -18,7 +18,7 @@ class Variant < ApplicationRecord
   end
 
   def variant_characteristics
-    tagged_attributes.map { |attr| "#{attr.name.titleize}: #{attr.value}" if attr.value.present? }
+    tagged_attributes.map { |attr| "#{attr.name.titleize}: #{attr.value.titleize}" if attr.value.present? }
   end
 
   def tagged_attributes
@@ -26,7 +26,7 @@ class Variant < ApplicationRecord
   end
 
   def attribute_types_set
-    tagged_attributes.map { |attr| attr.name }
+    tagged_attributes.map(&:name)
   end
 
   def attribute_types_not_set
@@ -56,8 +56,8 @@ class Variant < ApplicationRecord
 
   def remove!
     Variant.transaction do
-      self.product_attributes_variants&.delete_all
-      self.delete
+      product_attributes_variants&.delete_all
+      delete
     end
   end
 end

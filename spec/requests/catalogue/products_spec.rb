@@ -22,7 +22,7 @@ RSpec.describe 'Catalogue::Products', type: :request do
     Address.create(country_id: country.id, first_line: '100 The Road', second_line: nil, city: 'Sydney', state: 'NSW', postcode: '1234')
   end
   let(:tax_rate) { TaxRate.create(rate: '10', name: 'basic rate') }
-  let(:supplier) { Supplier.create(name:, email:, phone:, notes:, address_id: address.id, tax_rate_id: tax_rate.id) }
+  let(:supplier) { Supplier.create(name:, email:, phone:, notes:, address_id: address.id, tax_rate_id: tax_rate.id, sales_tax_registered: true) }
   let(:accounting_code) { AccountingCode.create(name: 'CONS001', enabled: true, description: 'consignment') }
 
   let(:good_params) do

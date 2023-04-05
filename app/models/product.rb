@@ -67,8 +67,8 @@ class Product < ApplicationRecord
 
   def remove!
     Product.transaction do
-      self.variants.includes(:product_attributes_variants).map{ |variant| variant.remove! }
-      self.delete
+      variants.includes(:product_attributes_variants).map(&:remove!)
+      delete
     end
   end
 end
