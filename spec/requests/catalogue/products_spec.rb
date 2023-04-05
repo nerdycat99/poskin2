@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe 'Catalogue::Products', type: :request do
   let(:password_signup) { 'password' }
   let!(:user) do
-    User.create(email: "test@test.com", password: password_signup, password_confirmation: password_signup)
+    User.create(email: 'test@test.com', password: password_signup, password_confirmation: password_signup)
   end
   let(:country) { Country.create(country: 'Australia', code: 'AUD') }
   let(:address) do

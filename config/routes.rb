@@ -22,7 +22,7 @@ Rails.application.routes.draw do
       resources :products, only: [:index, :new, :create] do
         resources :variants, only: [:new, :create]
         resources :product_attributes, only: [:new, :create]
-        resources :product_attribute_types, only: [:new, :create]
+        resources :product_attribute_types, only: [:index, :new, :create, :destroy]
       end
     end
   end

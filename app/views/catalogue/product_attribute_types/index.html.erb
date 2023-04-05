@@ -1,0 +1,35 @@
+<div class="p-12 mx-auto text-gray-800 max-w-7xl">
+  <h2>Remove an Attribute Type</h2>
+  <h5>Please note, if an attribute type is being used by a product's variants then you cannot remove it until you have removed the variant.</h5>
+  <br />
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Attribute Type</th>
+        <th scope="col">In Use?</th>
+        <th scope="col">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <% @product_attribute_types.each_with_index do |attribute_type, index| %>
+        <tr>
+          <td><%= attribute_type.name %></td>
+          <td><%= attribute_type.in_use? %></td>
+          <td>
+            <% if attribute_type.in_use? %>
+              Unable to remove this attribute type
+            <% else %>
+              <%= link_to '<button type="button" class="btn btn-danger">Delete Attribute Type</button>'.html_safe, catalogue_supplier_product_product_attribute_type_path(@supplier_id, @product_id, attribute_type.id), data: {turbo_method: :delete, turbo_confirm: 'Are you sure?'} %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+
+    </tbody>
+  </table>
+  <%= link_to 'Done', new_catalogue_supplier_product_variant_path(@supplier_id, @product_id), class: "btn btn-primary" %>
+
+  </div>
+</div>

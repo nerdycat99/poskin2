@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe 'Catalogues', type: :request do
   let(:password_signup) { 'password' }
   let!(:user) do
-    User.create(email: "test@test.com", password: password_signup, password_confirmation: password_signup)
+    User.create(email: 'test@test.com', password: password_signup, password_confirmation: password_signup)
   end
 
   describe 'GET /api/v1/me' do
