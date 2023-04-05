@@ -2,11 +2,10 @@
 
 class ProductAttribute < ApplicationRecord
   has_many :product_attributes_variants
-  # validates :name, presence: true, uniqueness: true
-  validate :unique_attribute?
-  # validates :value, presence: true, uniqueness: { scope: :name }
 
   before_save :sanitize_value
+
+  validate :unique_attribute?
 
   def self.atributes_for(type)
     ProductAttribute.where(name: type) if valid_attribute_types.include?(type)
@@ -26,7 +25,11 @@ class ProductAttribute < ApplicationRecord
   end
 
   def sanitize_value
-    self.value = value.upcase
+    self.value = value.downcase
+  end
+
+  def display_value
+    value.titleize
   end
 
   def in_use?

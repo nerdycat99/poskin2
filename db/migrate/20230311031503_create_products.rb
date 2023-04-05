@@ -8,7 +8,7 @@ class CreateProducts < ActiveRecord::Migration[7.0]
       t.text :notes
       t.string :sku_code
       t.string :barcode
-      t.boolean :publish, default: false
+      t.boolean :publish
       t.string :markup
       t.integer :cost_price
       t.timestamps

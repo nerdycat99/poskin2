@@ -19,8 +19,8 @@ Rails.application.routes.draw do
 
   namespace :catalogue do
     resources :suppliers, only: [:index, :new, :create, :show] do
-      resources :products, only: [:index, :new, :create] do
-        resources :variants, only: [:new, :create]
+      resources :products, only: [:index, :new, :create, :edit, :update, :destroy] do
+        resources :variants, only: [:new, :create, :edit, :update, :destroy]
         resources :product_attributes, only: [:new, :create]
         resources :product_attribute_types, only: [:index, :new, :create, :destroy]
       end
