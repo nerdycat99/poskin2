@@ -29,6 +29,14 @@
       <%= f.text_field :sku_code, value: @variant.sku_code %>
       <br />
       <br />
+      <%= f.label "Cost Price" %>
+      <%= f.text_field :cost_price, placeholder: "leave empty to use product price of #{@variant.product.display_cost_price}", value: @variant.display_cost_price %>
+      <br />
+      <br />
+      <%= f.label "Markup" %>
+      <%= f.text_field :markup, placeholder: "leave empty to use product markup of #{@variant.product.display_markup}", value: @variant.display_cost_price %>
+      <br />
+      <br />
       <%= f.submit_button "Create Variant" %>
       <%= link_to "Cancel", catalogue_supplier_path(@product.supplier.id), class: "btn btn-outline-secondary" %>
     <% end %>

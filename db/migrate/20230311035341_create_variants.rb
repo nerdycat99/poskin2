@@ -5,6 +5,8 @@ class CreateVariants < ActiveRecord::Migration[7.0]
       t.integer :quantity
       t.string :sku_code
       t.string :barcode
+      t.string :markup
+      t.integer :cost_price
       t.timestamps
     end
   end
