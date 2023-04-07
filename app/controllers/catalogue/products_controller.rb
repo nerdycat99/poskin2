@@ -4,8 +4,9 @@ class Catalogue::ProductsController < ApplicationController
   before_action :authenticate_user!
   before_action :sanitize_params, only: %i[create update]
   before_action :product_with_sku_code, only: [:new]
-  before_action :existing_product, only: %i[edit update destroy]
+  before_action :existing_product, only: %i[edit update destroy show]
 
+  def show; end
   def new; end
 
   def edit; end

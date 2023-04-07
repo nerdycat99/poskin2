@@ -31,6 +31,7 @@ Layout/LineLength:
     - spec/requests/catalogue/products_spec.rb
     - spec/requests/catalogue/products_spec.rb
     - spec/requests/inventory/adjustments_spec.rb
+    - spec/requests/suppliers_spec.rb
 
 Rails/HasAndBelongsToMany:
   Exclude:
