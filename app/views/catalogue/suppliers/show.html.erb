@@ -1,6 +1,7 @@
 <div class="p-10">
-  <h2>Showing Products for <%= @supplier.name %></h2>
-  <br />
+  <h2 style="text-align:left;float:left;">Showing Products for <%= @supplier.name %></h2>
+  <h5 style="text-align:right;float:right;"><%= @supplier.sales_tax_registered_text %></h5>
+  <br /><br />
   <div class="accordion" id="accordionExample">
     <% @products.each do |product| %>
       <div class="accordion-item">
@@ -8,9 +9,7 @@
           <% collapse_target = "#collapse#{product.sku_code}" %>
           <% collapse_id = "collapse#{product.sku_code}" %>
           <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target=<%= collapse_target %> aria-expanded="false" aria-controls=<%= collapse_id %>>
-            <h6>
-              <%= product.title %>
-            </h6>
+            <h6><%= product.title %></h6>
           </button>
         </h2>
         <div id=<%= collapse_id %> class="accordion-collapse" data-bs-parent="#accordionExample">
@@ -20,7 +19,11 @@
                 <tr>
                   <th>SKU Code</th>
                   <th>Description / Variants</th>
-                  <th>Cost Price</th>
+                  <th><%= product.cost_price_header %></th>
+                  <% if @supplier.registered_for_sales_tax? %>
+                    <th>Tax Amount</th>
+                    <th>Total Cost Price</th>
+                  <% end %>
                   <th>Quantity</th>
                   <th>Published?</th>
                   <th colspan="3"></th>
@@ -31,9 +34,16 @@
                   <td><%= product.display_sku %></td>
                   <td><%= product.description %></td>
                   <td><%= product.display_cost_price %></td>
+
+                  <% if @supplier.registered_for_sales_tax? %>
+                    <td><%= product.display_cost_price_tax_amount %></td>
+                    <td><%= product.display_total_cost_price %></td>
+                  <% end %>
+
                   <td><%= product.stock_count %></td>
                   <td><%= product.publish %></td>
                   <td colspan="3">
+                    <%= link_to "Product Details", catalogue_supplier_product_path(@supplier.id, product.id), class: "btn btn-primary" %>
                     <%= link_to "Add Variants", new_catalogue_supplier_product_variant_path(@supplier.id, product.id), class: "btn btn-primary" %>
                     <%= link_to "Edit Product", edit_catalogue_supplier_product_path(@supplier.id, product.id), class: "btn btn-secondary" %>
                     <%= link_to '<button type="button" class="btn btn-danger">Remove Product</button>'.html_safe, catalogue_supplier_product_path(@supplier.id, product.id), data: {turbo_method: :delete, turbo_confirm: 'Are you sure you want to try and delete this Product?'} %>
@@ -45,7 +55,13 @@
                     <tr>
                       <td><%= variant.sku_code %></td>
                       <td><%= variant.display_characteristics %></td>
-                      <td><%= variant.display_cost_price || product.display_cost_price %></dh>
+                      <td><%= variant.display_cost_price || product.display_cost_price %></td>
+
+                      <% if @supplier.registered_for_sales_tax? %>
+                        <td><%= product.display_cost_price_tax_amount %></td>
+                        <td><%= product.display_total_cost_price %></td>
+                      <% end %>
+
                       <td><%= variant.stock_count %></td>
                       <td><%= product.publish %></td>
                       <td colspan="3">
