@@ -59,7 +59,3 @@ class OrdersController < ApplicationController
     # params.require(:order).permit(:customer_id, :state, :payment_method, :payment_other_method, :payment_amount, :adjustments, :delivery, :notes, :first_name, :last_name, :email_address, :phone_number, customer_attributes: [:first_name, :last_name, :email_address, :phone_number])
   end
 end
-
-# initially just record the email address in the order!!!
-# in create show the list of customers by email address
-# user can select (in time will be search) - ot click on create new

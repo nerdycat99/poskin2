@@ -11,6 +11,7 @@ class ItemsController < ApplicationController
   end
 
   def create
+    # in future allow a purchase to be made against a product or a variant for now MUST BE variant
     if variant.present? && variant.stock_for_order?(item_params['quantity'])
       sanitize_variant_id
       @item = order.order_items.new(item_params)
@@ -56,10 +57,3 @@ class ItemsController < ApplicationController
     @order ||= Order.includes(:order_items).find_by(id: params['order_id'])
   end
 end
-
-
-
-      # t.integer :variant_id
-      # t.integer :product_id
-      # t.integer :quantity
-      # t.integer :stock_adjustment_id
