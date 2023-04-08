@@ -14,6 +14,10 @@ Rails.application.routes.draw do
   root to: "home#index"
 
   resources :sales, only: [:index]
+  resources :orders, only: [:create, :edit, :update, :show] do
+    resources :payments, only: [:new, :create]
+    resources :items, only: [:new, :create]
+  end
   resources :catalogue, only: [:index]
   resources :suppliers, only: [:index, :new, :create, :show, :edit, :update]
 

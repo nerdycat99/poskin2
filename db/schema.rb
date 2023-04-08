@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_31_232742) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_03_123837) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -53,6 +53,47 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_31_232742) do
     t.string "code"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "customers", force: :cascade do |t|
+    t.string "first_name"
+    t.string "last_name"
+    t.string "email_address"
+    t.string "phone_number"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "order_items", force: :cascade do |t|
+    t.bigint "order_id", null: false
+    t.integer "variant_id"
+    t.integer "product_id"
+    t.integer "quantity"
+    t.integer "stock_adjustment_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["order_id"], name: "index_order_items_on_order_id"
+    t.index ["product_id"], name: "index_order_items_on_product_id"
+    t.index ["stock_adjustment_id"], name: "index_order_items_on_stock_adjustment_id"
+    t.index ["variant_id"], name: "index_order_items_on_variant_id"
+  end
+
+  create_table "orders", force: :cascade do |t|
+    t.integer "customer_id"
+    t.integer "state"
+    t.integer "payment_method"
+    t.string "payment_other_method"
+    t.integer "payment_amount"
+    t.string "adjustments"
+    t.boolean "delivery"
+    t.string "notes"
+    t.string "first_name"
+    t.string "last_name"
+    t.string "email_address"
+    t.string "phone_number"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["customer_id"], name: "index_orders_on_customer_id"
   end
 
   create_table "product_attribute_types", force: :cascade do |t|
@@ -160,6 +201,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_31_232742) do
   end
 
   add_foreign_key "addresses", "countries"
+  add_foreign_key "order_items", "orders"
   add_foreign_key "products", "accounting_codes"
   add_foreign_key "products", "suppliers"
   add_foreign_key "stock_adjustments", "variants"

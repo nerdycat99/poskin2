@@ -1,15 +1,46 @@
+<div class="p-12 mx-auto text-gray-800 max-w-7xl">
+  <h2>Sales</h2>
+</div>
 <div class="p-10 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-5">
   <!--Card 1-->
   <div class="rounded overflow-hidden shadow-lg content-center">
     <!-- <img class="w-full" src="/mountain.jpg" alt="Mountain"> -->
     <div class="px-6 py-4">
-      <div class="mb-4 text-3xl font-black">Point of Sale</div>
+      <div class="mb-4 text-3xl font-black">Register Sale</div>
       <p class="text-gray-700 text-base">
-        Enter the code or description of the product, number of items and add to order. Proceed and optionally record the customer details. After taking payment confirm the sale (poskin will automatically reduce the quantity for the variant sold) and print receipt
+        Add Products to Sale and Print Receipt
       </p>
     </div>
     <div class="px-6 pt-4 pb-2">
-      <%= link_to '<button class="bg-blue-500 hover:bg-blue-700 text-white font-bold w-1/3 lg:w-full py-2">Sell</button>'.html_safe, sales_path %>
+
+      <%= link_to '<button class="bg-blue-500 hover:bg-blue-700 text-white font-bold w-1/3 lg:w-full py-2">Continue</button>'.html_safe, orders_path, data: {turbo_method: :post} %>
+
+    </div>
+  </div>
+  <!--Card 2-->
+  <div class="rounded overflow-hidden shadow-lg">
+    <!-- <img class="w-full" src="/river.jpg" alt="River"> -->
+    <div class="px-6 py-4">
+      <div class="mb-4 text-3xl font-black">Find Sale</div>
+      <p class="text-gray-700 text-base">
+        Search for an Existing Sale
+      </p>
+    </div>
+    <div class="px-6 pt-4 pb-2">
+      <%= link_to '<button class="bg-blue-500 hover:bg-blue-700 text-white font-bold w-1/3 lg:w-full py-2">Continue</button>'.html_safe, root_path %>
+    </div>
+  </div>
+  <!--Card 3-->
+  <div class="rounded overflow-hidden shadow-lg">
+    <!-- <img class="w-full" src="/river.jpg" alt="River"> -->
+    <div class="px-6 py-4">
+      <div class="mb-4 text-3xl font-black">Customers</div>
+      <p class="text-gray-700 text-base">
+        Find and Update Customers Details
+      </p>
+    </div>
+    <div class="px-6 pt-4 pb-2">
+      <%= link_to '<button class="bg-blue-500 hover:bg-blue-700 text-white font-bold w-1/3 lg:w-full py-2">Continue</button>'.html_safe, root_path %>
     </div>
   </div>
 </div>
