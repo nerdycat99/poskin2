@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ReferralPdf < BasePdf
+class ReferralPdf < BaseReceiptPdf
   include ApplicationHelper
 
   LARGE_TEXT_COLOUR = '000000'
