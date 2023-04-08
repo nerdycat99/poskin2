@@ -15,6 +15,7 @@ Rails.application.routes.draw do
 
   resources :sales, only: [:index]
   resources :orders, only: [:create, :edit, :update, :show] do
+    resources :receipts, only: [:create, :show]#, defaults: { format: :pdf }
     resources :payments, only: [:new, :create]
     resources :items, only: [:new, :create]
   end

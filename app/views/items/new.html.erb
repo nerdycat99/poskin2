@@ -51,6 +51,7 @@
       <br />
       <%= f.submit_button "Add Item to Order" %>
       <%= link_to "Continue", edit_order_path(@order.id), class: "btn btn-primary" %>
+      <%= link_to "Skip Ahead / Manual Receipt", order_path(@order.id), class: "btn btn-warning" %>
       <%= link_to "Cancel", sales_path, class: "btn btn-outline-secondary" %>
     <% end %>
   </div>

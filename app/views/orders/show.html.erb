@@ -1,4 +1,28 @@
 <div class="p-12 mx-auto text-gray-800 max-w-7xl">
   <h2>New Sale - Step 4 of 4</h2>
-  <h5>Print Receipt for Order <%= @existing_order.id %></h5>
+  <h5>Print Receipt for Order <%= @receipt.order.id %></h5>
+  <br />
+  <%= simple_form_for @receipt, builder: TailwindFormBuilder, class: "mt-6", url: order_receipts_path(@receipt.order.id) do |f| %>
+    <%= f.label "Item one description and price minus tax" %>
+    <%= f.text_field :item_one_name, placeholder: 'Large Green Vase' %>
+    <%= f.text_field :item_one_price_minus_tax, placeholder: '$290.99' %>
+    <br />
+    <%= f.label "Item two description and price minus tax" %>
+    <%= f.text_field :item_two_name, placeholder: 'Large Green Vase' %>
+    <%= f.text_field :item_two_price_minus_tax, placeholder: '$290.99' %>
+    <br />
+    <%= f.label "Item three description and price minus tax" %>
+    <%= f.text_field :item_three_name, placeholder: 'Large Green Vase' %>
+    <%= f.text_field :item_three_price_minus_tax, placeholder: '$290.99' %>
+    <br />
+    <%= f.label "Item four description and price minus tax" %>
+    <%= f.text_field :item_four_name, placeholder: 'Large Green Vase' %>
+    <%= f.text_field :item_four_price_minus_tax, placeholder: '$290.99' %>
+    <br />
+    <%= f.label "Customer email address or name" %>
+    <%= f.text_field :email_address, placeholder: 'name or email address' %>
+    <br />
+    <%= f.submit_button "Generate Receipt" %>
+    <%= link_to "Cancel", sales_path, class: "btn btn-outline-secondary" %>
+  <% end %>
 </div>

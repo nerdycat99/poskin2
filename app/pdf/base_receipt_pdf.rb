@@ -25,8 +25,8 @@ class BaseReceiptPdf
 
   def document
     # page_size => [324, 684], :page_layout => :portrait
-    @document ||= Prawn::Document.new(page_size: [100, 250], page_layout: :portrait, margin: [0, 0, 0, 0])
-    # @document ||= Prawn::Document.new(page_size: 'A4', margin: [0, 0, 39, 0])
+    # @document ||= Prawn::Document.new(page_size: [100, 250], page_layout: :portrait, margin: [0, 0, 0, 0])
+    @document ||= Prawn::Document.new(page_size: 'A4', margin: [0, 50, 39, 0])
   end
 
   def initialize
