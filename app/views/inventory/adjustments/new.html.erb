@@ -8,7 +8,7 @@
     <%end%>
     <%= simple_form_for @stock_adjustment, builder: TailwindFormBuilder, class: "mt-6", url: inventory_supplier_product_variant_adjustments_path do |f| %>
       <%= f.hidden_field :adjustment_type, :value =>'received' %>
-      <%= f.hidden_field :user_id, :value =>1 %>
+      <%= f.hidden_field :user_id, :value => @current_user.id %>
       <%= f.label "Number of Items Received" %>
       <%= f.text_field :quantity, placeholder: '5' %>
       <br />
