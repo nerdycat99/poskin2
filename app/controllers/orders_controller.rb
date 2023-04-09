@@ -32,7 +32,7 @@ class OrdersController < ApplicationController
 
   def show
     order = Order.find_by(id: params['id'])
-    @receipt = order.receipts.new
+    @receipt = order.receipts.new #see if we can prevent this from happening if a receipt already exists?
   end
 
   private

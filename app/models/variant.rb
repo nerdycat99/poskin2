@@ -46,6 +46,22 @@ class Variant < ApplicationRecord
     number_to_currency(format('%.2f', (cost_price.to_f / 100))) unless cost_price.nil?
   end
 
+  def display_cost_price_tax_amount
+    number_to_currency(format('%.2f', (cost_price_tax_amount_in_cents_as_float / 100)))
+  end
+
+  def display_total_cost_price
+    number_to_currency(format('%.2f', ((cost_price.to_f + cost_price_tax_amount_in_cents_as_float) / 100))) unless cost_price.nil?
+  end
+
+  def cost_price_tax_amount_in_cents_as_float
+    product.supplier_registered_for_sales_tax? ? cost_price * tax_rate : 0.0
+  end
+
+  def tax_rate
+    10.to_f / 100
+  end
+
   def display_markup
     "#{markup}%" if markup.present?
   end

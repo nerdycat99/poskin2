@@ -6,26 +6,44 @@ class ReceiptsController < ApplicationController
   before_action :authenticate_user!, :content, :date, only: %i[create show]
 
   def create
-    puts "****** SAVE RECEIPT"
-    puts receipt_params.inspect
+    order.update(notes: "generated")
     receipt = order.receipts.new(receipt_params)
-    if order.save
-      redirect_to order_receipt_path(order, receipt, :format => 'pdf')
+    if receipt.save
+      pdf = ReceiptPdf.new(receipt)
+      # send_data pdf.render,
+      #           filename: "receipt#{receipt.order.id}.pdf",
+      #           type: 'application/pdf',
+      #           disposition: 'inline'
+
+      # saves the pdf to public
+      pdf.render_file(Rails.root.join('public', "receipt.pdf"))
+      redirect_to order_path(order)
+      # redirect_to order_receipt_path(order, receipt, :format => 'pdf')
     end
   end
 
   def show
-    receipt = Receipt.find_by(id: params['id'])
-    puts "**** GEN RECEIPT"
-    puts receipt.inspect
+    # this works to open existing file!!!
+    redirect_to "/receipt.pdf", allow_other_host: true
 
-     pdf = ReceiptPdf.new(receipt)
+    # redirect_to "https://www.google.com", allow_other_host: true
+    # redirect_to "http://localhost:3000/receipt.pdf"
+    # receipt = Receipt.find_by(id: params['id'])
 
-    send_data pdf.render,
-              filename: "receipt#{receipt.order.id}.pdf",
-              type: 'application/pdf',
-              disposition: 'inline'
-    pdf.render_file(Rails.root.join('public', "receipt#{receipt.order.id}.pdf"))
+    # # # generates the pdf
+    # pdf = ReceiptPdf.new(receipt)
+    # send_data pdf.render,
+    #           filename: "receipt#{receipt.order.id}.pdf",
+    #           type: 'application/pdf',
+    #           disposition: 'inline'
+
+    # # saves the pdf to public
+    # pdf.render_file(Rails.root.join('public', "receipt.pdf"))
+
+    # opens the file and hopefully shows inline???
+    # pdf_filename = File.join(Rails.root, "public/receipt.pdf")
+    # data = open(pdf_filename).read
+    # send_data(data, :filename => "your_document.pdf", :disposition => 'inline', :type => "application/pdf")
 
     # respond_to do |format|
     #   format.pdf do
