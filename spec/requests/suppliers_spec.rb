@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe 'Suppliers', type: :request do
   let(:password_signup) { 'password' }
   let!(:user) do
-    User.create(email: "test@test.com", password: password_signup, password_confirmation: password_signup)
+    User.create(email: 'test@test.com', password: password_signup, password_confirmation: password_signup)
   end
   let(:country) { Country.create(country: 'Australia', code: 'AUD') }
   let(:address) do
@@ -15,7 +15,7 @@ RSpec.describe 'Suppliers', type: :request do
   let(:good_params) do
     {
       supplier: {
-        name: 'Mr Supplier', email: 'qwerty@werty.com', phone: '0123456789', tax_rate_id: tax_rate.id, address_id: address.id
+        name: 'Mr Supplier', email: 'qwerty@werty.com', phone: '0123456789', tax_rate_id: tax_rate.id, address_id: address.id, sales_tax_registered: true
       }
     }
   end

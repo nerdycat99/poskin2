@@ -21,7 +21,7 @@
       <br />
       <br />
       <%= f.submit_button "Add Value" %>
-      <%= link_to 'Back', url_for(:back), class: "btn btn-outline-secondary" %>
+      <%= link_to 'Cancel', new_catalogue_supplier_product_variant_path(@supplier_id, @product_id), class: "btn btn-outline-secondary" %>
     <% end %>
   </div>
 </div>

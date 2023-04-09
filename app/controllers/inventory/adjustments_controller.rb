@@ -9,6 +9,7 @@ class Inventory::AdjustmentsController < ApplicationController
   end
 
   def new
+    @current_user = current_user
     @stock_adjustment = variant.stock_adjustments.new
     @adjustment_types = StockAdjustment.adjustment_types.keys
   end

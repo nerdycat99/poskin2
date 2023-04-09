@@ -6,6 +6,7 @@ class CreateSuppliers < ActiveRecord::Migration[7.0]
       t.string :email
       t.json :phone
       t.text :notes
+      t.boolean :sales_tax_registered
       t.bigint :tax_rate_id,
       t.timestamps
     end

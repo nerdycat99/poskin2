@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe 'Catalogue::Suppliers', type: :request do
   let(:password_signup) { 'password' }
   let!(:user) do
-    User.create(email: "test@test.com", password: password_signup, password_confirmation: password_signup)
+    User.create(email: 'test@test.com', password: password_signup, password_confirmation: password_signup)
   end
   let(:country) { Country.create(country: 'Australia', code: 'AUD') }
   let(:address) do
@@ -14,7 +14,10 @@ RSpec.describe 'Catalogue::Suppliers', type: :request do
   let(:supplier_name) { 'Supplier Ltd' }
   let(:supplier_email) { 'supplier@qwerty.com' }
   let(:tax_rate) { TaxRate.create(rate: '10', name: 'basic rate') }
-  let(:supplier) { Supplier.create(name: supplier_name, email: supplier_email, phone: '123456789', address_id: address.id, tax_rate_id: tax_rate.id) }
+  let(:supplier) do
+    Supplier.create(name: supplier_name, email: supplier_email, phone: '123456789', address_id: address.id, tax_rate_id: tax_rate.id,
+                    sales_tax_registered: true)
+  end
 
   let(:good_params) { { supplier: { id: supplier.id } } }
   let(:bad_params) { { supplier: { id: 9999 } } }

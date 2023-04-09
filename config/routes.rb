@@ -14,15 +14,20 @@ Rails.application.routes.draw do
   root to: "home#index"
 
   resources :sales, only: [:index]
+  resources :orders, only: [:create, :edit, :update, :show] do
+    resources :receipts, only: [:create, :show]#, defaults: { format: :pdf }
+    resources :payments, only: [:new, :create]
+    resources :items, only: [:new, :create]
+  end
   resources :catalogue, only: [:index]
   resources :suppliers, only: [:index, :new, :create, :show, :edit, :update]
 
   namespace :catalogue do
     resources :suppliers, only: [:index, :new, :create, :show] do
-      resources :products, only: [:index, :new, :create] do
-        resources :variants, only: [:new, :create]
+      resources :products, only: [:index, :new, :create, :edit, :update, :destroy, :show] do
+        resources :variants, only: [:new, :create, :edit, :update, :destroy]
         resources :product_attributes, only: [:new, :create]
-        resources :product_attribute_types, only: [:new, :create]
+        resources :product_attribute_types, only: [:index, :new, :create, :destroy]
       end
     end
   end

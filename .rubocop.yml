@@ -30,6 +30,8 @@ Layout/LineLength:
     - app/helpers/tailwind_form_builder.rb
     - spec/requests/catalogue/products_spec.rb
     - spec/requests/catalogue/products_spec.rb
+    - spec/requests/inventory/adjustments_spec.rb
+    - spec/requests/suppliers_spec.rb
 
 Rails/HasAndBelongsToMany:
   Exclude:
@@ -67,6 +69,7 @@ Metrics/PerceivedComplexity:
 Metrics/BlockLength:
   Max: 100
   Exclude:
+    - spec/requests/catalogue/suppliers_spec.rb
 
 Rails/TransactionExitStatement:
   Exclude:

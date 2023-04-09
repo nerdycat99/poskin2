@@ -2,7 +2,7 @@
 
 class Catalogue::ProductAttributesController < ApplicationController
   before_action :authenticate_user!
-  before_action :attribute_types, only: %i[new create]
+  before_action :attribute_types, :supplier_id, :product_id, only: %i[new create]
 
   def new
     @product_attribute = ProductAttribute.new
@@ -22,11 +22,11 @@ class Catalogue::ProductAttributesController < ApplicationController
   end
 
   def supplier_id
-    params['supplier_id']
+    @supplier_id ||= params['supplier_id']
   end
 
   def product_id
-    params['product_id']
+    @product_id ||= params['product_id']
   end
 
   def product_attribute_params

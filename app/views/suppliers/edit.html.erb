@@ -20,9 +20,7 @@
     <%= f.label "Notes" %>
     <%= f.text_field :notes %>
     <br />
-    <%= f.label "Applicable GST Rate" %>
-    <%= f.collection_select :tax_rate_id, TaxRate.order(:name),:id,:name, include_blank: true %>
-    <%= f.hidden_field :address_id, :value =>1 %>
+    <%= f.input :sales_tax_registered, as: :select, collection: ['Yes', 'No'], required: true, include_blank: false, label: 'Registered for Sales Tax?', selected: @existing_supplier.sales_tax_registered %>
     <br />
     <br />
     <row>

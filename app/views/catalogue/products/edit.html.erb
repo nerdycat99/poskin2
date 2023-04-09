@@ -1,0 +1,37 @@
+<div class="p-12 mx-auto text-gray-800 max-w-7xl">
+  <h2>Edit product <%= @existing_product.title.titleize %></h2>
+  <div data-controller="hello">
+    <% if @existing_product.errors.any? %>
+      <% @existing_product.errors.full_messages.each do |message|%>
+         <p class="text-red-700 text-base"><%= message %> </p>
+      <%end%>
+    <%end%>
+    <%= simple_form_for @existing_product, builder: TailwindFormBuilder, class: "mt-6", url: catalogue_supplier_product_path do |f| %>
+      <%= f.label "Product Title" %>
+      <%= f.text_field :title %>
+      <br />
+      <%= f.label "Product Description" %>
+      <%= f.text_field :description, placeholder: 'Description of my product' %>
+      <br />
+      <%= f.label "Notes" %>
+      <%= f.text_field :notes, placeholder: 'anything you like in here' %>
+      <br />
+      <%= f.label "SKU Code" %>
+      <%= f.text_field :sku_code, value: @existing_product.sku_code %>
+      <br />
+      <%= f.input :publish, as: :select, collection: ['Yes', 'No'], required: true, include_blank: false, label: 'Publish this Product?', selected: @existing_product.display_published %>
+      <br />
+      <%= f.label "Cost price" %>
+      <%= f.text_field :cost_price, placeholder: '100.99', value: @existing_product.display_cost_price %>
+      <%= f.label "Markup" %>
+      <%= f.text_field :markup, placeholder: '50%', value: @existing_product.display_markup %>
+      <br />
+      <%= f.label "Accounting Code" %>
+      <%= f.collection_select :accounting_code_id, AccountingCode.order(:name),:id,:name, include_blank: true %>
+      <br />
+      <br />
+      <%= f.submit_button "Save Changes" %>
+      <%= link_to "Cancel", catalogue_supplier_path(@existing_product.supplier.id), class: "btn btn-outline-secondary" %>
+    <% end %>
+  </div>
+</div>

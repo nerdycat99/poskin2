@@ -1,0 +1,58 @@
+<div class="p-12 mx-auto text-gray-800 max-w-7xl">
+  <h2>New Sale - Step 1 of 4</h2>
+  <h5>Add Items to Order <%= @order.id %></h5>
+  <div data-controller="hello">
+    <% if @item.errors.any? %>
+      <% @item.errors.full_messages.each do |message|%>
+         <p class="text-red-700 text-base"><%= message %> </p>
+      <%end%>
+    <%end%>
+    <% if @order.items.any? %>
+      <br />
+      <table style="width:100%">
+        <tr>
+          <th>Item</th>
+          <th>Quantity</th>
+          <th>Price per Item</th>
+          <th>Total</th>
+          <th>Tax</th>
+          <th>Total (incl Tax)</th>
+        </tr>
+        <% @order.items.each do |item| %>
+          <tr>
+            <td><%= item.display_name%></td>
+            <td><%= item.quantity %></td>
+            <td><%= item.display_retail_amount_per_unit %></td>
+            <td><%= item.display_retail_amount %></td>
+            <td><%= item.display_retail_amount_tax %></td>
+            <td><%= item.display_total_retail_amount %></td>
+          </tr>
+        <% end %>
+      <tr>
+        <th>Total</th>
+        <th><%= @order.number_of_items %></th>
+        <th></th>
+        <th><%= @order.display_order_price_total %></th>
+        <th><%= @order.display_order_tax_total %></th>
+        <th><%= @order.display_order_price_total_including_tax %></th>
+      </tr>
+      </table>
+    <% end %>
+
+    <br />
+    <%= simple_form_for @item, builder: TailwindFormBuilder, class: "mt-6", url: order_items_path do |f| %>
+      <%= f.label "Item SKU Code" %>
+      <%= f.text_field :variant_id, placeholder: '971507' %>
+      <br />
+      <br />
+      <%= f.label "Quantity" %>
+      <%= f.text_field :quantity, placeholder: '1' %>
+      <br />
+      <br />
+      <%= f.submit_button "Add Item to Order" %>
+      <%= link_to "Continue", edit_order_path(@order.id), class: "btn btn-primary" %>
+      <%= link_to "Skip Ahead / Manual Receipt", order_path(@order.id), class: "btn btn-warning" %>
+      <%= link_to "Cancel", sales_path, class: "btn btn-outline-secondary" %>
+    <% end %>
+  </div>
+</div>

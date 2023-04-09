@@ -1,0 +1,34 @@
+<div class="p-12 mx-auto text-gray-800 max-w-7xl">
+  <h2>Edit Variant for Product: <%= @existing_variant.product.title %></h2>
+  <div data-controller="hello">
+    <% if @existing_variant.errors.any? %>
+      <% @existing_variant.errors.full_messages.each do |message|%>
+         <p class="text-red-700 text-base"><%= message %> </p>
+      <%end%>
+    <%end%>
+    <%= simple_form_for @existing_variant, builder: TailwindFormBuilder, class: "mt-6", url: catalogue_supplier_product_variant_path do |f| %>
+      <%= f.hidden_field :quantity, value: 0 %>
+      <br />
+
+      <% index = 0 %>
+      <h5><%= f.label "Please select applicable attributes for this variant" %></h5>
+      <%= f.simple_fields_for :product_attributes_variants do |attribute_fields| %>
+        <%= attribute_fields.label @attribute_types[index] %>
+        <%= attribute_fields.collection_select :product_attribute_id, ProductAttribute.atributes_for(@attribute_types[index]).order(:value),:id, :value, include_blank: false %>
+        <% index += 1 %>
+        <br />
+      <% end %>
+      <br />
+        <%= link_to '<button type="button" class="btn btn-outline-primary">Add Attribute Values</button>'.html_safe, new_catalogue_supplier_product_product_attribute_path(@product.supplier.id, @product) %>
+        <%= link_to '<button type="button" class="btn btn-outline-secondary">New Attribute Type</button>'.html_safe, new_catalogue_supplier_product_product_attribute_type_path(@product.supplier.id, @product) %>
+        <%= link_to '<button type="button" class="btn btn-outline-danger">Remove Attribute Type</button>'.html_safe, catalogue_supplier_product_product_attribute_types_path(@product.supplier.id, @product) %>
+      <br />
+      <%= f.label "SKU Code" %>
+      <%= f.text_field :sku_code, value: @existing_variant.sku_code %>
+      <br />
+      <br />
+      <%= f.submit_button "Save Changes" %>
+      <%= link_to "Cancel", catalogue_supplier_path(@product.supplier.id), class: "btn btn-outline-secondary" %>
+    <% end %>
+  </div>
+</div>
