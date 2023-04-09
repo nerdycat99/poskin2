@@ -9,7 +9,7 @@
           <% collapse_target = "#collapse#{product.sku_code}" %>
           <% collapse_id = "collapse#{product.sku_code}" %>
           <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target=<%= collapse_target %> aria-expanded="false" aria-controls=<%= collapse_id %>>
-            <h6><%= product.title %></h6>
+            <h6><b>PRODUCT TITLE: <%= product.title %></b></h6>
           </button>
         </h2>
         <div id=<%= collapse_id %> class="accordion-collapse" data-bs-parent="#accordionExample">
@@ -43,8 +43,8 @@
                   <td><%= product.stock_count %></td>
                   <td><%= product.publish %></td>
                   <td colspan="3">
-                    <%= link_to "Product Details", catalogue_supplier_product_path(@supplier.id, product.id), class: "btn btn-primary" %>
-                    <%= link_to "Add Variants", new_catalogue_supplier_product_variant_path(@supplier.id, product.id), class: "btn btn-primary" %>
+                    <%= link_to "View Product", catalogue_supplier_product_path(@supplier.id, product.id), class: "btn btn-primary" %>
+                    <%= link_to "Add Variant", new_catalogue_supplier_product_variant_path(@supplier.id, product.id), class: "btn btn-primary" %>
                     <%= link_to "Edit Product", edit_catalogue_supplier_product_path(@supplier.id, product.id), class: "btn btn-secondary" %>
                     <%= link_to '<button type="button" class="btn btn-danger">Remove Product</button>'.html_safe, catalogue_supplier_product_path(@supplier.id, product.id), data: {turbo_method: :delete, turbo_confirm: 'Are you sure you want to try and delete this Product?'} %>
                   </td>
@@ -58,8 +58,13 @@
                       <td><%= variant.display_cost_price || product.display_cost_price %></td>
 
                       <% if @supplier.registered_for_sales_tax? %>
-                        <td><%= product.display_cost_price_tax_amount %></td>
-                        <td><%= product.display_total_cost_price %></td>
+                        <% if variant.cost_price.present? %>
+                          <td><%= variant.display_cost_price_tax_amount %></td>
+                          <td><%= variant.display_total_cost_price %></td>
+                        <% else %>
+                          <td><%= product.display_cost_price_tax_amount %></td>
+                          <td><%= product.display_total_cost_price %></td>
+                        <% end %>
                       <% end %>
 
                       <td><%= variant.stock_count %></td>
