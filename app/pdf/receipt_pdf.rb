@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ReferralPdf < BaseReceiptPdf
+class ReceiptPdf < BaseReceiptPdf
   include ApplicationHelper
 
   LARGE_TEXT_COLOUR = '000000'
@@ -11,8 +11,9 @@ class ReferralPdf < BaseReceiptPdf
   CELL_PADDING = [2, 4.5, 4.5, 5].freeze
   CELL_PADDING_PATIENT = [0, 5, 5, 0].freeze
 
-  def initialize(content, date)
-    @content = content
+  def initialize(receipt)
+    @receipt = receipt
+    date = DateTime.now
     @date = date_formatter(date, '%a %d/%m/%Y %H:%M:%S')
     # @date = date_formatter(date, '%A %e %B %Y')
     super()
@@ -23,10 +24,14 @@ class ReferralPdf < BaseReceiptPdf
   end
 
   def content
-    move_down 10
+    move_down 60
     company_info
-    move_down 3
+    move_down 80
     transaction_timestamp
+    move_down 10
+    transaction_reference
+    move_down 30
+    transaction_details
     # notification_text
     # move_down 10
     # referral_box
@@ -37,19 +42,99 @@ class ReferralPdf < BaseReceiptPdf
   end
 
   def company_info
-    indent(22, 0) do
-      text 'ABN 123 456 789', size: 7, style: :light, color: BOX_TEXT_COLOUR
+    indent(200, 0) do
+      text 'Queen Victoria Building Level 2', size: 14, style: :light, color: BOX_TEXT_COLOUR
     end
-    move_down 3
-    indent(16, 0) do
-      text 'www.australian-glass.com.au', size: 5, style: :light, color: BOX_TEXT_COLOUR
+    move_down 5
+    indent(235, 0) do
+      text '455 George Street', size: 14, style: :light, color: BOX_TEXT_COLOUR
+    end
+    move_down 5
+    indent(232, 0) do
+      text 'Sydney, 2000, NSW', size: 14, style: :light, color: BOX_TEXT_COLOUR
+    end
+    move_down 20
+    indent(237, 0) do
+      text 'ABN 97 346 099 695', size: 12, style: :normal, color: BOX_TEXT_COLOUR
+    end
+    move_down 5
+    indent(200, 0) do
+      text 'www.australian-glass.com.au', size: 14, style: :bold, color: BOX_TEXT_COLOUR
     end
   end
 
   def transaction_timestamp
-    indent(10, 0) do
-      text @date, size: 7, style: :light, color: BOX_TEXT_COLOUR
+    indent(230, 0) do
+      text @date, size: 12, style: :light, color: BOX_TEXT_COLOUR
     end
+  end
+
+  def transaction_reference
+    indent(230, 0) do
+      text "Order Reference: #{@receipt.order_reference_display}", size: 12, style: :light, color: BOX_TEXT_COLOUR
+      # text "Order Reference: #{receipt.order_reference_display}", size: 12, style: :normal, color: BOX_TEXT_COLOUR
+    end
+  end
+  def transaction_details
+    puts "********** RECEIPT TIME"
+    puts @receipt.inspect
+
+    unless @receipt.item_one_name.blank?
+      indent(90, 0) do
+        text @receipt.item_one_name, size: 12, style: :normal, color: BOX_TEXT_COLOUR
+        move_up 12
+        text @receipt.item_one_price_minus_tax, size: 12, style: :normal, color: BOX_TEXT_COLOUR, align: :right
+      end
+    end
+
+    unless @receipt.item_two_name.blank?
+      move_down 10
+      indent(90, 0) do
+        text @receipt.item_two_name, size: 12, style: :normal, color: BOX_TEXT_COLOUR
+        move_up 12
+        text @receipt.item_two_price_minus_tax, size: 12, style: :normal, color: BOX_TEXT_COLOUR, align: :right
+      end
+    end
+
+    unless @receipt.item_three_name.blank?
+      move_down 10
+      indent(90, 0) do
+        text @receipt.item_three_name, size: 12, style: :normal, color: BOX_TEXT_COLOUR
+        move_up 12
+        text @receipt.item_three_price_minus_tax, size: 12, style: :normal, color: BOX_TEXT_COLOUR, align: :right
+      end
+    end
+
+    unless @receipt.item_four_name.blank?
+      move_down 10
+      indent(90, 0) do
+        text @receipt.item_four_name, size: 12, style: :normal, color: BOX_TEXT_COLOUR
+        move_up 12
+        text @receipt.item_four_price_minus_tax, size: 12, style: :normal, color: BOX_TEXT_COLOUR, align: :right
+      end
+    end
+
+
+    move_down 30
+    indent(90, 0) do
+      text 'Total Amount', size: 12, style: :bold, color: BOX_TEXT_COLOUR
+      move_up 12
+      text @receipt.display_total_amount, size: 12, style: :bold, color: BOX_TEXT_COLOUR, align: :right
+    end
+    move_down 10
+    indent(90, 0) do
+      text 'Sales Tax', size: 12, style: :bold, color: BOX_TEXT_COLOUR
+      move_up 12
+      text @receipt.display_tax_amount, size: 12, style: :bold, color: BOX_TEXT_COLOUR, align: :right
+    end
+
+    move_down 10
+    indent(90, 0) do
+      text 'Total Amount (including Tax)', size: 12, style: :bold, color: BOX_TEXT_COLOUR
+      move_up 12
+      text @receipt.display_total_amount_including_tax, size: 12, style: :bold, color: BOX_TEXT_COLOUR, align: :right
+    end
+
   end
 
   def notification_text
@@ -142,11 +227,11 @@ class ReferralPdf < BaseReceiptPdf
     #   fill_and_stroke_rounded_rectangle [bounds.left, bounds.top], bounds.width, 20, 0
     # end
 
-    logo_width = 70
+    logo_width = 300
 
     move_down 0
     # move_down 30
-    indent(14, 0) do
+    indent(145, 0) do
       # indent(30, 0) do
       header_logo(width: logo_width, image: 'ag_logo')
       move_cursor_to bounds.height

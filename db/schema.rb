@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_03_123837) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_08_021708) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -133,6 +133,26 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_03_123837) do
     t.index ["supplier_id"], name: "index_products_on_supplier_id"
   end
 
+  create_table "receipts", force: :cascade do |t|
+    t.bigint "order_id", null: false
+    t.string "email_address"
+    t.string "item_one_name"
+    t.string "item_one_price_minus_tax"
+    t.string "item_two_name"
+    t.string "item_two_price_minus_tax"
+    t.string "item_three_name"
+    t.string "item_three_price_minus_tax"
+    t.string "item_four_name"
+    t.string "item_four_price_minus_tax"
+    t.string "item_five_name"
+    t.string "item_five_price_minus_tax"
+    t.string "item_six_name"
+    t.string "item_six_price_minus_tax"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["order_id"], name: "index_receipts_on_order_id"
+  end
+
   create_table "stock_adjustments", force: :cascade do |t|
     t.bigint "variant_id", null: false
     t.integer "quantity"
@@ -204,6 +224,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_03_123837) do
   add_foreign_key "order_items", "orders"
   add_foreign_key "products", "accounting_codes"
   add_foreign_key "products", "suppliers"
+  add_foreign_key "receipts", "orders"
   add_foreign_key "stock_adjustments", "variants"
   add_foreign_key "suppliers", "addresses"
   add_foreign_key "variants", "products"
