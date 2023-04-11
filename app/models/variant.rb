@@ -11,9 +11,9 @@ class Variant < ApplicationRecord
   accepts_nested_attributes_for :product_attributes_variants
 
   def self.search(target)
-    return unless target.present?
+    return if target.blank?
 
-    Variant.find_by_sku_code(target)
+    Variant.find_by(sku_code: target)
   end
 
   # when deleting Variants remove .product_attributes_variants (these contain a variant_id and a product_attribute_id
@@ -30,12 +30,24 @@ class Variant < ApplicationRecord
     "#{product.title}, #{display_characteristics}"
   end
 
+  def invoice_display_details
+    "#{product.title.titleize}, #{display_characteristics_for_invoice}"
+  end
+
   def display_characteristics
     variant_characteristics.compact_blank.join(', ')
   end
 
+  def display_characteristics_for_invoice
+    variant_characteristics_for_invoice.compact_blank.join(', ')
+  end
+
   def variant_characteristics
     tagged_attributes.map { |attr| "#{attr.name.titleize}: #{attr.value.titleize}" if attr.value.present? }
+  end
+
+  def variant_characteristics_for_invoice
+    tagged_attributes.map { |attr| attr.value.titleize.to_s if attr.value.present? }
   end
 
   def tagged_attributes
@@ -67,31 +79,17 @@ class Variant < ApplicationRecord
   end
 
   # TO DO: if the variant has it's own cost price then it should have it's own retail price??
-  def display_retail_price
-    product.display_retail_price
-  end
+  delegate :display_retail_price, to: :product
 
-  def display_retail_price_tax_amount
-    product.display_retail_price_tax_amount
-  end
+  delegate :display_retail_price_tax_amount, to: :product
 
-  def display_total_retail_price_including_tax
-    product.display_total_retail_price_including_tax
-  end
+  delegate :display_total_retail_price_including_tax, to: :product
 
-  def retail_price_in_cents_as_float
-    product.retail_price_in_cents_as_float
-  end
+  delegate :retail_price_in_cents_as_float, to: :product
 
-  def retail_price_tax_amount_in_cents_as_float
-    product.retail_price_tax_amount_in_cents_as_float
-  end
+  delegate :retail_price_tax_amount_in_cents_as_float, to: :product
 
-  def total_retail_price_in_cents_as_float
-    product.total_retail_price_in_cents_as_float
-  end
-
-
+  delegate :total_retail_price_in_cents_as_float, to: :product
 
   def attribute_types_set
     tagged_attributes.map(&:name)
@@ -118,7 +116,7 @@ class Variant < ApplicationRecord
   end
 
   def sold(quantity:, user_id:)
-    adjustment = stock_adjustments.new(quantity: quantity, adjustment_type: 'purchased', user_id: user_id)
+    adjustment = stock_adjustments.new(quantity:, adjustment_type: 'purchased', user_id:)
     adjustment.save
   end
 

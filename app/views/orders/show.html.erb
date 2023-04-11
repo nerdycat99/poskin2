@@ -2,9 +2,14 @@
   <h2>New Sale - Step 4 of 4</h2>
   <h5>Finalise the Order: <%= @receipt.order.id %> and Generate Receipt</h5>
   <br />
+  <!-- if we have not yet saved the receipt we show the Generate Receipt button -->
+  <!-- if this is for a true order with order items then we don't show the manual overwrite controls -->
+  <!-- if we have saved the receipt we come back here and then show the print button -->
   <% if @receipt.order.receipts.first.id.blank? %>
     <%= simple_form_for @receipt, builder: TailwindFormBuilder, class: "mt-6", url: order_receipts_path(@receipt.order.id) do |f| %>
-      <% unless @receipt.order.state == 'paid' %>
+      <% if @receipt.order.state == 'paid' %>
+        <%= f.hidden_field :item_one_name, value: nil %>
+      <% else %>
         <%= f.label "Item one description and price minus tax" %>
         <%= f.text_field :item_one_name, placeholder: 'Large Green Vase' %>
         <%= f.text_field :item_one_price_minus_tax, placeholder: '$290.99' %>
@@ -26,10 +31,10 @@
         <br />
       <% end %>
       <%= f.submit_button "Generate Receipt" %>
-      <%= link_to "Done", sales_path, class: "btn btn-outline-secondary" %>
+      <%= link_to "Done", sales_path, class: "btn btn-secondary" %>
     <% end %>
   <% else %>
-    <%= link_to "Print Receipt", order_receipt_path(50, 117), target: "_blank", class: "btn btn-outline-secondary" %>
-    <%= link_to "Done", sales_path, class: "btn btn-outline-secondary" %>
+    <%= link_to "Print Receipt", order_receipt_path(@receipt.order, @receipt.order.receipts.first), target: "_blank", class: "btn btn-primary" %>
+    <%= link_to "Done", sales_path, class: "btn btn-secondary" %>
   <% end %>
 </div>
