@@ -24,9 +24,9 @@ RSpec.describe 'Inventory::Adjustments', type: :request do
   let(:variant) { product.variants.create }
   let(:quantity) { 2 }
   let(:adjustment_type) { 'received' }
-  let(:user_id) { 1 }
+  let(:user) { User.create!(email: 'person@place.com', password: 'password') }
   let(:create_stock_adjustment) { variant.stock_adjustments.create(quantity:, adjustment_type:, user_id:) }
-  let(:good_params) { { stock_adjustment: { adjustment_type:, quantity:, user_id: } } }
+  let(:good_params) { { stock_adjustment: { adjustment_type:, quantity:, user_id: user.id } } }
 
   describe 'POST /inventory/suppliers/:supplier_id/products/:product_id/variants/:variant_id/adjustments' do
     context 'without successful authentication' do

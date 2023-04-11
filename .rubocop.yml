@@ -45,6 +45,7 @@ Rails/HasManyOrHasOneDependent:
     - app/models/supplier.rb
 Metrics/AbcSize:
   Exclude:
+    - app/pdf/receipt_pdf
 
 
 Metrics/CyclomaticComplexity:

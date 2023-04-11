@@ -45,7 +45,7 @@ class Receipt < ApplicationRecord
   end
 
   def total_amount_as_float
-    (amount_one || 0) + (amount_two || 0) + (amount_three || 0) + (amount_four || 0) || 0
+    ((amount_one || 0) + (amount_two || 0) + (amount_three || 0) + (amount_four || 0)) || 0
   end
 
   def display_total_amount

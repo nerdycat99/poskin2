@@ -1,6 +1,6 @@
 <div class="p-12 mx-auto text-gray-800 max-w-7xl">
   <h2>New Sale - Step 3 of 4</h2>
-  <h5>Confirm Payment for Order <%= @existing_order.id %></h5>
+  <h5>Select Payment Method and Confirm Order: <%= @existing_order.id %></h5>
   <div data-controller="hello">
     <% if @existing_order.errors.any? %>
       <% @existing_order.errors.full_messages.each do |message|%>
@@ -38,12 +38,11 @@
     <br />
     <%= simple_form_for @existing_order, builder: TailwindFormBuilder, class: "mt-6", url: order_payments_path, method: :post do |f| %>
       <%= f.hidden_field :state, :value =>'paid' %>
-      <%= f.label "Payment Method" %>
-      <%= f.collection_select :payment_method, @payment_methods, :to_s, :to_s, include_blank: false %>
+      <h5><%= f.label "Select Payment Method" %></h5>
+      <h5><%= f.collection_select :payment_method, @payment_methods, :display_name, :name, include_blank: true %></h5>
       <br />
-      <br />
-      <%= f.label "Payment Amount" %>
-      <%= f.text_field :payment_amount, value: @existing_order.display_order_price_total_including_tax %>
+      <h6><%= f.label "Calculated Total Payment Amount" %></h6>
+      <h6><%= f.text_field :payment_amount, value: @existing_order.display_order_price_total_including_tax, readonly: true %></h6>
       <br />
       <br />
       <%= f.label "Notes" %>

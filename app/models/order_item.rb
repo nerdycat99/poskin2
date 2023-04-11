@@ -7,17 +7,20 @@ class OrderItem < ApplicationRecord
 
   validates :quantity, presence: true
 
-  scope :persisted, -> { where "id IS NOT NULL" }
+  scope :persisted, -> { where.not(id: nil) }
 
   def variant
-    # TO DO: this should be saving id of variant not sku!!!!
     @variant ||= Variant.includes(:product).find_by(id: variant_id)
   end
 
   # TO DO: should we associate the adjustment to the item or handle this thru variant and
   # remove the stock_adjustment from order_item???
   def adjust_stock(user_id)
-    variant.sold(quantity: quantity, user_id: user_id)
+    variant.sold(quantity:, user_id:)
+  end
+
+  def invoice_display_details
+    "#{variant.invoice_display_details} - Quanity: #{quantity}"
   end
 
   def display_name
