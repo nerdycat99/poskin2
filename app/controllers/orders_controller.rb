@@ -3,8 +3,14 @@
 class OrdersController < ApplicationController
   before_action :existing_order, only: %i[edit update show]
 
-  def new
+  def show
+    order = Order.find_by(id: params['id'])
+    @receipt = order.receipts.new # see if we can prevent this from happening if a receipt already exists?
   end
+
+  def new; end
+
+  def edit; end
 
   def create
     @order = Order.new(state: 'raised')
@@ -14,9 +20,6 @@ class OrdersController < ApplicationController
       flash[:notice] = 'There was a problem registering a new order, please try again'
       redirect_to sales_path
     end
-  end
-
-  def edit
   end
 
   def update
@@ -30,11 +33,6 @@ class OrdersController < ApplicationController
     redirect_to new_order_payment_path(@existing_order)
   end
 
-  def show
-    order = Order.find_by(id: params['id'])
-    @receipt = order.receipts.new #see if we can prevent this from happening if a receipt already exists?
-  end
-
   private
 
   def email_address
@@ -42,11 +40,12 @@ class OrdersController < ApplicationController
   end
 
   def existing_customer
-    Customer.find_by(email_address: email_address)
+    Customer.find_by(email_address:)
   end
 
   def create_new_customer_and_update_order
-    customer = Customer.new(first_name: order_params['first_name'], last_name: order_params['last_name'], email_address: order_params['email_address'], phone_number: order_params['phone_number'])
+    customer = Customer.new(first_name: order_params['first_name'], last_name: order_params['last_name'],
+                            email_address: order_params['email_address'], phone_number: order_params['phone_number'])
     @existing_order.update(customer_id: customer.id) if customer.save
   end
 
@@ -54,9 +53,9 @@ class OrdersController < ApplicationController
     @existing_order ||= Order.includes(:order_items).find_by(id: params['id'])
   end
 
-
   def order_params
-    params.require(:order).permit(:customer_id, :state, :payment_method, :payment_other_method, :payment_amount, :adjustments, :delivery, :notes, :first_name, :last_name, :email_address, :phone_number)
+    params.require(:order).permit(:customer_id, :state, :payment_method, :payment_other_method, :payment_amount, :adjustments, :delivery, :notes,
+                                  :first_name, :last_name, :email_address, :phone_number)
     # params.require(:order).permit(:customer_id, :state, :payment_method, :payment_other_method, :payment_amount, :adjustments, :delivery, :notes, :first_name, :last_name, :email_address, :phone_number, customer_attributes: [:first_name, :last_name, :email_address, :phone_number])
   end
 end

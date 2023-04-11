@@ -1,11 +1,12 @@
 <div class="p-10">
   <h2>Showing Products for <%= @supplier.name %></h2>
+
   <table class="min-w-full table-auto">
     <thead>
       <tr>
         <th>Product Name / sku</th>
         <th>Description and Variants</th>
-        <th>Stock Level</th>
+        <th>Current Stock Level</th>
         <th colspan="3"></th>
       </tr>
     </thead>
@@ -19,7 +20,7 @@
           <td colspan="3">
           </td>
         </tr>
-        <tr><td colspan="7">Notes: <%= product.notes %></td></tr>
+        <tr><td colspan="6">Notes: <%= product.notes %></td></tr>
         <% product.variants.each do |variant| %>
           <tr>
             <td><%= variant.sku_code %></td>

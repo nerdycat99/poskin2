@@ -17,6 +17,7 @@
           <th>Total</th>
           <th>Tax</th>
           <th>Total (incl Tax)</th>
+          <th></th>
         </tr>
         <% @order.items.each do |item| %>
           <tr>
@@ -26,6 +27,7 @@
             <td><%= item.display_retail_amount %></td>
             <td><%= item.display_retail_amount_tax %></td>
             <td><%= item.display_total_retail_amount %></td>
+            <td><%= link_to "Remove", order_item_path(@order.id, item.id), class: "btn btn-danger", data: {turbo_method: :delete } %></td>
           </tr>
         <% end %>
       <tr>
@@ -50,8 +52,10 @@
       <br />
       <br />
       <%= f.submit_button "Add Item to Order" %>
-      <%= link_to "Continue", edit_order_path(@order.id), class: "btn btn-primary" %>
-      <%= link_to "Skip Ahead / Manual Receipt", order_path(@order.id), class: "btn btn-warning" %>
+      <%= link_to "Continue", edit_order_path(@order.id), class: "btn btn-secondary" %>
+      <% unless @order.items.any? %>
+        <%= link_to "Skip Ahead / Manual Receipt", order_path(@order.id), class: "btn btn-warning" %>
+      <% end %>
       <%= link_to "Cancel", sales_path, class: "btn btn-outline-secondary" %>
     <% end %>
   </div>

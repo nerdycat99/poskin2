@@ -4,14 +4,20 @@ class Order < ApplicationRecord
   include ActionView::Helpers::NumberHelper
 
   has_many :order_items, dependent: :destroy
-  has_many :receipts, dependent: :destroy #added temporarily so orders can be raised ad hoc
+  has_many :receipts, dependent: :destroy # added temporarily so orders can be raised ad hoc
 
   # how to have this but make it optional
   # belongs_to :customer
   # accepts_nested_attributes_for :customer
 
   enum state: { raised: 0, paid: 1, failed: 2, refunded: 3, cancelled: 4 }
-  # enum payment_method: { credit_card: 0, debit_card: 1, other: 2 } # this needs to allow nil
+  enum payment_method: { credit_card: 0, debit_card: 1, other: 2 } # this needs to allow nil
+
+  def self.display_payment_methods
+    display_payment_methods = []
+    Order.payment_methods.keys.map { |method| display_payment_methods << OpenStruct.new(name: method.humanize, display_name: method) }
+    display_payment_methods
+  end
 
   def customer
     @customer ||= Customer.find_by(id: customer_id)
@@ -19,6 +25,10 @@ class Order < ApplicationRecord
 
   def items
     @items ||= order_items.persisted
+  end
+
+  def paid?
+    state == 'paid'
   end
 
   def number_of_items
@@ -38,7 +48,7 @@ class Order < ApplicationRecord
   end
 
   def verification_check?
-    order_price_total_including_tax_as_float == ( order_price_total_as_float + order_tax_total_as_float )
+    order_price_total_including_tax_as_float == (order_price_total_as_float + order_tax_total_as_float)
   end
 
   def display_order_price_total

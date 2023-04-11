@@ -22,9 +22,9 @@ class Product < ApplicationRecord
   }
 
   def self.search(target)
-    return unless target.present?
+    return if target.blank?
 
-    Product.without_variants.includes(:variants).find_by_sku_code(target) || Variant.search(target)
+    Product.without_variants.includes(:variants).find_by(sku_code: target) || Variant.search(target)
   end
 
   delegate :registered_for_sales_tax?, to: :supplier, prefix: true
