@@ -13,7 +13,7 @@
     <tbody>
       <% @adjustments.order(created_at: :desc).each do |action| %>
         <tr>
-          <td><%= action.created_at %></td>
+          <td><%= action.display_date %></td>
           <td><%= action.adjustment_type.titleize %></td>
           <td><%= action.quantity_by_type %></td>
           <td><%= action.user_reference %></td>
