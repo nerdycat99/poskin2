@@ -44,14 +44,14 @@ class OrderItem < ApplicationRecord
   end
 
   def total_retail_price_in_cents_as_float
-    variant.total_retail_price_in_cents_as_float * quantity if quantity.present?
+    variant.total_retail_price_in_cents_as_float * quantity if variant.present? && quantity.present?
   end
 
   def retail_price_tax_amount_in_cents_as_float
-    variant.retail_price_tax_amount_in_cents_as_float * quantity if quantity.present?
+    variant.retail_price_tax_amount_in_cents_as_float * quantity if variant.present? && quantity.present?
   end
 
   def retail_price_in_cents_as_float
-    variant.retail_price_in_cents_as_float * quantity if quantity.present?
+    variant.retail_price_in_cents_as_float * quantity if variant.present? && quantity.present?
   end
 end

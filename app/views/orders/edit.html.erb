@@ -28,7 +28,7 @@
       <br />
       <%= f.submit_button "Add and Continue" %>
       <%= f.submit_button "Skip and Continue" %>
-      <%= link_to "Cancel", sales_path, class: "btn btn-outline-secondary" %>
+      <%= link_to "Cancel", order_path(@existing_order.id), class: "btn btn-outline-secondary", data: {turbo_method: :delete } %>
     <% end %>
   </div>
 </div>

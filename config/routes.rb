@@ -13,8 +13,11 @@ Rails.application.routes.draw do
   get "home/index"
   root to: "home#index"
 
-  resources :sales, only: [:index]
-  resources :orders, only: [:create, :edit, :update, :show] do
+  resources :sales, only: [:index, :show] do
+    get 'all', to: 'sales#all', on: :collection
+  end
+
+  resources :orders, only: [:create, :edit, :update, :show, :destroy] do
     resources :receipts, only: [:create, :show]#, defaults: { format: :pdf }
     resources :payments, only: [:new, :create]
     resources :items, only: [:new, :create, :destroy]
