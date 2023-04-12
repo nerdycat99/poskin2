@@ -56,7 +56,7 @@
       <% unless @order.items.any? %>
         <%= link_to "Skip Ahead / Manual Receipt", order_path(@order.id), class: "btn btn-warning" %>
       <% end %>
-      <%= link_to "Cancel", sales_path, class: "btn btn-outline-secondary" %>
+      <%= link_to "Cancel", order_path(@order.id), class: "btn btn-outline-secondary", data: {turbo_method: :delete } %>
     <% end %>
   </div>
 </div>

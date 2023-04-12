@@ -1,0 +1,97 @@
+<div class="p-12 mx-auto text-gray-800 max-w-7xl">
+  <h2>Sales Details for Order: <%= @order.id %></h2>
+  <div data-controller="hello">
+    <table style="width:50%">
+      <tr>
+        <th>State:</th>
+        <td><%= @order.state&.upcase %></td>
+      </tr>
+      <tr>
+        <th>Payment Method:</th>
+        <td><%= @order.payment_method&.titleize %></td>
+      </tr>
+      <tr>
+        <th>Date:</th>
+        <td><%= @order.updated_at %></td>
+      </tr>
+      <tr>
+        <th>Customer Details:</th>
+        <td><%= @order.customer_details %></td>
+      </tr>
+    </table>
+    <br />
+    <table style="width:100%">
+      <tr>
+        <th>Items</th>
+        <th>Price per Item (excl. Tax)</th>
+        <th>Total (excl. Tax)</th>
+        <th>Tax Amount</th>
+        <th>Payment Amount (incl. Tax)</th>
+        <th></th>
+      </tr>
+      <% @order.order_items.each do |item| %>
+        <tr>
+          <td><%= item.invoice_display_details %></td>
+          <td><%= item.display_retail_amount_per_unit %></td>
+          <td><%= item.display_retail_amount %></td>
+          <td><%= item.display_retail_amount_tax %></td>
+          <td><%= item.display_total_retail_amount %></td>
+        </tr>
+      <% end %>
+      <% if @order.manual_order? %>
+        <% if @order.receipts.first.item_one_name.present? %>
+          <tr>
+            <td><%= @order.receipts.first.item_one_name %></td>
+            <td></td>
+            <td>$<%= @order.receipts.first.amount_one.to_f / 100 %></td>
+            <td></td>
+            <td></td>
+          </tr>
+        <% end %>
+        <% if @order.receipts.first.item_two_name.present? %>
+          <tr>
+            <td><%= @order.receipts.first.item_two_name %></td>
+            <td></td>
+            <td>$<%= @order.receipts.first.amount_two.to_f / 100 %></td>
+            <td></td>
+            <td></td>
+          </tr>
+        <% end %>
+        <% if @order.receipts.first.item_three_name.present? %>
+          <tr>
+            <td><%= @order.receipts.first.item_three_name %></td>
+            <td></td>
+            <td>$<%= @order.receipts.first.amount_three.to_f / 100 %></td>
+            <td></td>
+            <td></td>
+          </tr>
+        <% end %>
+        <% if @order.receipts.first.item_four_name.present? %>
+           <tr>
+            <td><%= @order.receipts.first.item_four_name %></td>
+            <td></td>
+            <td>$<%= @order.receipts.first.amount_four.to_f / 100 %></td>
+            <td></td>
+            <td></td>
+          </tr>
+        <% end %>
+      <% end %>
+      <tr><td>&nbsp;</td></tr>
+      <tr>
+        <th>Order Total</th>
+        <th></th>
+        <% if @order.manual_order? %>
+          <th><%= @order.receipts.first.display_total_amount %></th>
+          <th><%= @order.receipts.first.display_tax_amount %></th>
+          <th><%= @order.receipts.first.display_total_amount_including_tax %></th>
+        <% else %>
+          <th><%= @order.display_order_price_total %></th>
+          <th><%= @order.display_order_tax_total %></th>
+          <th><%= @order.display_order_price_total_including_tax %></th>
+        <% end %>
+      </tr>
+    </table>
+    <br />
+      <%= link_to "Back", all_sales_path, class: "btn btn-primary" %>
+  </div>
+</div>

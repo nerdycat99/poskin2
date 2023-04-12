@@ -16,11 +16,12 @@ class ReceiptsController < ApplicationController
 
     return unless receipt.save
 
-    # generate pdf using either the order details or those passed in via the manual process
-    # pdf is stored in public from where it can be shown and printed in the show method
+    # generate pdf and update order status using either the order details or those passed in via the manual
+    # process pdf is stored in public from where it can be shown and printed in the show method
     pdf = if order.paid?
             ReceiptPdf.new(receipt:, order:)
           else
+            order.update(state: 'paid')
             ReceiptPdf.new(receipt:, order: nil)
           end
     pdf.render_file(Rails.public_path.join('receipt.pdf'))

@@ -49,15 +49,15 @@ class Receipt < ApplicationRecord
   end
 
   def display_total_amount
-    number_to_currency(format('%.2f', (total_amount_as_float.to_f / 100))) unless total_amount_as_float.nil?
+    number_to_currency(format('%.2f', (total_amount_as_float.to_f / 100))) if total_amount_as_float.present?
   end
 
   def display_tax_amount
-    number_to_currency(format('%.2f', (tax_amount.to_f / 100))) unless tax_amount.nil?
+    number_to_currency(format('%.2f', (tax_amount.to_f / 100))) if tax_amount.present?
   end
 
   def display_total_amount_including_tax
-    number_to_currency(format('%.2f', (total_amount_including_tax_as_float.to_f / 100))) unless total_amount_including_tax_as_float.nil?
+    number_to_currency(format('%.2f', (total_amount_including_tax_as_float.to_f / 100))) if total_amount_including_tax_as_float.present?
   end
 
   def tax_amount
