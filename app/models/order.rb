@@ -31,6 +31,18 @@ class Order < ApplicationRecord
     state == 'paid'
   end
 
+  def manual_order?
+    items.none?
+  end
+
+  def customer_details
+    if customer.present?
+      customer.email || "#{customer.first_name} #{customer.last_name}"
+    elsif first_name && last_name
+      email_address || "#{first_name} #{last_name}"
+    end
+  end
+
   def number_of_items
     items.map(&:quantity).compact.sum
   end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class OrdersController < ApplicationController
-  before_action :existing_order, only: %i[edit update show]
+  before_action :existing_order, only: %i[edit update show destroy]
 
   def show
     order = Order.find_by(id: params['id'])
@@ -31,6 +31,10 @@ class OrdersController < ApplicationController
       end
     end
     redirect_to new_order_payment_path(@existing_order)
+  end
+
+  def destroy
+    redirect_to sales_path if @existing_order.destroy
   end
 
   private
