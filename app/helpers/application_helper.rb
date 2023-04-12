@@ -27,6 +27,11 @@ module ApplicationHelper
   #   e
   # end
 
+  def convert_to_users_timezone(datetime)
+    zone = ActiveSupport::TimeZone.new('Australia/Sydney')
+    datetime.in_time_zone(zone)
+  end
+
   def date_formatter(date, format = '%Y-%m-%d')
     date.strftime(format)
   end

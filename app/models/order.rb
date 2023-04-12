@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Order < ApplicationRecord
+  include ApplicationHelper
   include ActionView::Helpers::NumberHelper
 
   has_many :order_items, dependent: :destroy
@@ -61,6 +62,12 @@ class Order < ApplicationRecord
 
   def verification_check?
     order_price_total_including_tax_as_float == (order_price_total_as_float + order_tax_total_as_float)
+  end
+
+  def display_date
+    convert_to_users_timezone(updated_at).to_fs(:long)
+    # updated_at.to_formatted_s(:long)
+    # date_formatter(updated_at, format = '%d-%m-%Y, %h:%m:%s')
   end
 
   def display_order_price_total
