@@ -66,8 +66,6 @@ class Order < ApplicationRecord
 
   def display_date
     convert_to_users_timezone(updated_at).to_fs(:long)
-    # updated_at.to_formatted_s(:long)
-    # date_formatter(updated_at, format = '%d-%m-%Y, %h:%m:%s')
   end
 
   def display_order_price_total
