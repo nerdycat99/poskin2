@@ -14,7 +14,7 @@
       </tr>
       <% @orders.each do |order| %>
         <tr>
-          <td><%= order.updated_at %></td>
+          <td><%= order.display_date %></td>
           <td><%= order.state&.upcase %></td>
           <% if order.manual_order? %>
             <td>YES</td>
