@@ -11,11 +11,9 @@ class ReceiptPdf < BaseReceiptPdf
   CELL_PADDING = [2, 4.5, 4.5, 5].freeze
   CELL_PADDING_PATIENT = [0, 5, 5, 0].freeze
 
-  def initialize(receipt:, order:)
+  def initialize(receipt)
     @receipt = receipt
-    @order = order
-    date = DateTime.now
-    @date = date_formatter(date, '%a %d/%m/%Y %H:%M:%S')
+    # @date = date_formatter(date, '%a %d/%m/%Y %H:%M:%S')
     # @date = date_formatter(date, '%A %e %B %Y')
     super()
   end
@@ -27,140 +25,117 @@ class ReceiptPdf < BaseReceiptPdf
   def content
     move_down 60
     company_info
-    move_down 80
-    transaction_timestamp
-    move_down 10
-    transaction_reference
-    move_down 30
-    transaction_details
+    move_down 3
+    # transaction_timestamp
+    # notification_text
+    # move_down 10
+    # referral_box
+    # move_down 18
+    # about_text
+    # move_down 24
+    # about_meth
   end
 
   def company_info
-    indent(200, 0) do
+    indent(210, 0) do
       text 'Queen Victoria Building Level 2', size: 14, style: :light, color: BOX_TEXT_COLOUR
     end
     move_down 5
-    indent(235, 0) do
+    indent(220, 0) do
       text '455 George Street', size: 14, style: :light, color: BOX_TEXT_COLOUR
     end
-    move_down 5
-    indent(232, 0) do
+    move_down 10
+    indent(230, 0) do
       text 'Sydney, 2000, NSW', size: 14, style: :light, color: BOX_TEXT_COLOUR
     end
     move_down 20
-    indent(237, 0) do
-      text 'ABN 97 346 099 695', size: 12, style: :normal, color: BOX_TEXT_COLOUR
-    end
-    move_down 5
     indent(200, 0) do
-      text 'www.australian-glass.com.au', size: 14, style: :bold, color: BOX_TEXT_COLOUR
+      text 'ABN 123 456 789', size: 12, style: :light, color: BOX_TEXT_COLOUR
+    end
+
+    move_down 3
+    indent(16, 0) do
+      text 'www.australian-glass.com.au', size: 12, style: :normal, color: BOX_TEXT_COLOUR
     end
   end
 
   def transaction_timestamp
-    indent(230, 0) do
-      text @date, size: 12, style: :light, color: BOX_TEXT_COLOUR
+    indent(10, 0) do
+      text @date, size: 7, style: :light, color: BOX_TEXT_COLOUR
     end
   end
 
-  def transaction_reference
-    indent(230, 0) do
-      text "Order Reference: #{@receipt.order_reference_display}", size: 12, style: :light, color: BOX_TEXT_COLOUR
+  def notification_text
+    # indent(39, 39) do
+    indent(0, o) do
+      text 'S-Check App Notification for GP', size: 18, style: :bold, color: TITLE_COLOUR
+      move_down 12
+      text 'This letter has been automatically generated and downloaded from the S-Check app.', size: 12, style: :normal, color: TEXT_COLOUR
     end
   end
 
-  def transaction_details
-    if @order.present?
-      transaction_details_for_order
-    else
-      transaction_details_for_receipt
+  def referral_box
+    number_of_lines = 0
+    @content.map { |c| number_of_lines += (c.length / 91) + 1 }
+
+    indent(39, 39) do
+      height_for_lines = 16 + 17 + 16 + (number_of_lines * 17) + 16
+      bounding_box([0, 570], width: 520, height: height_for_lines) do
+        indent(10, 10) do # left and right padding
+          pad_top(5) { text @referral_date, size: 12, style: :normal, color: BOX_TEXT_COLOUR }
+          move_down 16
+          @content.each do |content_block|
+            text content_block, size: 12, leading: 5, style: :normal, color: BOX_TEXT_COLOUR
+          end
+        end
+      end
+
+      stroke do
+        stroke_color BOX_COLOUR
+        rounded_rectangle [0, 570 + 16], 520 + 0, height_for_lines + 0, 6
+      end
     end
   end
 
-  def transaction_details_for_order
-    @order.order_items.each do |item|
-      indent(90, 0) do
-        text item.invoice_display_details, size: 12, style: :normal, color: BOX_TEXT_COLOUR
-        move_up 12
-        text item.display_retail_amount_per_unit, size: 12, style: :normal, color: BOX_TEXT_COLOUR, align: :right
-      end
-      move_down 10
-    end
-    move_down 20
-    indent(90, 0) do
-      text 'Total Amount', size: 12, style: :bold, color: BOX_TEXT_COLOUR
-      move_up 12
-      text @order.display_order_price_total, size: 12, style: :bold, color: BOX_TEXT_COLOUR, align: :right
-    end
-    move_down 10
-    indent(90, 0) do
-      text 'Sales Tax', size: 12, style: :bold, color: BOX_TEXT_COLOUR
-      move_up 12
-      text @order.display_order_tax_total, size: 12, style: :bold, color: BOX_TEXT_COLOUR, align: :right
-    end
-
-    move_down 10
-    indent(90, 0) do
-      text 'Total Amount (including Tax)', size: 12, style: :bold, color: BOX_TEXT_COLOUR
-      move_up 12
-      text @order.display_order_price_total_including_tax, size: 12, style: :bold, color: BOX_TEXT_COLOUR, align: :right
+  def about_text
+    indent(39, 39) do
+      text 'About S-Check', size: 18, style: :bold, color: TITLE_COLOUR
+      move_down 12
+      formatted_text [
+        {
+          text: 'S-Check is an app designed to support people to monitor their methamphetamine use and understand the impact it has on their health and wellbeing. You can find out more about the app and the research behind it at ', color: TEXT_COLOUR
+        },
+        { text: 'https://scheckapp.org.au', link: 'https://scheckapp.org.au', color: LINK_COLOUR }
+      ], leading: 5, size: 12, style: :normal
+      move_down 12
+      text "It is based on the S-Check model of care, a low-threshold intervention developed and used at St Vincent's Hospital, Sydney.", size: 12,
+                                                                                                                                          leading: 5, style: :normal, color: TEXT_COLOUR
     end
   end
 
-  def transaction_details_for_receipt
-    if @receipt.item_one_name.present?
-      indent(90, 0) do
-        text @receipt.item_one_name, size: 12, style: :normal, color: BOX_TEXT_COLOUR
-        move_up 12
-        text @receipt.item_one_price_minus_tax, size: 12, style: :normal, color: BOX_TEXT_COLOUR, align: :right
-      end
-    end
-
-    if @receipt.item_two_name.present?
-      move_down 10
-      indent(90, 0) do
-        text @receipt.item_two_name, size: 12, style: :normal, color: BOX_TEXT_COLOUR
-        move_up 12
-        text @receipt.item_two_price_minus_tax, size: 12, style: :normal, color: BOX_TEXT_COLOUR, align: :right
-      end
-    end
-
-    if @receipt.item_three_name.present?
-      move_down 10
-      indent(90, 0) do
-        text @receipt.item_three_name, size: 12, style: :normal, color: BOX_TEXT_COLOUR
-        move_up 12
-        text @receipt.item_three_price_minus_tax, size: 12, style: :normal, color: BOX_TEXT_COLOUR, align: :right
-      end
-    end
-
-    if @receipt.item_four_name.present?
-      move_down 10
-      indent(90, 0) do
-        text @receipt.item_four_name, size: 12, style: :normal, color: BOX_TEXT_COLOUR
-        move_up 12
-        text @receipt.item_four_price_minus_tax, size: 12, style: :normal, color: BOX_TEXT_COLOUR, align: :right
-      end
-    end
-
-    move_down 30
-    indent(90, 0) do
-      text 'Total Amount', size: 12, style: :bold, color: BOX_TEXT_COLOUR
-      move_up 12
-      text @receipt.display_total_amount, size: 12, style: :bold, color: BOX_TEXT_COLOUR, align: :right
-    end
-    move_down 10
-    indent(90, 0) do
-      text 'Sales Tax', size: 12, style: :bold, color: BOX_TEXT_COLOUR
-      move_up 12
-      text @receipt.display_tax_amount, size: 12, style: :bold, color: BOX_TEXT_COLOUR, align: :right
-    end
-
-    move_down 10
-    indent(90, 0) do
-      text 'Total Amount (including Tax)', size: 12, style: :bold, color: BOX_TEXT_COLOUR
-      move_up 12
-      text @receipt.display_total_amount_including_tax, size: 12, style: :bold, color: BOX_TEXT_COLOUR, align: :right
+  def about_meth
+    indent(39, 39) do
+      text 'About Methamphetamine', size: 18, style: :bold, color: TITLE_COLOUR
+      move_down 12
+      text 'Methamphetamine is a psycho-stimulant drug available in powder, paste or crystalline form and is typically snorted, smoked or injected.',
+           size: 12, leading: 5, style: :normal, color: TEXT_COLOUR
+      move_down 12
+      text 'In 2019, of Australians aged 14 or over who reported using methamphetamine in the previous 12 months, 50% reported using the ‘crystalline’ form (“Ice”) of the drug, of whom 30% were using at least once a week or more.',
+           size: 12, leading: 5, style: :normal, color: TEXT_COLOUR
+      move_down 12
+      text 'Methamphetamine is a powerful central nervous systems (CNS) stimulant that can induce feelings of euphoria, alertness, increased confidence and wakefulness. Acute effects can last for 8-24 hours.',
+           size: 12, leading: 5, style: :normal, color: TEXT_COLOUR
+      move_down 12
+      text 'Repeated use of methamphetamine may cause significant depletion of CNS neurotransmitters, accompanied by depression, excessive tiredness and fatigue.',
+           size: 12, leading: 5, style: :normal, color: TEXT_COLOUR
+      move_down 12
+      text 'Adverse effects include but are not limited to: anxiety, low mood, weight loss, poor appetite, hallucinations, agitation, sleep problems, teeth grinding and paranoia.',
+           size: 12, leading: 5, style: :normal, color: TEXT_COLOUR
+      move_down 12
+      formatted_text [
+        { text: 'Learn more about methamphetamine in our ', color: TEXT_COLOUR },
+        { text: 'clinical guide for primary care health professionals.', link: 'https://scheckapp.org.au', color: LINK_COLOUR }
+      ], leading: 5, size: 12, style: :normal
     end
   end
 
@@ -174,11 +149,18 @@ class ReceiptPdf < BaseReceiptPdf
   end
 
   def standard_header(_height = 100)
+    # stroke do
+    #   fill_color LOGO_BACKGROUND_COLOUR
+    #   stroke_color LOGO_BACKGROUND_COLOUR
+    #   fill_and_stroke_rounded_rectangle [bounds.left, bounds.top], bounds.width, 20, 0
+    # end
+
     logo_width = 300
 
     move_down 0
-
+    # move_down 30
     indent(145, 0) do
+      # indent(30, 0) do
       header_logo(width: logo_width, image: 'ag_logo')
       move_cursor_to bounds.height
     end

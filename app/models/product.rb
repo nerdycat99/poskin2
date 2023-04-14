@@ -9,6 +9,8 @@ class Product < ApplicationRecord
   has_many :variants, dependent: :destroy
   # accepts_nested_attributes_for :variants
 
+  enum price_calc_method: { via_cost_price: 0, via_retail_price: 1 }
+
   validates :accounting_code_id, :title, :description, :sku_code, :markup, presence: true
   validates :cost_price, presence: true, numericality: { greater_than_or_equal_to: 1, only_integer: true }
   validates :publish, inclusion: { in: [true, false] }
@@ -33,12 +35,20 @@ class Product < ApplicationRecord
     (notes.presence || 'none listed')
   end
 
+  def calculated_via_cost_price?
+    price_calc_method.blank? || price_calc_method == 'via_cost_price'
+  end
+
+  def calculated_via_retail_price?
+    price_calc_method == 'via_retail_price'
+  end
+
   def display_cost_price
-    number_to_currency(format('%.2f', (cost_price.to_f / 100))) unless cost_price.nil?
+    number_to_currency(format('%.2f', (cost_price_in_cents_as_float / 100))) unless cost_price.nil?
   end
 
   def display_total_cost_price
-    number_to_currency(format('%.2f', ((cost_price.to_f + cost_price_tax_amount_in_cents_as_float) / 100))) unless cost_price.nil?
+    number_to_currency(format('%.2f', ((cost_price_in_cents_as_float + cost_price_tax_amount_in_cents_as_float) / 100))) unless cost_price.nil?
   end
 
   # should be 0 if the supplier is not registered for tax
@@ -70,16 +80,28 @@ class Product < ApplicationRecord
     number_to_currency(format('%.2f', (share_of_retail_tax_responsible_for / 100))) unless share_of_retail_tax_responsible_for.nil?
   end
 
+  def cost_price_in_cents_as_float
+    if calculated_via_cost_price?
+      cost_price.to_f
+    else
+      # start with the retail price and work backwards
+    end
+  end
+
   def cost_price_tax_amount_in_cents_as_float
-    supplier_registered_for_sales_tax? ? cost_price * tax_rate : 0.0
+    supplier_registered_for_sales_tax? ? cost_price_in_cents_as_float * tax_rate : 0.0
   end
 
   def retail_mark_up_amount_in_cents
-    (markup.to_f / 100.0) * cost_price.to_f unless markup.nil?
+    (markup.to_f / 100.0) * cost_price_in_cents_as_float unless markup.nil?
   end
 
   def retail_price_in_cents_as_float
-    cost_price.to_f + retail_mark_up_amount_in_cents
+    if calculated_via_cost_price?
+      cost_price_in_cents_as_float + retail_mark_up_amount_in_cents
+    else
+      retail_price.to_f
+    end
   end
 
   def retail_price_tax_amount_in_cents_as_float
@@ -91,7 +113,7 @@ class Product < ApplicationRecord
   end
 
   def profit_amount_in_cents_as_float
-    total_retail_price_in_cents_as_float - ((cost_price.to_f + cost_price_tax_amount_in_cents_as_float) + share_of_retail_tax_responsible_for)
+    total_retail_price_in_cents_as_float - ((cost_price_in_cents_as_float + cost_price_tax_amount_in_cents_as_float) + share_of_retail_tax_responsible_for)
   end
 
   def share_of_retail_tax_responsible_for

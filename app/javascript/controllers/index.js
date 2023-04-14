@@ -4,5 +4,11 @@
 
 import { application } from "./application"
 
+import CalculateController from "./calculate_controller"
+application.register("calculate", CalculateController)
+
 import HelloController from "./hello_controller"
 application.register("hello", HelloController)
+
+import ProductController from "./product_controller"
+application.register("product", ProductController)
