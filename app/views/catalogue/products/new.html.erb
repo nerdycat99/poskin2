@@ -55,12 +55,75 @@
         <br />
         <div class="row">
           <div class="col-6">
-            <%= f.label "Retail Price (excluding sales tax)" %>
+            <%= f.label "Estimated Retail Price (excluding sales tax)" %>
             <%= f.text_field :retail_price, placeholder: '100.99', value: nil, data: { action: "change->product#retailPriceDataEntered", target: "product.retailPrice" } %>
           </div>
           <div class="col-6">
             <%= f.label "Markup percentage" %>
             <%= f.text_field :markup, placeholder: '50%', value: @product.display_markup, data: { action: "change->product#retailPriceDataEntered", target: "product.retailPercentage" } %>
+          </div>
+        </div>
+        <br />
+        <div class="row">
+          <div class="col-4">
+            <div class="cost_price">Suppliers Cost Price (excl tax)</div>
+            <div class="cost_price" data-product-target="retailCalculatedCostPrice">
+              $ -
+            </div>
+          </div>
+           <div class="col-4">
+            <div class="cost_price">Suppliers Tax Amount</div>
+            <div class="cost_price" data-product-target="retailCalculatedCostPriceTax">
+              $ -
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="cost_price">Suppliers Total Cost Price (incl tax)</div>
+            <div class="cost_price" data-product-target="retailCalculatedCostPriceTotal">
+              $ -
+            </div>
+          </div>
+        </div>
+        <br />
+        <div class="row">
+          <div class="col-4">
+            <div class="retail_price">Adjusted Retail Price (excl tax)</div>
+            <div class="retail_price" data-product-target="retailCalculatedRetailPrice">
+              $ -
+            </div>
+          </div>
+           <div class="col-4">
+            <div class="retail_price">Retail Tax Amount</div>
+            <div class="retail_price" data-product-target="retailCalculatedRetailPriceTax">
+              $ -
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="retail_price">Total Retail Price (incl tax)</div>
+            <div class="retail_price" data-product-target="retailCalculatedRetailPriceTotal">
+              $ -
+            </div>
+          </div>
+        </div>
+        <br />
+        <div class="row">
+          <div class="col-4">
+            <div class="markup_data">Markup Amount</div>
+            <div class="markup_data" data-product-target="retailCalculatedMarkupAmount">
+              $ -
+            </div>
+          </div>
+           <div class="col-4">
+            <div class="markup_data">Profit Amount</div>
+            <div class="markup_data" data-product-target="retailCalculatedProfitAmount">
+              $ -
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="markup_data">Retail Tax Liability</div>
+            <div class="markup_data" data-product-target="retailCalculatedRetailTaxLiability">
+              $ -
+            </div>
           </div>
         </div>
       </div>
