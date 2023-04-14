@@ -24,7 +24,7 @@ class SuppliersController < ApplicationController
   end
 
   def update
-    if @existing_supplier.update!(supplier_params)
+    if @existing_supplier.update(supplier_params)
       redirect_to suppliers_path
     else
       render :edit, status: :unprocessable_entity
@@ -40,14 +40,5 @@ class SuppliersController < ApplicationController
   def supplier_params
     params.require(:supplier).permit(:name, :email, :phone, :tax_rate_id, :address_id, :notes, :sales_tax_registered,
                                      address_attributes: %i[country_id first_line second_line city state postcode])
-  end
-
-  class TaxOptions
-    attr_accessor :id, :name
-
-    def initialize(id:, name:)
-      self.id = id
-      self.name = name
-    end
   end
 end
