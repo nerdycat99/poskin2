@@ -10,19 +10,19 @@
       <% if @receipt.order.state == 'paid' %>
         <%= f.hidden_field :item_one_name, value: nil %>
       <% else %>
-        <%= f.label "Item one description and price minus tax" %>
+        <%= f.label "Item one description and price including sales tax" %>
         <%= f.text_field :item_one_name, placeholder: 'Large Green Vase' %>
         <%= f.text_field :item_one_price_minus_tax, placeholder: '$290.99' %>
         <br />
-        <%= f.label "Item two description and price minus tax" %>
+        <%= f.label "Item two description and price including sales tax" %>
         <%= f.text_field :item_two_name, placeholder: 'Large Green Vase' %>
         <%= f.text_field :item_two_price_minus_tax, placeholder: '$290.99' %>
         <br />
-        <%= f.label "Item three description and price minus tax" %>
+        <%= f.label "Item three description and price including sales tax" %>
         <%= f.text_field :item_three_name, placeholder: 'Large Green Vase' %>
         <%= f.text_field :item_three_price_minus_tax, placeholder: '$290.99' %>
         <br />
-        <%= f.label "Item four description and price minus tax" %>
+        <%= f.label "Item four description and price including sales tax" %>
         <%= f.text_field :item_four_name, placeholder: 'Large Green Vase' %>
         <%= f.text_field :item_four_price_minus_tax, placeholder: '$290.99' %>
         <br />
