@@ -43,36 +43,44 @@
           <tr>
             <td><%= @order.receipts.first.item_one_name %></td>
             <td></td>
-            <td>$<%= @order.receipts.first.amount_one.to_f / 100 %></td>
-            <td></td>
-            <td></td>
+            <% if @order.receipts.first.old_method? %>
+              <td>$<%= format('%.2f',@order.receipts.first.amount_one.to_f / 100 )%></td><td></td><td></td>
+            <% else %>
+              <td></td><td></td><td>$<%= format('%.2f',@order.receipts.first.amount_one.to_f / 100) %></td>
+            <% end %>
           </tr>
         <% end %>
         <% if @order.receipts.first.item_two_name.present? %>
           <tr>
             <td><%= @order.receipts.first.item_two_name %></td>
             <td></td>
-            <td>$<%= @order.receipts.first.amount_two.to_f / 100 %></td>
-            <td></td>
-            <td></td>
+            <% if @order.receipts.first.old_method? %>
+              <td>$<%= format('%.2f',@order.receipts.first.amount_two.to_f / 100) %></td><td></td><td></td>
+            <% else %>
+              <td></td><td></td><td>$<%= format('%.2f',@order.receipts.first.amount_two.to_f / 100) %></td>
+            <% end %>
           </tr>
         <% end %>
         <% if @order.receipts.first.item_three_name.present? %>
           <tr>
             <td><%= @order.receipts.first.item_three_name %></td>
             <td></td>
-            <td>$<%= @order.receipts.first.amount_three.to_f / 100 %></td>
-            <td></td>
-            <td></td>
+            <% if @order.receipts.first.old_method? %>
+              <td>$<%= format('%.2f',@order.receipts.first.amount_three.to_f / 100) %></td><td></td><td></td>
+            <% else %>
+              <td></td><td></td><td>$<%= format('%.2f',@order.receipts.first.amount_three.to_f / 100) %></td>
+            <% end %>
           </tr>
         <% end %>
         <% if @order.receipts.first.item_four_name.present? %>
            <tr>
             <td><%= @order.receipts.first.item_four_name %></td>
             <td></td>
-            <td>$<%= @order.receipts.first.amount_four.to_f / 100 %></td>
-            <td></td>
-            <td></td>
+            <% if @order.receipts.first.old_method? %>
+              <td>$<%= format('%.2f',@order.receipts.first.amount_four.to_f / 100) %></td><td></td><td></td>
+            <% else %>
+              <td></td><td></td><td>$<%= format('%.2f',@order.receipts.first.amount_four.to_f / 100) %></td>
+            <% end %>
           </tr>
         <% end %>
       <% end %>
