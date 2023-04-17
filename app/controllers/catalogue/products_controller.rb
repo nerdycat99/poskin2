@@ -43,7 +43,7 @@ class Catalogue::ProductsController < ApplicationController
   private
 
   def calculation_methods
-    @calculation_methods = [OpenStruct.new(name: 'Cost Price MethodX', value: 0), OpenStruct.new(name: 'Retail Price MethodX', value: 1)]
+    @calculation_methods = [OpenStruct.new(name: 'Cost Price Method', value: 0), OpenStruct.new(name: 'Retail Price Method', value: 1)]
   end
 
   def existing_product
