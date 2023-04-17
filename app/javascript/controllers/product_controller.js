@@ -1,10 +1,10 @@
 import { Controller } from "@hotwired/stimulus"
 
-// Connects to data-controller="product"
 export default class extends Controller {
   static targets = [
     "calculateRetailPriceSection",
     "calculateCostPriceSection",
+    "priceCalcMethod",
     "registeredForSalesTax",
     "calculatedRetailTaxLiability",
     "calculatedProfitAmount",
@@ -30,9 +30,31 @@ export default class extends Controller {
     "retailCalculatedRetailTaxLiability"
   ]
   connect() {
+    var registeredForTax = (this.registeredForSalesTaxTarget.innerText === 'true')
+
+    if (this.priceCalcMethodTarget.value == '0') {
+      this.show(this.calculateCostPriceSectionTarget)
+      this.hide(this.calculateRetailPriceSectionTarget)
+
+      // run the calculations if the values are populated on load
+      if (this.percentageTarget.value && this.costPriceTarget.value) {
+        this.calculateAmountsForGivenCostPrice(registeredForTax)
+      }
+    }
+
+    if (this.priceCalcMethodTarget.value == '1') {
+      this.hide(this.calculateCostPriceSectionTarget)
+      this.show(this.calculateRetailPriceSectionTarget)
+
+      // run the calculations if the values are populated on load
+      if (this.retailPercentageTarget.value && this.retailPriceTarget.value) {
+        this.calculateAmountsForGivenRetailPrice(registeredForTax)
+      }
+    }
   }
 
   selectSection(e) {
+    console.log("i ran")
     var selectedOption = e.explicitOriginalTarget.selectedOptions[0].value;
 
     if (selectedOption == "1") {
@@ -40,13 +62,8 @@ export default class extends Controller {
       this.show(this.calculateRetailPriceSectionTarget)
     }
 
-    if (selectedOption == '2') {
-      this.show(this.calculateCostPriceSectionTarget)
-      this.hide(this.calculateRetailPriceSectionTarget)
-    }
-
     if (selectedOption == '0') {
-      this.hide(this.calculateCostPriceSectionTarget)
+      this.show(this.calculateCostPriceSectionTarget)
       this.hide(this.calculateRetailPriceSectionTarget)
     }
   }
@@ -59,7 +76,6 @@ export default class extends Controller {
   }
 
   retailPriceDataEntered() {
-    console.log('in here')
     var registeredForTax = (this.registeredForSalesTaxTarget.innerText === 'true')
     if (this.retailPercentageTarget.value && this.retailPriceTarget.value) {
       this.calculateAmountsForGivenRetailPrice(registeredForTax)
@@ -84,13 +100,12 @@ export default class extends Controller {
     var retailTaxLiability = 0.0
 
     if (registeredForTax) {
-      totalCostsForSale = retailTaxLiability + parseFloat(costPriceTotal)
       retailTaxLiability = retailPriceTax - costPriceTax
+      totalCostsForSale = parseFloat(retailTaxLiability) + parseFloat(costPriceTotal)
     } else {
-      totalCostsForSale = retailTaxLiability + parseFloat(costPrice)
       retailTaxLiability = retailPriceTax
+      totalCostsForSale = retailTaxLiability + parseFloat(costPrice)
     }
-
     var profit = retailPriceTotal - totalCostsForSale
 
     this.retailCalculatedRetailPriceTarget.innerText = "$" + adjustedretailPrice
@@ -107,6 +122,7 @@ export default class extends Controller {
     this.retailCalculatedRetailPriceTotalTarget.innerText = "$" + retailPriceTotal
     this.retailCalculatedRetailTaxLiabilityTarget.innerText = "$" + parseFloat(retailTaxLiability).toFixed(2)
     this.retailCalculatedProfitAmountTarget.innerText = "$" + parseFloat(profit).toFixed(2)
+    this.percentageTarget.value = this.retailPercentageTarget.value
   }
 
   calculateAmountsForGivenCostPrice(registeredForTax) {
@@ -126,13 +142,12 @@ export default class extends Controller {
     var retailTaxLiability = 0.0
 
     if (registeredForTax) {
-      totalCostsForSale = retailTaxLiability + parseFloat(costPriceTotal)
       retailTaxLiability = retailPriceTax - costPriceTax
+      totalCostsForSale = retailTaxLiability + parseFloat(costPriceTotal)
     } else {
-      totalCostsForSale = retailTaxLiability + parseFloat(costPrice)
       retailTaxLiability = retailPriceTax
+      totalCostsForSale = retailTaxLiability + parseFloat(costPrice)
     }
-
     var profit = retailPriceTotal - totalCostsForSale
 
     this.calculatedCostPriceTarget.innerText = "$" + costPrice
@@ -158,8 +173,4 @@ export default class extends Controller {
   hide(target) {
     target.classList.add("d-none")
   }
-
-
-
-
 }

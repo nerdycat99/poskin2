@@ -4,6 +4,7 @@ class Catalogue::ProductsController < ApplicationController
   before_action :authenticate_user!
   before_action :sanitize_params, only: %i[create update]
   before_action :product_with_sku_code, only: [:new]
+  before_action :calculation_methods, only: %i[new create]
   before_action :existing_product, only: %i[edit update destroy show]
 
   def show; end
@@ -41,6 +42,10 @@ class Catalogue::ProductsController < ApplicationController
 
   private
 
+  def calculation_methods
+    @calculation_methods = [OpenStruct.new(name: 'Cost Price MethodX', value: 0), OpenStruct.new(name: 'Retail Price MethodX', value: 1)]
+  end
+
   def existing_product
     @existing_product = supplier.products.find_by(id: params['id'])
   end
@@ -64,14 +69,28 @@ class Catalogue::ProductsController < ApplicationController
     params[:product]['markup'] = markup
     params[:product]['publish'] = publish
     params[:product]['cost_price'] = cost_price
+    params[:product]['retail_price'] = retail_price
+    params[:product]['price_calc_method'] = price_calc_method
   end
 
   def unmatched_params
-    @unmatched_params ||= params.require(:product).extract!(:publish, :markup, :cost_price)
+    @unmatched_params ||= params.require(:product).extract!(:publish, :markup, :cost_price, :retail_price, :price_calc_method)
   end
 
   def cost_price
     (unmatched_params['cost_price'].gsub(/[^0-9.]/, '').to_f * 100).to_i
+  end
+
+  def retail_price
+    (unmatched_params['retail_price'].gsub(/[^0-9.]/, '').to_f * 100).to_i
+  end
+
+  def price_calc_method
+    if unmatched_params['price_calc_method'].blank?
+      nil
+    else
+      unmatched_params['price_calc_method'].to_i
+    end
   end
 
   def markup
@@ -83,7 +102,8 @@ class Catalogue::ProductsController < ApplicationController
   end
 
   def product_params
-    params.require(:product).permit(:supplier_id, :accounting_code_id, :title, :description, :notes, :sku_code, :publish, :markup, :cost_price)
+    params.require(:product).permit(:supplier_id, :accounting_code_id, :title, :description, :notes, :sku_code, :publish, :markup, :cost_price,
+                                    :price_calc_method, :retail_price)
   end
 
   def supplier

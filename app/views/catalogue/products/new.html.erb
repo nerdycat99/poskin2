@@ -31,7 +31,7 @@
           <%= f.text_field :sku_code, value: @product.sku_code, readonly: true %>
         </div>
         <div class="col-4">
-          <%= f.input :publish, as: :select, collection: ['Yes', 'No'], required: true, include_blank: false, label: 'Publish this Product?', selected: @product.display_published %>
+          <%= f.input :publish, as: :select, collection: [true, false], required: true, include_blank: false, label: 'Publish this Product?', selected: @product.display_published %>
         </div>
         <div class="col-4">
           <%= f.label "Select Accounting Code" %>
@@ -41,13 +41,14 @@
       </div>
       <br />
 
+      <br />
       <%= f.label "How would you like to calculate the prices?" %>
       <br />
-      <select id="people" name="people" data-action="product#selectSection">
-        <option value="0">Select Pricing Method</option>
-        <option value="1">Retail Price Method</option>
-        <option value="2">Cost Price Method</option>
-      </select>
+
+      <%= f.collection_select :price_calc_method, @calculation_methods, :value, :name, {include_blank: true, selected: @product.selected_price_calc_method_id }, data: { action: "change->product#selectSection", target: "product.priceCalcMethod" } %>
+
+      <br />
+
       <br />
 
       <!-- section for entering amounts via the retail price method -->
@@ -56,11 +57,11 @@
         <div class="row">
           <div class="col-6">
             <%= f.label "Estimated Retail Price (excluding sales tax)" %>
-            <%= f.text_field :retail_price, placeholder: '100.99', value: nil, data: { action: "change->product#retailPriceDataEntered", target: "product.retailPrice" } %>
+            <%= f.text_field :retail_price, placeholder: 'enter the amount you intend to sell the product for minus sales tax', value: @product.display_retail_price, data: { action: "change->product#retailPriceDataEntered", target: "product.retailPrice" } %>
           </div>
           <div class="col-6">
             <%= f.label "Markup percentage" %>
-            <%= f.text_field :markup, placeholder: '50%', value: @product.display_markup, data: { action: "change->product#retailPriceDataEntered", target: "product.retailPercentage" } %>
+            <%= f.text_field :markup, placeholder: 'enter the markup percentage you would like to determine the cost price', value: @product.display_markup, data: { action: "change->product#retailPriceDataEntered", target: "product.retailPercentage" } %>
           </div>
         </div>
         <br />
@@ -135,11 +136,11 @@
         <div class="row">
           <div class="col-6">
             <%= f.label @product.cost_price_label %>
-            <%= f.text_field :cost_price, placeholder: '100.99', value: @product.display_cost_price, data: { action: "change->product#costPriceDataEntered", target: "product.costPrice" } %>
+            <%= f.text_field :cost_price, placeholder: 'enter the amount which you paid the supplier for this product', value: @product.display_cost_price, data: { action: "change->product#costPriceDataEntered", target: "product.costPrice" } %>
           </div>
           <div class="col-6">
             <%= f.label "Markup percentage" %>
-            <%= f.text_field :markup, placeholder: '50%', value: @product.display_markup, data: { action: "change->product#costPriceDataEntered", target: "product.percentage" } %>
+            <%= f.text_field :markup, placeholder: 'enter the markup percentage to apply to the cost price, e.g. 50%', value: @product.display_markup, data: { action: "change->product#costPriceDataEntered", target: "product.percentage" } %>
           </div>
         </div>
         <br />

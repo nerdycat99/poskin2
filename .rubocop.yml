@@ -21,6 +21,10 @@ AllCops:
 Style/ClassAndModuleChildren:
   Enabled: false
 
+Style/RedundantSelf:
+  Exclude:
+    - app/models/product.rb
+
 Style/Documentation:
   Enabled: false
 

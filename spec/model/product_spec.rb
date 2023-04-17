@@ -22,9 +22,10 @@ describe Product do
     let(:sku) { '123456' }
     let(:markup) { '20' }
     let(:cost_price) { 12_345 }
+    let(:price_calc_method) { 0 }
     let(:create_product) do
       supplier.products.create(accounting_code_id:, title: product_name, description:, sku_code: sku,
-                               publish: true, markup:, cost_price:)
+                               publish: true, markup:, cost_price:, price_calc_method:)
     end
 
     context 'with valid attributes' do
