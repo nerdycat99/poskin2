@@ -5,7 +5,12 @@ export default class extends Controller {
     // this.element.textContent = "Hello World!"
   }
 
+  testMe() {
+    alert('It works in here too!!')
+  }
+
   showTaxesAndTotals() {
-    alert('This should populate the taxes and totals')
+    console.log('i ran!!!')
+    // alert('This should populate the taxes and totals')
   }
 }

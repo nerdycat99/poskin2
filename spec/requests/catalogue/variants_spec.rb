@@ -21,7 +21,7 @@ RSpec.describe 'Catalogue::Variants', type: :request do
   let(:accounting_code) { AccountingCode.create(name: 'ABC123', enabled: true, description: 'my accounting code') }
   let(:product) do
     supplier.products.create(accounting_code_id: accounting_code.id, title: 'my product', description: 'my product description', sku_code: '987999',
-                             publish: true, markup: '50', cost_price: 10_099)
+                             publish: true, markup: '50', cost_price: 10_099, retail_price: 0, price_calc_method: 0)
   end
 
   let(:attr_1) { ProductAttribute.create(name: 'colour', value: 'red') }

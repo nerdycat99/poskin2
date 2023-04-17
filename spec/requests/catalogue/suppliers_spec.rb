@@ -110,7 +110,7 @@ RSpec.describe 'Catalogue::Suppliers', type: :request do
         let(:accounting_code) { AccountingCode.create(name: 'CONS001', enabled: true, description: 'consignment') }
         let(:create_product) do
           supplier.products.create(accounting_code_id: accounting_code.id, title: product_name, description:, sku_code: '12345', barcode: '12345',
-                                   publish: true, markup: '100', cost_price: 2000)
+                                   publish: true, markup: '100', cost_price: 2000, retail_price: 0, price_calc_method: 0)
         end
         it 'shows the suppliers product' do
           create_product
