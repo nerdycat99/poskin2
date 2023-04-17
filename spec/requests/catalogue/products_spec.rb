@@ -28,7 +28,7 @@ RSpec.describe 'Catalogue::Products', type: :request do
   let(:good_params) do
     {
       product: {
-        title: 'My Product', description: 'My product description', sku_code: '987654', publish: 'Yes', cost_price: 10_000, markup: 100, accounting_code_id: accounting_code.id
+        title: 'My Product', description: 'My product description', sku_code: '987654', publish: 'Yes', cost_price: 10_000, markup: 100, retail_price: 0, price_calc_method: 0, accounting_code_id: accounting_code.id
       }
     }
   end
@@ -36,7 +36,7 @@ RSpec.describe 'Catalogue::Products', type: :request do
   let(:bad_params) do
     {
       product: {
-        title: 'My Product', description: 'My product description', sku_code: '987654', publish: 'Yes', cost_price: 10_000, markup: 100, accounting_code_id: nil
+        title: 'My Product', description: 'My product description', sku_code: '987654', publish: 'Yes', cost_price: 10_000, markup: 100, retail_price: 0, price_calc_method: 0, accounting_code_id: nil
       }
     }
   end

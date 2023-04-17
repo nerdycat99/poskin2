@@ -18,7 +18,7 @@ describe StockAdjustment do
     let(:accounting_code_id) { accounting_code.id }
     let(:product) do
       supplier.products.create(accounting_code_id: accounting_code.id, title: 'my product', description: 'my product description', sku_code: '987999',
-                               publish: true, markup: '50', cost_price: 10_099)
+                               publish: true, markup: '50', cost_price: 10_099, price_calc_method: 0)
     end
 
     let(:variant) { product.variants.create }
