@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_13_053229) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_18_045818) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -176,6 +176,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_13_053229) do
     t.datetime "updated_at", null: false
     t.bigint "tax_rate_id"
     t.bigint "#<ActiveRecord::ConnectionAdapters::PostgreSQL::TableDefinition"
+    t.string "bank_acount_name"
+    t.string "bank_acount_number"
+    t.string "bank_bsb"
+    t.string "bank_name"
     t.index ["address_id"], name: "index_suppliers_on_address_id"
   end
 

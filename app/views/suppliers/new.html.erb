@@ -7,34 +7,86 @@
   <%end%>
 
   <%= simple_form_for @supplier, builder: TailwindFormBuilder, class: "mt-6", url: suppliers_path do |f| %>
-    <%= f.label "Suppliers Name" %>
-    <%= f.text_field :name, placeholder: 'My Supplier Ltd' %>
+    <div class="row">
+      <div class="col-6">
+        <%= f.label "Suppliers Name" %>
+        <%= f.text_field :name, placeholder: 'My Supplier Ltd' %>
+      </div>
+      <div class="col-6">
+        <%= f.label "Suppliers Email" %>
+        <%= f.text_field :email, placeholder: 'person@supplier.com' %>
+      </div>
+    </div>
     <br />
-    <%= f.label "Suppliers Email" %>
-    <%= f.text_field :email, placeholder: 'person@supplier.com' %>
-    <br />
-    <%= f.label "Suppliers Contact Number" %>
-    <%= f.text_field :phone, placeholder: '0414 444 444' %>
+    <div class="row">
+      <div class="col-6">
+        <%= f.label "Suppliers Contact Number" %>
+        <%= f.text_field :phone, placeholder: '0414 444 444' %>
+      </div>
+      <div class="col-6">
+        <%= f.input :sales_tax_registered, as: :select, collection: [true, false], required: true, include_blank: false, label: 'Registered for Sales Tax?', selected: @supplier.sales_tax_registered %>
+      </div>
+    </div>
     <br />
     <%= f.simple_fields_for :address do |address_fields| %>
-      <%= address_fields.label "Address Line 1" %>
-      <%= address_fields.text_field :first_line, placeholder: 'Unit 2 The Courtyard' %>
-      <%= address_fields.label "Address Line 2" %>
-      <%= address_fields.text_field :second_line, placeholder: '123, High Street' %>
-      <%= address_fields.label "City" %>
-      <%= address_fields.text_field :city, placeholder: 'Sydney' %>
-      <%= address_fields.label "State" %>
-      <%= address_fields.text_field :city, placeholder: 'NSW' %>
-      <%= address_fields.label "Postal Code" %>
-      <%= address_fields.text_field :postcode, placeholder: '2001' %>
-      <%= address_fields.label "Country" %>
-      <%= address_fields.collection_select :country_id, Country.all.order(:country),:id, :country, include_blank: true %>
+      <div class="row">
+        <div class="col-6">
+          <%= address_fields.label "Address Line 1" %>
+          <%= address_fields.text_field :first_line, placeholder: 'Unit 2 The Courtyard' %>
+        </div>
+        <div class="col-6">
+          <%= address_fields.label "State" %>
+          <%= address_fields.text_field :city, placeholder: 'NSW' %>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <%= address_fields.label "Address Line 2" %>
+          <%= address_fields.text_field :second_line, placeholder: '123, High Street' %>
+        </div>
+        <div class="col-6">
+          <%= address_fields.label "Postal Code" %>
+          <%= address_fields.text_field :postcode, placeholder: '2001' %>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <%= address_fields.label "City" %>
+          <%= address_fields.text_field :city, placeholder: 'Sydney' %>
+        </div>
+        <div class="col-6">
+          <%= address_fields.label "Country" %>
+          <br/>
+          <%= address_fields.collection_select :country_id, Country.all.order(:country),:id, :country, include_blank: true %>
+        </div>
+      </div>
     <% end %>
-    <br /><br />
+    <br />
+    <div class="row">
+      <div class="col-6">
+        <%= f.label "Bank Account Name" %>
+        <%= f.text_field :bank_acount_name, placeholder: 'Supplier Ltd' %>
+      </div>
+      <div class="col-6">
+        <%= f.label "Bank Account Number" %>
+        <%= f.text_field :bank_acount_number, placeholder: '123456' %>
+      </div>
+    </div>
+    <br />
+    <div class="row">
+      <div class="col-6">
+        <%= f.label "Name of Bank" %>
+        <%= f.text_field :bank_name, placeholder: 'Supplier Ltd' %>
+      </div>
+      <div class="col-6">
+        <%= f.label "Bank Identifer (6 digit)" %>
+        <%= f.text_field :bank_bsb, placeholder: '224411' %>
+      </div>
+    </div>
+    <br />
     <%= f.label "Notes" %>
     <%= f.text_field :notes, placeholder: 'anything you like in here' %>
     <br />
-    <%= f.input :sales_tax_registered, as: :select, collection: [true, false], required: true, include_blank: false, label: 'Registered for Sales Tax?', selected: @supplier.sales_tax_registered %>
     <br />
     <br />
     <row>
