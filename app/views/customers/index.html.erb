@@ -1,0 +1,44 @@
+<div class="p-12 mx-auto text-gray-800 max-w-7xl">
+  <h2>Customers</h2>
+  <br />
+  <table style="width:100%">
+    <tr>
+      <th>First Name</th>
+      <th>Last Name</th>
+      <th>Email Address</th>
+      <th>Phone Number</th>
+      <th>Number of Purchases</th>
+      <th>Last Purchased on</th>
+      <th colspan=2></th>
+      <th></th>
+    </tr>
+    <% @customers.each do |customer| %>
+      <tr>
+        <td><%= customer.first_name %></td>
+        <td><%= customer.last_name %></td>
+        <td><%= customer.email_address %></td>
+        <td><%= customer.phone_number %></td>
+        <td><%= customer.orders.count %></td>
+        <% if customer.orders.any? %>
+          <td><%= customer.orders.last.display_date %></td>
+        <% else %>
+          <td></td>
+        <% end %>
+        <td><%= link_to "Purchases", customer_path(customer.id), class: "btn btn-primary" %></td>
+        <td><%= link_to "Edit", edit_customer_path(customer.id), class: "btn btn-secondary" %></td>
+      </tr>
+    <% end %>
+    <% if @customers.count > 10 %>
+      <tr><td>&nbsp;</td></tr><tr><td>&nbsp;</td></tr><tr><td>&nbsp;</td></tr><tr><td>&nbsp;</td></tr>
+    <% end %>
+  </table>
+
+  <footer class="bg-white text-center text-lg-start fixed-bottom">
+    <div class="pt-6 pl-12 pb-6 mx-auto text-gray-800 max-w-7xl">
+      <row>
+        <%= link_to "Add Customer", new_customer_path, class: "btn btn-primary" %>
+        <%= link_to "Back", sales_path, class: "btn btn-outline-secondary" %>
+      </row>
+    </div>
+  </footer>
+</div>

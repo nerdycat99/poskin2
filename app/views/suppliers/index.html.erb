@@ -36,13 +36,23 @@
                   </td>
                 </tr>
               </tbody>
+              <% if @suppliers.count > 2 %>
+                <tr><td>&nbsp;</td></tr><tr><td>&nbsp;</td></tr><tr><td>&nbsp;</td></tr><tr><td>&nbsp;</td></tr>
+              <% end %>
             </table>
           </div>
         </div>
       </div>
     <% end %>
     <br />
-    <%= link_to "Create New Supplier", new_supplier_path, class: "btn btn-primary" %>
-    <%= link_to "Back", catalogue_index_path, class: "btn btn-outline-secondary" %>
+
   </div>
+  <footer class="bg-white text-center text-lg-start fixed-bottom">
+    <div class="pt-6 pl-10 pb-6 text-gray-800 max-w-7xl">
+      <row>
+        <%= link_to "Create New Supplier", new_supplier_path, class: "btn btn-primary" %>
+        <%= link_to "Back", catalogue_index_path, class: "btn btn-outline-secondary" %>
+      </row>
+    </div>
+  </footer>
 </div>

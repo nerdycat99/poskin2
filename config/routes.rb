@@ -17,6 +17,8 @@ Rails.application.routes.draw do
     get 'all', to: 'sales#all', on: :collection
   end
 
+  resources :customers, only: [:new, :create, :edit, :update, :show, :index, :destroy]
+
   resources :orders, only: [:create, :edit, :update, :show, :destroy] do
     resources :receipts, only: [:create, :show]#, defaults: { format: :pdf }
     resources :payments, only: [:new, :create]

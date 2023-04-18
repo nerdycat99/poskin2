@@ -1,0 +1,51 @@
+<div class="p-12 mx-auto text-gray-800 max-w-7xl">
+  <h2>Orders for Customer <%= @customer.display_name %></h2>
+  <table style="width:100%">
+    <tr>
+      <th>Purchase Date</th>
+      <th>Payment State</th>
+      <th>Payment Method</th>
+      <th>Items</th>
+      <th>Quantity</th>
+      <th>Item Amount</th>
+      <th>Total Amount</th>
+    </tr>
+    <% @orders.each do |order| %>
+      <% order.order_items.each_with_index do |item, index| %>
+        <tr>
+          <td><%= order.display_date if index.zero? %></td>
+          <td><%= order.state.titleize if index.zero? %></td>
+          <td><%= order.payment_method.titleize if index.zero? %></td>
+          <td><%= item.display_name %></td>
+          <td><%= item.quantity %></td>
+          <td><%= item.display_retail_amount_per_unit_including_tax %></td>
+          <td><%= item.display_total_retail_amount %></td>
+        </tr>
+      <% end %>
+      <tr>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <th>Total for Purchase</th>
+        <th><%= order.number_of_items %></th>
+        <td>&nbsp;</td>
+        <th><%= order.display_order_price_total_including_tax %></th>
+      </tr>
+      <tr><td>&nbsp;</td></tr>
+    <% end %>
+
+
+
+    <% if @orders.count > 10 %>
+      <tr><td>&nbsp;</td></tr><tr><td>&nbsp;</td></tr><tr><td>&nbsp;</td></tr><tr><td>&nbsp;</td></tr>
+    <% end %>
+  </table>
+
+  <footer class="bg-white text-center text-lg-start fixed-bottom">
+    <div class="pt-6 pl-12 pb-6 mx-auto text-gray-800 max-w-7xl">
+      <row>
+        <%= link_to "Back", sales_path, class: "btn btn-outline-secondary" %>
+      </row>
+    </div>
+  </footer>
+</div>
