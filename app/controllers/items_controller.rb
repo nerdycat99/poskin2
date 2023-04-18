@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ItemsController < ApplicationController
-  before_action :order, only: %i[new create destroy]
+  before_action :order, only: %i[new create, destroy]
   before_action :item, only: %i[destroy]
 
   def index; end
@@ -11,15 +11,15 @@ class ItemsController < ApplicationController
   end
 
   def create
-    variant = Variant.find_by(sku_code:)
+    variant = Variant.find_by(sku_code: sku_code)
     if variant.present?
       params[:order_item]['variant_id'] = variant.id # this is because we pass in the sku not id of variant
       @item = order.order_items.new(item_params)
       if @item.save
-        flash[:notice] = 'Item successfully added to order'
+        flash[:notice] = "Item successfully added to order"
         redirect_to new_order_item_path(@order.id)
       else
-        flash.now[:notice] = "Unable to add item with sku code: #{sku_code} to order" unless @item.save
+        flash[:notice] = "Unable to add item with sku code: #{sku_code} to order" unless @item.save
         render(:new, status: :unprocessable_entity)
       end
     else
@@ -30,7 +30,7 @@ class ItemsController < ApplicationController
   end
 
   def destroy
-    flash.now[:notice] = 'There was a problem removing the item' unless @item&.delete
+    flash[:notice] = "There was a problem removing the item" unless @item&.delete
     render(:new, status: :unprocessable_entity)
   end
 
