@@ -1,0 +1,26 @@
+<main class="p-12 mx-auto text-gray-800 max-w-7xl">
+  <h2>Create New Customer</h2>
+  <% if @customer.errors.any? %>
+    <% @customer.errors.full_messages.each do |message|%>
+       <p class="text-red-700 text-base"><%= message %> </p>
+    <%end%>
+    <br />
+  <%end%>
+  <%= simple_form_for @customer, builder: TailwindFormBuilder, class: "mt-6", url: customers_path do |f| %>
+    <%= f.label "First Name" %>
+    <%= f.text_field :first_name, placeholder: 'optional' %>
+    <br />
+    <%= f.label "Last Email" %>
+    <%= f.text_field :last_name, placeholder: 'optional' %>
+    <br />
+    <%= f.label "Email Address" %>
+    <%= f.text_field :email_address, placeholder: 'customer@place.com' %>
+    <br />
+    <%= f.label "Phone Number" %>
+    <%= f.text_field :phone_number, placeholder: 'optional' %>
+    <br />
+    <br />
+    <%= f.submit_button "Save" %>
+    <%= link_to "Cancel", customers_path, class: "btn btn-outline-secondary" %>
+  <% end %>
+</main>

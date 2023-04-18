@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 class Order < ApplicationRecord
-  include ApplicationHelper
   include ActionView::Helpers::NumberHelper
+  include ApplicationHelper
 
   has_many :order_items, dependent: :destroy
-  has_many :receipts, dependent: :destroy # added temporarily so orders can be raised ad hoc
+  has_many :receipts, dependent: :destroy #added temporarily so orders can be raised ad hoc
 
   # how to have this but make it optional
   # belongs_to :customer
@@ -16,7 +16,7 @@ class Order < ApplicationRecord
 
   def self.display_payment_methods
     display_payment_methods = []
-    Order.payment_methods.keys.map { |method| display_payment_methods << OpenStruct.new(name: method.humanize, display_name: method) }
+    Order.payment_methods.keys.map{|method| display_payment_methods << OpenStruct.new(name: method.humanize, display_name: method) }
     display_payment_methods
   end
 
@@ -38,7 +38,7 @@ class Order < ApplicationRecord
 
   def customer_details
     if customer.present?
-      customer.email || "#{customer.first_name} #{customer.last_name}"
+      customer.email_address || "#{customer.first_name} #{customer.last_name}"
     elsif first_name && last_name
       email_address || "#{first_name} #{last_name}"
     end
@@ -61,11 +61,7 @@ class Order < ApplicationRecord
   end
 
   def verification_check?
-    order_price_total_including_tax_as_float == (order_price_total_as_float + order_tax_total_as_float)
-  end
-
-  def display_date
-    convert_to_users_timezone(updated_at).to_fs(:long)
+    order_price_total_including_tax_as_float == ( order_price_total_as_float + order_tax_total_as_float )
   end
 
   def display_order_price_total
@@ -78,5 +74,9 @@ class Order < ApplicationRecord
 
   def display_order_price_total_including_tax
     number_to_currency(format('%.2f', (order_price_total_including_tax_as_float.to_f / 100))) unless order_price_total_including_tax_as_float.nil?
+  end
+
+  def display_date
+    convert_to_users_timezone(updated_at).to_fs(:long)
   end
 end

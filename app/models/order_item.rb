@@ -31,6 +31,10 @@ class OrderItem < ApplicationRecord
     variant.display_retail_price
   end
 
+  def display_retail_amount_per_unit_including_tax
+    variant.display_total_retail_price_including_tax
+  end
+
   def display_retail_amount
     number_to_currency(format('%.2f', (retail_price_in_cents_as_float.to_f / 100))) unless retail_price_in_cents_as_float.nil?
   end
