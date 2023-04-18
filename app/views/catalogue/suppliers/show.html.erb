@@ -88,8 +88,13 @@
     <% end %>
   </div>
 
-  <br />
-  <%= link_to "Create New Product", new_catalogue_supplier_product_path(@supplier.id), class: "btn btn-primary" %>
-  <%= link_to "Select another Supplier", catalogue_suppliers_path(@supplier.id), class: "btn btn-outline-secondary" %>
-  <%= link_to "Back to Catalogue", catalogue_index_path(@supplier.id), class: "btn btn-outline-secondary" %>
+  <footer class="bg-white text-center text-lg-start fixed-bottom">
+    <div class="pt-6 pb-6 pl-10 text-gray-800 max-w-7xl">
+      <row>
+        <%= link_to "Create New Product", new_catalogue_supplier_product_path(@supplier.id), class: "btn btn-primary" %>
+        <%= link_to "Select another Supplier", catalogue_suppliers_path(@supplier.id), class: "btn btn-outline-secondary" %>
+        <%= link_to "Back to Catalogue", catalogue_index_path(@supplier.id), class: "btn btn-outline-secondary" %>
+      </row>
+    </div>
+  </footer>
 </div>
