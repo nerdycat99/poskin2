@@ -19,7 +19,7 @@ class ItemsController < ApplicationController
         flash[:notice] = 'Item successfully added to order'
         redirect_to new_order_item_path(@order.id)
       else
-        flash.now[:notice] = "Unable to add item with sku code: #{sku_code} to order" unless @item.save
+        flash[:notice] = "Unable to add item with sku code: #{sku_code} to order" unless @item.save
         render(:new, status: :unprocessable_entity)
       end
     else
@@ -30,7 +30,7 @@ class ItemsController < ApplicationController
   end
 
   def destroy
-    flash.now[:notice] = 'There was a problem removing the item' unless @item&.delete
+    flash[:notice] = 'There was a problem removing the item' unless @item&.delete
     render(:new, status: :unprocessable_entity)
   end
 
