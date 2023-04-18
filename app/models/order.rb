@@ -77,6 +77,6 @@ class Order < ApplicationRecord
   end
 
   def display_date
-    convert_to_users_timezone(created_at).to_fs(:long)
+    convert_to_users_timezone(updated_at).to_fs(:long)
   end
 end
