@@ -83,7 +83,7 @@ class Product < ApplicationRecord
   end
 
   def display_retail_price
-    number_to_currency(format('%.2f', (retail_price_in_cents_as_float / 100))) unless retail_price_in_cents_as_float.nil?
+    number_to_currency(format('%.2f', (retail_price_before_tax_in_cents_as_float / 100))) unless retail_price_before_tax_in_cents_as_float.nil?
   end
 
   def display_retail_price_tax_amount
@@ -106,7 +106,7 @@ class Product < ApplicationRecord
     if calculated_via_cost_price?
       cost_price.to_f
     else
-      retail_price.to_f / ((markup.to_f / 100.0) + 1)
+      (retail_price_before_tax_in_cents_as_float / ((markup.to_f / 100.0) + 1)).round(0).to_f
     end
   end
 
@@ -119,27 +119,47 @@ class Product < ApplicationRecord
   end
 
   def retail_mark_up_amount_in_cents
-    (markup.to_f / 100.0) * cost_price_in_cents_as_float unless markup.nil?
+    if calculated_via_cost_price?
+      cost_price_in_cents_as_float * (markup.to_f / 100.0)
+    else
+      retail_price_before_tax_in_cents_as_float - cost_price_in_cents_as_float
+    end
   end
 
+  # retail_price_in_cents_as_float is the retail price including tax
   def retail_price_in_cents_as_float
     if calculated_via_cost_price?
       if cost_price.blank?
         (cost_price.to_f + (markup.to_f / 100.0).round(0)).to_f
       else
-        (cost_price_in_cents_as_float&.round(0)&.+ retail_mark_up_amount_in_cents&.round(0))&.to_f
+        retail_price_before_tax_in_cents_as_float + retail_price_tax_amount_in_cents_as_float
+        # (cost_price_in_cents_as_float&.round(0)&.+ retail_mark_up_amount_in_cents&.round(0))&.to_f
       end
     else
+      # this is now teh amount that includes tax
       retail_price.to_f
     end
   end
 
   def retail_price_tax_amount_in_cents_as_float
-    retail_price_in_cents_as_float * tax_rate
+    if calculated_via_cost_price?
+      retail_price_before_tax_in_cents_as_float * tax_rate
+    else
+      total_retail_price_in_cents_as_float - retail_price_before_tax_in_cents_as_float
+    end
+  end
+
+  def retail_price_before_tax_in_cents_as_float
+    if calculated_via_cost_price?
+      retail_mark_up_amount_in_cents + cost_price_in_cents_as_float
+    else
+      (total_retail_price_in_cents_as_float / (1 + tax_rate)).round(0).to_f
+    end
   end
 
   def total_retail_price_in_cents_as_float
-    retail_price_in_cents_as_float + retail_price_tax_amount_in_cents_as_float
+    retail_price_in_cents_as_float
+    # retail_price_in_cents_as_float + retail_price_tax_amount_in_cents_as_float
   end
 
   def profit_amount_in_cents_as_float
@@ -164,10 +184,6 @@ class Product < ApplicationRecord
 
   def cost_price_header
     supplier_registered_for_sales_tax? ? 'Cost price' : 'Total Cost Price'
-  end
-
-  def display_retail_price
-    number_to_currency(format('%.2f', (retail_price_in_cents_as_float / 100))) unless retail_price_in_cents_as_float.nil?
   end
 
   def display_markup

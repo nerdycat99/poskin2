@@ -56,8 +56,8 @@
         <br />
         <div class="row">
           <div class="col-6">
-            <%= f.label "Estimated Retail Price (excluding sales tax)" %>
-            <%= f.text_field :retail_price, placeholder: 'enter the amount you intend to sell the product for minus sales tax', value: @product.display_retail_price, data: { action: "change->product#retailPriceDataEntered", target: "product.retailPrice" } %>
+            <%= f.label "Total Retail Price (including sales tax)" %>
+            <%= f.text_field :retail_price, placeholder: 'the amount you intend to sell the product for and place on price labels', value: @product.display_retail_price, data: { action: "change->product#retailPriceDataEntered", target: "product.retailPrice" } %>
           </div>
           <div class="col-6">
             <%= f.label "Markup percentage" %>
@@ -88,7 +88,7 @@
         <br />
         <div class="row">
           <div class="col-4">
-            <div class="retail_price">Adjusted Retail Price (excl tax)</div>
+            <div class="retail_price">Retail Price (excl tax)</div>
             <div class="retail_price" data-product-target="retailCalculatedRetailPrice">
               $ -
             </div>
