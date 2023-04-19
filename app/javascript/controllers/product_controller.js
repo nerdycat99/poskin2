@@ -82,19 +82,30 @@ export default class extends Controller {
     }
   }
 
+  // TO DO: we need to pass in the applicable sales tax for product NOT hardcode as 10%!!
   calculateAmountsForGivenRetailPrice(registeredForTax) {
-    var retailPrice = parseFloat(this.retailPriceTarget.value.replace('$','')).toFixed(2)
+    // var retailPrice = parseFloat(this.retailPriceTarget.value.replace('$','')).toFixed(2)
+    var retailPriceTotal = parseFloat(this.retailPriceTarget.value.replace('$','')).toFixed(2)
     var percentage = parseFloat(this.retailPercentageTarget.value.replace('%','')).toFixed(2)
     var percent = (percentage / 100.0)
     var total_percent =  percent + 1
 
-    var costPrice = parseFloat(retailPrice / total_percent).toFixed(2)
+    var retailPrice = parseFloat(retailPriceTotal / 1.1).toFixed(2)
+    var retailPriceTax = (parseFloat(retailPriceTotal) - parseFloat(retailPrice)).toFixed(2)
+
+    // var costPrice = parseFloat(retailPrice / total_percent).toFixed(2)
+
+    var costPrice = (Math.round( parseFloat(retailPrice / total_percent) * 100 ) / 100).toFixed(2);
     var costPriceTax = parseFloat(costPrice * 0.1).toFixed(2)
     var costPriceTotal = (parseFloat(costPrice) + parseFloat(costPriceTax)).toFixed(2)
-    var markUpAmount = parseFloat(costPrice * percent).toFixed(2)
-    var adjustedretailPrice = (parseFloat(costPrice) + parseFloat(markUpAmount)).toFixed(2)
-    var retailPriceTax = parseFloat(adjustedretailPrice * 0.1).toFixed(2)
-    var retailPriceTotal = (parseFloat(adjustedretailPrice) + parseFloat(retailPriceTax)).toFixed(2)
+
+    // var markUpAmount = parseFloat(costPrice * percent).toFixed(2)
+    var markUpAmount = (parseFloat(retailPrice) - parseFloat(costPrice)).toFixed(2)
+
+    // var adjustedretailPrice = (parseFloat(costPrice) + parseFloat(markUpAmount)).toFixed(2)
+
+    // var retailPriceTax = parseFloat(adjustedretailPrice * 0.1).toFixed(2)
+    // var retailPriceTotal = (parseFloat(adjustedretailPrice) + parseFloat(retailPriceTax)).toFixed(2)
 
     var totalCostsForSale = 0.0
     var retailTaxLiability = 0.0
@@ -104,11 +115,12 @@ export default class extends Controller {
       totalCostsForSale = parseFloat(retailTaxLiability) + parseFloat(costPriceTotal)
     } else {
       retailTaxLiability = retailPriceTax
-      totalCostsForSale = retailTaxLiability + parseFloat(costPrice)
+      totalCostsForSale = parseFloat(retailTaxLiability) + parseFloat(costPrice)
     }
     var profit = retailPriceTotal - totalCostsForSale
 
-    this.retailCalculatedRetailPriceTarget.innerText = "$" + adjustedretailPrice
+    this.retailCalculatedRetailPriceTarget.innerText = "$" + retailPrice
+    // this.retailCalculatedRetailPriceTarget.innerText = "$" + adjustedretailPrice
     if (registeredForTax) {
       this.retailCalculatedCostPriceTaxTarget.innerText = "$" + costPriceTax
       this.retailCalculatedCostPriceTotalTarget.innerText = "$" + costPriceTotal
@@ -146,7 +158,7 @@ export default class extends Controller {
       totalCostsForSale = retailTaxLiability + parseFloat(costPriceTotal)
     } else {
       retailTaxLiability = retailPriceTax
-      totalCostsForSale = retailTaxLiability + parseFloat(costPrice)
+      totalCostsForSale = parseFloat(retailTaxLiability) + parseFloat(costPrice)
     }
     var profit = retailPriceTotal - totalCostsForSale
 
