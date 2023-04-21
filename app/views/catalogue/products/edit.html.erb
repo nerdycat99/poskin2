@@ -6,32 +6,210 @@
          <p class="text-red-700 text-base"><%= message %> </p>
       <%end%>
     <%end%>
-    <%= simple_form_for @existing_product, builder: TailwindFormBuilder, class: "mt-6", url: catalogue_supplier_product_path do |f| %>
-      <%= f.label "Product Title" %>
-      <%= f.text_field :title %>
-      <br />
-      <%= f.label "Product Description" %>
-      <%= f.text_field :description, placeholder: 'Description of my product' %>
-      <br />
-      <%= f.label "Notes" %>
-      <%= f.text_field :notes, placeholder: 'anything you like in here' %>
-      <br />
-      <%= f.label "SKU Code" %>
-      <%= f.text_field :sku_code, value: @existing_product.sku_code %>
-      <br />
-      <%= f.input :publish, as: :select, collection: ['Yes', 'No'], required: true, include_blank: false, label: 'Publish this Product?', selected: @existing_product.display_published %>
-      <br />
-      <%= f.label "Cost price" %>
-      <%= f.text_field :cost_price, placeholder: '100.99', value: @existing_product.display_cost_price %>
-      <%= f.label "Markup" %>
-      <%= f.text_field :markup, placeholder: '50%', value: @existing_product.display_markup %>
-      <br />
-      <%= f.label "Accounting Code" %>
-      <%= f.collection_select :accounting_code_id, AccountingCode.order(:name),:id,:name, include_blank: true %>
-      <br />
-      <br />
-      <%= f.submit_button "Save Changes" %>
-      <%= link_to "Cancel", catalogue_supplier_path(@existing_product.supplier.id), class: "btn btn-outline-secondary" %>
-    <% end %>
+    <div data-controller="product">
+      <div class="d-none" data-product-target="registeredForSalesTax"><%= @existing_product.supplier. sales_tax_registered %></div>
+      <%= simple_form_for @existing_product, builder: TailwindFormBuilder, class: "mt-6", url: catalogue_supplier_product_path do |f| %>
+        <div class="row">
+          <div class="col-6">
+            <%= f.label "Product Title" %>
+            <%= f.text_field :title, placeholder: 'My Product' %>
+          </div>
+          <div class="col-6">
+            <%= f.label "Product Description" %>
+            <%= f.text_field :description, placeholder: 'Description of my product' %>
+          </div>
+        </div>
+        <br />
+        <%= f.label "Notes" %>
+        <%= f.text_field :notes, placeholder: 'anything you like in here' %>
+        <br />
+        <br />
+        <div class="row">
+          <div class="col-4">
+            <%= f.label "SKU Code" %>
+            <%= f.text_field :sku_code, value: @existing_product.sku_code, readonly: true %>
+          </div>
+          <div class="col-4">
+            <%= f.input :publish, as: :select, collection: ['Yes', 'No'], required: true, include_blank: false, label: 'Publish this Product?', selected: @existing_product.display_published %>
+            <br />
+          </div>
+          <div class="col-4">
+            <%= f.label "Select Accounting Code" %>
+            <br />
+            <%= f.collection_select :accounting_code_id, AccountingCode.order(:name),:id,:name, include_blank: true %>
+          </div>
+        </div>
+        <br />
+        <br />
+        <%= f.label "How would you like to calculate the prices?" %>
+        <br />
+        <%= f.collection_select :price_calc_method, @calculation_methods, :value, :name, {include_blank: true, selected: @existing_product.selected_price_calc_method_id || 0 }, data: { action: "change->product#selectSection", target: "product.priceCalcMethod" } %>
+        <br />
+        <br />
+
+        <!-- section for entering amounts via the retail price method -->
+        <div class="d-none" data-product-target="calculateRetailPriceSection">
+          <br />
+          <div class="row">
+            <div class="col-6">
+              <%= f.label "Total Retail Price (including sales tax)" %>
+              <%= f.text_field :retail_price, placeholder: 'the amount you intend to sell the product for and place on price labels', value: @existing_product.display_retail_price, data: { action: "change->product#retailPriceDataEntered", target: "product.retailPrice" } %>
+            </div>
+            <div class="col-6">
+              <%= f.label "Markup percentage" %>
+              <%= f.text_field :markup, placeholder: 'enter the markup percentage you would like to determine the cost price', value: @existing_product.display_markup, data: { action: "change->product#retailPriceDataEntered", target: "product.retailPercentage" } %>
+            </div>
+          </div>
+          <br />
+          <div class="row">
+            <div class="col-4">
+              <div class="cost_price">Suppliers Cost Price (excl tax)</div>
+              <div class="cost_price" data-product-target="retailCalculatedCostPrice">
+                $ -
+              </div>
+            </div>
+             <div class="col-4">
+              <div class="cost_price">Suppliers Tax Amount</div>
+              <div class="cost_price" data-product-target="retailCalculatedCostPriceTax">
+                $ -
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="cost_price">Suppliers Total Cost Price (incl tax)</div>
+              <div class="cost_price" data-product-target="retailCalculatedCostPriceTotal">
+                $ -
+              </div>
+            </div>
+          </div>
+          <br />
+          <div class="row">
+            <div class="col-4">
+              <div class="retail_price">Retail Price (excl tax)</div>
+              <div class="retail_price" data-product-target="retailCalculatedRetailPrice">
+                $ -
+              </div>
+            </div>
+             <div class="col-4">
+              <div class="retail_price">Retail Tax Amount</div>
+              <div class="retail_price" data-product-target="retailCalculatedRetailPriceTax">
+                $ -
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="retail_price">Total Retail Price (incl tax)</div>
+              <div class="retail_price" data-product-target="retailCalculatedRetailPriceTotal">
+                $ -
+              </div>
+            </div>
+          </div>
+          <br />
+          <div class="row">
+            <div class="col-4">
+              <div class="markup_data">Markup Amount</div>
+              <div class="markup_data" data-product-target="retailCalculatedMarkupAmount">
+                $ -
+              </div>
+            </div>
+             <div class="col-4">
+              <div class="markup_data">Profit Amount</div>
+              <div class="markup_data" data-product-target="retailCalculatedProfitAmount">
+                $ -
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="markup_data">Retail Tax Liability</div>
+              <div class="markup_data" data-product-target="retailCalculatedRetailTaxLiability">
+                $ -
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- section for entering amounts via the retail price method -->
+
+        <!-- section for entering amounts via the cost price method -->
+        <div class="d-none" data-product-target="calculateCostPriceSection">
+          <br />
+          <div class="row">
+            <div class="col-6">
+              <%= f.label @existing_product.cost_price_label %>
+              <%= f.text_field :cost_price, placeholder: 'enter the amount which you paid the supplier for this product', value: @existing_product.display_cost_price, data: { action: "change->product#costPriceDataEntered", target: "product.costPrice" } %>
+            </div>
+            <div class="col-6">
+              <%= f.label "Markup percentage" %>
+              <%= f.text_field :markup, placeholder: 'enter the markup percentage to apply to the cost price, e.g. 50%', value: @existing_product.display_markup, data: { action: "change->product#costPriceDataEntered", target: "product.percentage" } %>
+            </div>
+          </div>
+          <br />
+          <div class="row">
+            <div class="col-4">
+              <div class="cost_price">Suppliers Cost Price (excl tax)</div>
+              <div class="cost_price" data-product-target="calculatedCostPrice">
+                $ -
+              </div>
+            </div>
+             <div class="col-4">
+              <div class="cost_price">Suppliers Tax Amount</div>
+              <div class="cost_price" data-product-target="calculatedCostPriceTax">
+                $ -
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="cost_price">Suppliers Total Cost Price (incl tax)</div>
+              <div class="cost_price" data-product-target="calculatedCostPriceTotal">
+                $ -
+              </div>
+            </div>
+          </div>
+          <br />
+          <div class="row">
+            <div class="col-4">
+              <div class="retail_price">Retail Price (excl tax)</div>
+              <div class="retail_price" data-product-target="calculatedRetailPrice">
+                $ -
+              </div>
+            </div>
+             <div class="col-4">
+              <div class="retail_price">Retail Tax Amount</div>
+              <div class="retail_price" data-product-target="calculatedRetailPriceTax">
+                $ -
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="retail_price">Total Retail Price (incl tax)</div>
+              <div class="retail_price" data-product-target="calculatedRetailPriceTotal">
+                $ -
+              </div>
+            </div>
+          </div>
+          <br />
+          <div class="row">
+            <div class="col-4">
+              <div class="markup_data">Markup Amount</div>
+              <div class="markup_data" data-product-target="calculatedMarkupAmount">
+                $ -
+              </div>
+            </div>
+             <div class="col-4">
+              <div class="markup_data">Profit Amount</div>
+              <div class="markup_data" data-product-target="calculatedProfitAmount">
+                $ -
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="markup_data">Retail Tax Liability</div>
+              <div class="markup_data" data-product-target="calculatedRetailTaxLiability">
+                $ -
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- section for entering amounts via the cost price method -->
+
+        <br />
+        <br />
+        <%= f.submit_button "Save Changes" %>
+        <%= link_to "Cancel", catalogue_supplier_path(@existing_product.supplier.id), class: "btn btn-outline-secondary" %>
+      <% end %>
+    </div>
   </div>
 </div>
