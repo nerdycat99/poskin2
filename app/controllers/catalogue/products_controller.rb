@@ -78,11 +78,11 @@ class Catalogue::ProductsController < ApplicationController
   end
 
   def cost_price
-    (unmatched_params['cost_price'].gsub(/[^0-9.]/, '').to_f * 100).to_i
+    (unmatched_params['cost_price'].gsub(/[^0-9.]/, '').to_f * 100).to_i if unmatched_params['cost_price']
   end
 
   def retail_price
-    (unmatched_params['retail_price'].gsub(/[^0-9.]/, '').to_f * 100).to_i
+    (unmatched_params['retail_price'].gsub(/[^0-9.]/, '').to_f * 100).to_i if unmatched_params['retail_price']
   end
 
   def price_calc_method
