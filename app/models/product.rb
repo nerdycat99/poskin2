@@ -38,7 +38,7 @@ class Product < ApplicationRecord
   end
 
   def cost_or_retail_price_method
-    return if self.persisted?
+    # return if self.persisted?
 
     if price_calc_method.blank?
       self.errors.add :price_calc_method, 'must be selected. You can calculate all costs and prices by either entering a cost or retail price'
