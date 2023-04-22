@@ -188,7 +188,7 @@ class Variant < ApplicationRecord
   # TO DO: if the variant has it's own cost price then it should have it's own retail price??
   # delegate :display_retail_price, to: :product
 
-  delegate :display_retail_price_tax_amount, to: :product
+  # delegate :display_retail_price_tax_amount, to: :product
 
   # delegate :display_total_retail_price_including_tax, to: :product
 
