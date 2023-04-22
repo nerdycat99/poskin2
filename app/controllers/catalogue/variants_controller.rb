@@ -5,7 +5,7 @@ class Catalogue::VariantsController < ApplicationController
   before_action :variant_with_sku_code, only: [:new]
   before_action :sanitize_params, only: %i[create update]
   before_action :attribute_types, only: %i[new edit]
-  before_action :existing_variant, only: %i[edit update destroy]
+  before_action :existing_variant, only: %i[edit update destroy show]
 
   def new
     0.upto(@attribute_types.count - 1) do |_loop_index|
@@ -17,6 +17,9 @@ class Catalogue::VariantsController < ApplicationController
     0.upto(@existing_variant.attribute_types_not_set.count - 1) do
       @existing_variant.product_attributes_variants.build
     end
+  end
+
+  def show
   end
 
   def create
