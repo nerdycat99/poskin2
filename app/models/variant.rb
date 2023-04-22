@@ -91,6 +91,15 @@ class Variant < ApplicationRecord
 
   delegate :total_retail_price_in_cents_as_float, to: :product
 
+
+  def display_total_retail_price_including_tax
+    number_to_currency(format('%.2f', (total_retail_price_in_cents_as_float / 100))) unless total_retail_price_in_cents_as_float.nil?
+  end
+
+  def total_retail_price_in_cents_as_float
+    product.total_retail_price_in_cents_as_float
+  end
+
   def attribute_types_set
     tagged_attributes.map(&:name)
   end

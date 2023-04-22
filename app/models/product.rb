@@ -68,6 +68,10 @@ class Product < ApplicationRecord
     price_calc_method == 'via_retail_price'
   end
 
+  def display_title
+    variants.any? ? "#{title.titleize}, see variants below for retail prices" : "#{title.titleize} - Retail Price: #{display_total_retail_price_including_tax}"
+  end
+
   def display_cost_price
     number_to_currency(format('%.2f', (cost_price_in_cents_as_float / 100))) unless cost_price_in_cents_as_float.nil?
   end
