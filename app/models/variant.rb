@@ -63,7 +63,11 @@ class Variant < ApplicationRecord
   end
 
   def display_total_cost_price
-    number_to_currency(format('%.2f', ((total_cost_price_in_cents_as_float) / 100))) unless cost_price.nil?
+    if cost_price.nil?
+      product.display_total_cost_price
+    else
+      number_to_currency(format('%.2f', ((total_cost_price_in_cents_as_float) / 100))) unless cost_price.nil?
+    end
   end
 
   def cost_price_tax_amount_in_cents_as_float

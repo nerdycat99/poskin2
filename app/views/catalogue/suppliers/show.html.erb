@@ -59,11 +59,8 @@
                       <td><%= variant.display_characteristics %></td>
                       <!-- THIS NEEDS TO BE FIXED -->
                       <td><%= variant.display_total_retail_price_including_tax %></td>
-                      <% if @supplier.registered_for_sales_tax? %>
-                        <td><%= product.display_total_cost_price %></td>
-                      <% else %>
-                        <td><%= variant.display_cost_price %></td>
-                      <% end %>
+                      <td><%= variant.display_total_cost_price %></td>
+
                         <td><%= variant.stock_count %></td>
                         <td><%= product.publish %></td>
                         <td>
