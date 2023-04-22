@@ -56,6 +56,6 @@ class OrderItem < ApplicationRecord
   end
 
   def retail_price_in_cents_as_float
-    variant.retail_price_in_cents_as_float * quantity if variant.present? && quantity.present?
+    variant.retail_price_before_tax_in_cents_as_float * quantity if variant.present? && quantity.present?
   end
 end

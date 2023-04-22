@@ -64,7 +64,7 @@
                         <td><%= variant.stock_count %></td>
                         <td><%= product.publish %></td>
                         <td>
-                          <%= link_to "View", edit_catalogue_supplier_product_variant_path(@supplier.id, product.id, variant.id), class: "btn btn-outline-primary" %>
+                          <%= link_to "View", catalogue_supplier_product_variant_path(@supplier.id, product.id, variant.id), class: "btn btn-outline-primary" %>
                           <%= link_to "Edit", edit_catalogue_supplier_product_variant_path(@supplier.id, product.id, variant.id), class: "btn btn-outline-secondary" %>
                           <%= link_to '<button type="button" class="btn btn-outline-danger">Remove</button>'.html_safe, catalogue_supplier_product_variant_path(@supplier.id, product.id, variant.id), data: {turbo_method: :delete, turbo_confirm: 'Are you sure you want to delete this Variant?'} %>
                         </td>

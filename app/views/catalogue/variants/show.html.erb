@@ -1,0 +1,72 @@
+<div class="p-12 mx-auto text-gray-800 max-w-7xl">
+  <h2>Variant Details: <%= @existing_variant.display_title %></h2>
+  <div data-controller="hello">
+    <table style="width:70%">
+      <tr>
+        <th>Variant Characterstics:</th>
+        <td><%= @existing_variant.display_characteristics %></td>
+      </tr>
+      <tr>
+        <th>SKU Code:</th>
+        <td><%= @existing_variant.sku_code %></td>
+      </tr>
+      <tr>
+        <th>Published:</th>
+        <td><%= @existing_variant.product.display_published %></td>
+      </tr>
+      <tr>
+        <th>Supplier registered for tax?:</th>
+        <td><%= @existing_variant.display_supplier_registered_for_sales_tax %></td>
+      </tr>
+      <tr>
+        <th>Prices and Markup as per Parent Product?:</th>
+        <td><%= @existing_variant.display_use_product_details %></td>
+      </tr>
+      <tr><th>&nbsp;</th><td>&nbsp;</td></tr>
+      <tr>
+        <th>Cost Price:</th>
+        <td><%= @existing_variant.display_cost_price %></td>
+      </tr>
+      <tr>
+        <th>Tax Amount:</th>
+        <td><%= @existing_variant.display_cost_price_tax_amount %></td>
+      </tr>
+      <tr>
+        <th>Total Cost Price (inclusive sales tax):</th>
+        <td><%= @existing_variant.display_total_cost_price %></td>
+      </tr>
+      <tr><th>&nbsp;</th><td>&nbsp;</td></tr>
+      <tr>
+        <th>Retail Price (excluding sales tax):</th>
+        <td><%= @existing_variant.display_retail_price %></td>
+      </tr>
+      <tr>
+        <th>Applicable Tax:</th>
+        <td><%= @existing_variant.display_retail_price_tax_amount %></td>
+      </tr>
+      <tr>
+        <th>Total Retail Price (inclusive sales tax):</th>
+        <td><%= @existing_variant.display_total_retail_price_including_tax %></td>
+      </tr>
+      <tr><th>&nbsp;</th><td>&nbsp;</td></tr>
+      <tr>
+        <th>Markup on Cost Price:</th>
+        <td><%= @existing_variant.display_markup %></td>
+      </tr>
+      <tr>
+        <th>Markup Amount:</th>
+        <td><%= @existing_variant.display_retail_mark_up_amount %></td>
+      </tr>
+      <tr>
+        <th>Profit Amount:</th>
+        <td><%= @existing_variant.display_profit_amount %></td>
+      </tr>
+      <tr>
+        <th>Retail Tax Liability:</th>
+        <td><%= @existing_variant.display_retail_sales_tax_liability_amount %></td>
+      </tr>
+    </table>
+    <br />
+      <%= link_to "Back to Products", catalogue_supplier_path(@existing_variant.product.supplier.id), class: "btn btn-primary" %>
+  </div>
+</div>
