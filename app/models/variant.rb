@@ -27,7 +27,7 @@ class Variant < ApplicationRecord
   end
 
   def display_with_product_details
-    "#{product.title}, #{display_characteristics}"
+    "#{product.title.titleize}, #{display_characteristics}"
   end
 
   def invoice_display_details

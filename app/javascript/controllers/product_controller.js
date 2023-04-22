@@ -54,7 +54,6 @@ export default class extends Controller {
   }
 
   selectSection(e) {
-    console.log("i ran")
     var selectedOption = e.explicitOriginalTarget.selectedOptions[0].value;
 
     if (selectedOption == "1") {
@@ -84,8 +83,8 @@ export default class extends Controller {
 
   // TO DO: we need to pass in the applicable sales tax for product NOT hardcode as 10%!!
   calculateAmountsForGivenRetailPrice(registeredForTax) {
-    // var retailPrice = parseFloat(this.retailPriceTarget.value.replace('$','')).toFixed(2)
-    var retailPriceTotal = parseFloat(this.retailPriceTarget.value.replace('$','')).toFixed(2)
+    var retailPriceTotalUnsanitized = this.retailPriceTarget.value.replace('$','')
+    var retailPriceTotal = parseFloat(retailPriceTotalUnsanitized.replace(',','')).toFixed(2)
     var percentage = parseFloat(this.retailPercentageTarget.value.replace('%','')).toFixed(2)
     var percent = (percentage / 100.0)
     var total_percent =  percent + 1
