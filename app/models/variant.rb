@@ -27,7 +27,7 @@ class Variant < ApplicationRecord
   end
 
   def display_with_product_details
-    "#{product.title}, #{display_characteristics}"
+    "#{product.title.titleize}, #{display_characteristics}"
   end
 
   def invoice_display_details
@@ -63,11 +63,29 @@ class Variant < ApplicationRecord
   end
 
   def display_total_cost_price
-    number_to_currency(format('%.2f', ((cost_price.to_f + cost_price_tax_amount_in_cents_as_float) / 100))) unless cost_price.nil?
+    if cost_price.nil?
+      product.display_total_cost_price
+    else
+      number_to_currency(format('%.2f', ((total_cost_price_in_cents_as_float) / 100))) unless cost_price.nil?
+    end
   end
 
   def cost_price_tax_amount_in_cents_as_float
-    product.supplier_registered_for_sales_tax? ? cost_price * tax_rate : 0.0
+    # looks wrong??????
+    product.supplier_registered_for_sales_tax? ? cost_price.to_f * tax_rate : 0.0
+  end
+
+  def total_cost_price_in_cents_as_float
+    cost_price.to_f + cost_price_tax_amount_in_cents_as_float
+  end
+
+  def cost_price_in_cents_as_float
+    cost_price.to_f
+  end
+
+  def retail_mark_up_amount_in_cents
+    markup_percentage = markup ? markup.to_f / 100.0 : product.markup.to_f / 100.0
+    cost_price_in_cents_as_float * markup_percentage
   end
 
   def tax_rate
@@ -83,13 +101,35 @@ class Variant < ApplicationRecord
 
   delegate :display_retail_price_tax_amount, to: :product
 
-  delegate :display_total_retail_price_including_tax, to: :product
+  # delegate :display_total_retail_price_including_tax, to: :product
 
   delegate :retail_price_in_cents_as_float, to: :product
 
-  delegate :retail_price_tax_amount_in_cents_as_float, to: :product
+  # delegate :retail_price_tax_amount_in_cents_as_float, to: :product
 
-  delegate :total_retail_price_in_cents_as_float, to: :product
+  # delegate :total_retail_price_in_cents_as_float, to: :product
+
+
+
+  def display_total_retail_price_including_tax
+    number_to_currency(format('%.2f', (total_retail_price_in_cents_as_float / 100))) unless total_retail_price_in_cents_as_float.nil?
+  end
+
+  def retail_price_before_tax_in_cents_as_float
+    retail_mark_up_amount_in_cents + cost_price_in_cents_as_float
+  end
+
+  def retail_price_tax_amount_in_cents_as_float
+    retail_price_before_tax_in_cents_as_float * tax_rate
+  end
+
+  def total_retail_price_in_cents_as_float
+    if cost_price? && cost_price != product.cost_price
+      retail_price_tax_amount_in_cents_as_float + retail_price_before_tax_in_cents_as_float
+    else
+      product.total_retail_price_in_cents_as_float
+    end
+  end
 
   def attribute_types_set
     tagged_attributes.map(&:name)
