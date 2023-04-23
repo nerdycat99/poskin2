@@ -8,7 +8,13 @@ class Variant < ApplicationRecord
   has_many :product_attributes_variants, dependent: :destroy
   has_many :stock_adjustments
 
+  enum price_calc_method: { via_cost_price: 0, via_retail_price: 1 }
+
   accepts_nested_attributes_for :product_attributes_variants
+
+  validate :cost_or_retail_price_method
+
+  before_save :clean_up_calculation_methods
 
   def self.search(target)
     return if target.blank?
@@ -19,11 +25,36 @@ class Variant < ApplicationRecord
   # when deleting Variants remove .product_attributes_variants (these contain a variant_id and a product_attribute_id
   # ProductAttributesVariant.where(variant_id: 19).delete_all
 
-  # we need to add an attribute type when the user sets up attributes a variant can have like size, colour or artists code
-  # when the user hits Add Attribute Values we shouls use this to control what they can add avlues for (eg: colour blue)
+  def cost_or_retail_price_method
+    return if use_product_details?
+
+    # we need to skip this if all costs, markup and selection method are blank - means use the product level details
+    if price_calc_method.blank?
+      self.errors.add :price_calc_method, 'must be selected. You can calculate all costs and prices by either entering a cost or retail price'
+    elsif price_calc_method == 'via_cost_price'
+      self.errors.add :cost_price, 'must have a valid value' if cost_price.blank? || cost_price <= 0
+      self.errors.add :markup, 'must have a valid value' if markup.blank?
+    elsif price_calc_method == 'via_retail_price'
+      self.errors.add :retail_price, 'must have a valid value' if retail_price.blank? || retail_price <= 0
+      self.errors.add :markup, 'must have a valid value' if markup.blank?
+    end
+  end
+
+  def clean_up_calculation_methods
+    self.cost_price = nil if price_calc_method == 'via_retail_price' || use_product_details?
+    self.retail_price = nil if price_calc_method == 'via_cost_price' || use_product_details?
+  end
+
+  def selected_price_calc_method_id
+    Variant.price_calc_methods[self.price_calc_method]
+  end
 
   def generated_sku
     unique_sku
+  end
+
+  def calculated_via_cost_price?
+    price_calc_method == 'via_cost_price' || (price_calc_method.blank? && !use_product_details?)
   end
 
   def markup_same_as_product?
@@ -32,6 +63,10 @@ class Variant < ApplicationRecord
 
   def cost_price_same_as_product?
     cost_price.blank? || cost_price.to_f == product.cost_price_in_cents_as_float
+  end
+
+  def retail_price_same_as_product?
+    retail_price.blank? || retail_price.to_f == product.retail_price_in_cents_as_float
   end
 
   def display_supplier_registered_for_sales_tax
@@ -43,7 +78,11 @@ class Variant < ApplicationRecord
   end
 
   def use_product_details?
-    markup_same_as_product? && cost_price_same_as_product?
+    markup_same_as_product? && cost_price_same_as_product? && retail_price_same_as_product?
+  end
+
+  def use_product_details_drop_down_value
+    !use_product_details? ? 1 : 0
   end
 
   def display_with_product_details
@@ -90,11 +129,9 @@ class Variant < ApplicationRecord
   end
 
   def display_total_cost_price
-    if cost_price.nil?
-      product.display_total_cost_price
-    else
-      number_to_currency(format('%.2f', ((total_cost_price_in_cents_as_float) / 100))) unless total_cost_price_in_cents_as_float.nil?
-    end
+    return product.display_total_cost_price if use_product_details?
+
+    number_to_currency(format('%.2f', ((total_cost_price_in_cents_as_float) / 100))) unless total_cost_price_in_cents_as_float.nil?
   end
 
   # DONE
@@ -117,13 +154,28 @@ class Variant < ApplicationRecord
   end
 
   # DONE
+  # def cost_price_in_cents_as_float
+  #   if use_product_details?
+  #     product.cost_price_in_cents_as_float
+  #   else
+  #     cost_price.to_f
+  #   end
+  # end
+
+
+
   def cost_price_in_cents_as_float
-    if use_product_details?
-      product.cost_price_in_cents_as_float
-    else
+    return product.cost_price_in_cents_as_float if use_product_details?
+
+    if calculated_via_cost_price?
       cost_price.to_f
+    else
+      (retail_price_before_tax_in_cents_as_float / ((markup.to_f / 100.0) + 1)).round(0).to_f
     end
   end
+
+
+
 
   def retail_mark_up_amount_in_cents
     markup_percentage = markup ? markup.to_f / 100.0 : product.markup.to_f / 100.0
@@ -185,20 +237,6 @@ class Variant < ApplicationRecord
     end
   end
 
-  # TO DO: if the variant has it's own cost price then it should have it's own retail price??
-  # delegate :display_retail_price, to: :product
-
-  # delegate :display_retail_price_tax_amount, to: :product
-
-  # delegate :display_total_retail_price_including_tax, to: :product
-
-  # delegate :retail_price_in_cents_as_float, to: :product
-
-  # delegate :retail_price_tax_amount_in_cents_as_float, to: :product
-
-  # delegate :total_retail_price_in_cents_as_float, to: :product
-
-
   def display_total_retail_price_including_tax
     number_to_currency(format('%.2f', (total_retail_price_in_cents_as_float / 100))) unless total_retail_price_in_cents_as_float.nil?
   end
@@ -232,10 +270,12 @@ class Variant < ApplicationRecord
 
   # DONE
   def retail_price_before_tax_in_cents_as_float
-    if use_product_details?
-      product.retail_price_before_tax_in_cents_as_float
-    else
+    return product.retail_price_before_tax_in_cents_as_float if use_product_details?
+
+    if calculated_via_cost_price?
       retail_mark_up_amount_in_cents + cost_price_in_cents_as_float
+    else
+      (total_retail_price_in_cents_as_float / (1 + tax_rate)).round(0).to_f
     end
   end
 
@@ -244,13 +284,26 @@ class Variant < ApplicationRecord
   end
 
   # DONE
+  # def total_retail_price_in_cents_as_float
+  #   if use_product_details?
+  #     product.total_retail_price_in_cents_as_float
+  #   else
+  #     retail_price_tax_amount_in_cents_as_float + retail_price_before_tax_in_cents_as_float
+  #   end
+  # end
+
   def total_retail_price_in_cents_as_float
-    if use_product_details?
-      product.total_retail_price_in_cents_as_float
+    return product.total_retail_price_in_cents_as_float if use_product_details?
+
+    if calculated_via_cost_price?
+      cost_price.blank? ? (cost_price.to_f + (markup.to_f / 100.0).round(0)).to_f : retail_price_tax_amount_in_cents_as_float + retail_price_before_tax_in_cents_as_float
     else
-      retail_price_tax_amount_in_cents_as_float + retail_price_before_tax_in_cents_as_float
+      retail_price.to_f
     end
   end
+
+
+
 
   def attribute_types_set
     tagged_attributes.map(&:name)
