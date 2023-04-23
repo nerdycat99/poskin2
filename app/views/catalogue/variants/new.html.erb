@@ -21,12 +21,16 @@
           </div>
         <% index += 1 %>
     <% end %>
-    <% index %>
-    </div>
-    <% (index / 3).times do %>
-      <!-- </div> -->
+    <!-- temp fix!!! only works upto a specific number of characteristics -->
+    <% if (index.to_f / 3.0 ) <= 1  %>
+      </div>
+    <% elsif (index.to_f / 3.0 ) <= 2  %>
+      </div></div>
+    <% elsif (index.to_f / 3.0 ) <= 3  %>
+      </div></div></div>
+    <% elsif (index.to_f / 3.0 ) <= 4  %>
+      </div></div></div></div>
     <% end %>
-
     <br />
     <%= link_to '<button type="button" class="btn btn-outline-primary">Add Attribute Values</button>'.html_safe, new_catalogue_supplier_product_product_attribute_path(@product.supplier.id, @product) %>
     <%= link_to '<button type="button" class="btn btn-outline-secondary">New Attribute Type</button>'.html_safe, new_catalogue_supplier_product_product_attribute_type_path(@product.supplier.id, @product) %>
@@ -39,35 +43,35 @@
         <%= f.text_field :sku_code, value: @variant.sku_code, readonly: true %>
       </div>
       <div class="col-6">
-        <div><%= f.label "Description" %>
+        <div><%= f.label "Description" %><br />
           <%= @variant.product.description %>
         </div>
       </div>
     </div>
     <!-- drop down use same price and markup as product (show in 3 columns) -->
     <!-- if the user says no to above show the select method, then as per product -->
-    <br />
-    <h5><%= f.label "Price information for the parent product of this variant" %></h5>
+    <br /><br />
+    <h5><%= f.label "Product Level Price and Markup Information" %></h5>
      <div class="row">
       <div class="col-4">
-        <div><%= f.label "Product Cost Price" %>
+        <div><%= f.label "Product Cost Price:" %>
         <%= @variant.product.display_cost_price %></div>
       </div>
       <div class="col-4">
-        <div><%= f.label "Product Retail Price" %>
+        <div><%= f.label "Product Retail Price:" %>
         <%= @variant.product.display_total_retail_price_including_tax %></div>
       </div>
       <div class="col-4">
-        <div><%= f.label "Product Markup Percentage" %>
+        <div><%= f.label "Product Markup Percentage:" %>
         <%= @variant.product.display_markup %></div>
       </div>
     </div>
     <br />
     <div data-controller="product">
       <div class="d-none" data-product-target="registeredForSalesTax"><%= @variant.product.supplier. sales_tax_registered %></div>
-      <%= f.label "Do you want to use these product prices and markup percentage for the variant you are about to create?" %>
+      <%= f.label "Use the same product prices and markup percentage as the product?" %>
       <br />
-      <% use_product_prices = [OpenStruct.new(name: 'Yes same as the Product', value: 0), OpenStruct.new(name: 'No this Variant has different prices and / or markup', value: 1)] %>
+      <% use_product_prices = [OpenStruct.new(name: 'Yes', value: 0), OpenStruct.new(name: 'No this Variant has different prices and/or markup', value: 1)] %>
       <%= f.collection_select :price_calc_method, use_product_prices, :value, :name, {include_blank: true, selected: @variant.use_product_details? }, data: { action: "change->product#useProductPricing", target: "product.usesProductPricing" } %>
       <br />
       <br />
