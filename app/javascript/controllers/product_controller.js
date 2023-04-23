@@ -4,8 +4,6 @@ export default class extends Controller {
   static targets = [
     "calculateRetailPriceSection",
     "calculateCostPriceSection",
-    "selectCalculateMethodSection",
-    "usesProductPricing",
     "priceCalcMethod",
     "registeredForSalesTax",
     "calculatedRetailTaxLiability",
@@ -32,13 +30,6 @@ export default class extends Controller {
     "retailCalculatedRetailTaxLiability"
   ]
   connect() {
-    // used for determining whether a variant should use the product details or not
-    if (this.usesProductPricingTarget.value == '1') {
-      this.show(this.selectCalculateMethodSectionTarget)
-    } else {
-      this.hide(this.selectCalculateMethodSectionTarget)
-    }
-
     var registeredForTax = (this.registeredForSalesTaxTarget.innerText === 'true')
 
     if (this.priceCalcMethodTarget.value == '0') {
@@ -59,15 +50,6 @@ export default class extends Controller {
       if (this.retailPercentageTarget.value && this.retailPriceTarget.value) {
         this.calculateAmountsForGivenRetailPrice(registeredForTax)
       }
-    }
-  }
-
-  useProductPricing(e) {
-    var useProductData = e.explicitOriginalTarget.selectedOptions[0].value;
-    if (useProductData == "1") {
-      this.show(this.selectCalculateMethodSectionTarget)
-    } else {
-      this.hide(this.selectCalculateMethodSectionTarget)
     }
   }
 

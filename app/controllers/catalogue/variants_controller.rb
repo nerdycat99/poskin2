@@ -6,7 +6,6 @@ class Catalogue::VariantsController < ApplicationController
   before_action :sanitize_params, only: %i[create update]
   before_action :attribute_types, only: %i[new edit]
   before_action :existing_variant, only: %i[edit update destroy show]
-  before_action :calculation_methods, only: %i[new create edit update]
 
   def new
     0.upto(@attribute_types.count - 1) do |_loop_index|
@@ -55,11 +54,6 @@ class Catalogue::VariantsController < ApplicationController
 
   private
 
-
-  def calculation_methods
-    @calculation_methods = [OpenStruct.new(name: 'Cost Price Method', value: 0), OpenStruct.new(name: 'Retail Price Method', value: 1)]
-  end
-
   def attribute_types
     @attribute_types = ProductAttribute.valid_attribute_types
   end
@@ -102,28 +96,14 @@ class Catalogue::VariantsController < ApplicationController
 
     params[:variant]['markup'] = markup
     params[:variant]['cost_price'] = cost_price
-    params[:variant]['retail_price'] = retail_price
-    params[:variant]['price_calc_method'] = price_calc_method
   end
 
   def unmatched_params
-    @unmatched_params ||= params.require(:variant).extract!(:markup, :cost_price, :retail_price, :price_calc_method)
+    @unmatched_params ||= params.require(:variant).extract!(:markup, :cost_price)
   end
 
   def cost_price
     (unmatched_params['cost_price'].gsub(/[^0-9.]/, '').to_f * 100).to_i if unmatched_params['cost_price'].present?
-  end
-
-  def retail_price
-    (unmatched_params['retail_price'].gsub(/[^0-9.]/, '').to_f * 100).to_i if unmatched_params['retail_price']
-  end
-
-  def price_calc_method
-    if unmatched_params['price_calc_method'].blank?
-      nil
-    else
-      unmatched_params['price_calc_method'].to_i
-    end
   end
 
   def markup
@@ -133,6 +113,6 @@ class Catalogue::VariantsController < ApplicationController
   end
 
   def variant_params
-    params.require(:variant).permit(:quantity, :sku_code, :cost_price, :price_calc_method, :retail_price, :markup, product_attributes_variants_attributes: [:product_attribute_id])
+    params.require(:variant).permit(:quantity, :sku_code, :cost_price, :markup, product_attributes_variants_attributes: [:product_attribute_id])
   end
 end

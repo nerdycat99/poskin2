@@ -12,6 +12,3 @@ application.register("hello", HelloController)
 
 import ProductController from "./product_controller"
 application.register("product", ProductController)
-
-import VariantController from "./variant_controller"
-application.register("variant", VariantController)
