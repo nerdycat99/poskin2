@@ -7,6 +7,7 @@
       <%end%>
     <%end%>
     <div data-controller="product">
+      <div class="d-none" data-product-target="usesProductPricing"></div>
       <div class="d-none" data-product-target="registeredForSalesTax"><%= @existing_product.supplier. sales_tax_registered %></div>
       <%= simple_form_for @existing_product, builder: TailwindFormBuilder, class: "mt-6", url: catalogue_supplier_product_path do |f| %>
         <div class="row">
@@ -41,12 +42,13 @@
         </div>
         <br />
         <br />
-        <%= f.label "How would you like to calculate the prices?" %>
-        <br />
-        <%= f.collection_select :price_calc_method, @calculation_methods, :value, :name, {include_blank: true, selected: @existing_product.selected_price_calc_method_id || 0 }, data: { action: "change->product#selectSection", target: "product.priceCalcMethod" } %>
-        <br />
-        <br />
-
+        <div class="" data-product-target="selectCalculateMethodSection">
+          <%= f.label "How would you like to calculate the prices?" %>
+          <br />
+          <%= f.collection_select :price_calc_method, @calculation_methods, :value, :name, {include_blank: true, selected: @existing_product.selected_price_calc_method_id || 0 }, data: { action: "change->product#selectSection", target: "product.priceCalcMethod" } %>
+          <br />
+          <br />
+        </div>
         <!-- section for entering amounts via the retail price method -->
         <div class="d-none" data-product-target="calculateRetailPriceSection">
           <br />

@@ -3,7 +3,7 @@
   <h5 style="text-align:right;float:right;"><%= @product.supplier.sales_tax_registered_text %></h5>
   <br /><br />
   <div data-controller="product">
-    <div class="d-none" data-product-target="registeredForSalesTax"><%= @product.supplier. sales_tax_registered %></div>
+    <div class="d-none" data-product-target="registeredForSalesTax"><%= @product.supplier.sales_tax_registered %></div>
     <% if @product.errors.any? %>
       <% @product.errors.full_messages.each do |message|%>
          <p class="text-red-700 text-base"><%= message %> </p>
@@ -41,11 +41,13 @@
       </div>
       <br />
       <br />
-      <%= f.label "How would you like to calculate the prices?" %>
-      <br />
-      <%= f.collection_select :price_calc_method, @calculation_methods, :value, :name, {include_blank: true, selected: @product.selected_price_calc_method_id }, data: { action: "change->product#selectSection", target: "product.priceCalcMethod" } %>
-      <br />
-      <br />
+      <div class="" data-product-target="selectCalculateMethodSection">
+        <%= f.label "How would you like to calculate the prices?" %>
+        <br />
+        <%= f.collection_select :price_calc_method, @calculation_methods, :value, :name, {include_blank: true, selected: @product.selected_price_calc_method_id }, data: { action: "change->product#selectSection", target: "product.priceCalcMethod" } %>
+        <br />
+        <br />
+      </div>
 
       <!-- section for entering amounts via the retail price method -->
       <div class="d-none" data-product-target="calculateRetailPriceSection">
