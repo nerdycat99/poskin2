@@ -20,18 +20,16 @@
                  <col span="1" style="width: 19%;">
                  <col span="1" style="width: 10%;">
                  <col span="1" style="width: 10%;">
-                 <col span="1" style="width: 10%;">
                  <col span="1" style="width: 8%;">
                  <col span="1" style="width: 8%;">
-                 <col span="1" style="width: 27%;">
+                 <col span="1" style="width: 37%;">
               </colgroup>
               <tbody>
                 <tr>
                   <th>SKU Code</th>
                   <th>Description/Variants</th>
                   <th>Retail Price</th>
-                  <th>Cost (excl. tax)</th>
-                  <th>Cost (incl. tax)</th>
+                  <th>Cost Price</th>
                   <th>Quantity</th>
                   <th>Published?</th>
                   <th></th>
@@ -41,11 +39,9 @@
                   <td><%= product.description %></td>
                   <td><%= product.display_total_retail_price_including_tax %></td>
                   <% if @supplier.registered_for_sales_tax? %>
-                    <td><%= product.display_cost_price %></td>
                     <td><%= product.display_total_cost_price %></td>
                   <% else %>
                     <td><%= product.display_cost_price %></td>
-                    <td>n/a</td>
                   <% end %>
                   <td><%= product.stock_count %></td>
                   <td><%= product.publish %></td>
@@ -55,7 +51,7 @@
                     <%= link_to '<button type="button" class="btn btn-danger">Remove</button>'.html_safe, catalogue_supplier_product_path(@supplier.id, product.id), data: {turbo_method: :delete, turbo_confirm: 'Are you sure you want to try and delete this Product?'} %>
                   </td>
                 </tr>
-                <tr><td colspan="8">&nbsp;</td></tr>
+                <tr><td colspan="7">&nbsp;</td></tr>
                 <% if product.variants.any? %>
                   <% product.variants.each do |variant| %>
                     <tr>
@@ -63,20 +59,15 @@
                       <td><%= variant.display_characteristics %></td>
                       <!-- THIS NEEDS TO BE FIXED -->
                       <td><%= variant.display_total_retail_price_including_tax %></td>
-                      <% if @supplier.registered_for_sales_tax? %>
-                        <td><%= variant.display_cost_price %></td>
-                        <td><%= variant.display_total_cost_price %></td>
-                      <% else %>
-                        <td><%= variant.display_cost_price %></td>
-                        <td>n/a</td>
-                      <% end %>
-                      <td><%= variant.stock_count %></td>
-                      <td><%= product.publish %></td>
-                      <td>
-                        <%= link_to "View", catalogue_supplier_product_variant_path(@supplier.id, product.id, variant.id), class: "btn btn-outline-primary" %>
-                        <%= link_to "Edit", edit_catalogue_supplier_product_variant_path(@supplier.id, product.id, variant.id), class: "btn btn-outline-secondary" %>
-                        <%= link_to '<button type="button" class="btn btn-outline-danger">Remove</button>'.html_safe, catalogue_supplier_product_variant_path(@supplier.id, product.id, variant.id), data: {turbo_method: :delete, turbo_confirm: 'Are you sure you want to delete this Variant?'} %>
-                      </td>
+                      <td><%= variant.display_total_cost_price %></td>
+
+                        <td><%= variant.stock_count %></td>
+                        <td><%= product.publish %></td>
+                        <td>
+                          <%= link_to "View", catalogue_supplier_product_variant_path(@supplier.id, product.id, variant.id), class: "btn btn-outline-primary" %>
+                          <%= link_to "Edit", edit_catalogue_supplier_product_variant_path(@supplier.id, product.id, variant.id), class: "btn btn-outline-secondary" %>
+                          <%= link_to '<button type="button" class="btn btn-outline-danger">Remove</button>'.html_safe, catalogue_supplier_product_variant_path(@supplier.id, product.id, variant.id), data: {turbo_method: :delete, turbo_confirm: 'Are you sure you want to delete this Variant?'} %>
+                        </td>
                     </tr>
                   <% end %>
                   <tr><td colspan="7">
