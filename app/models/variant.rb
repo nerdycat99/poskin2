@@ -27,7 +27,7 @@ class Variant < ApplicationRecord
   # ProductAttributesVariant.where(variant_id: 19).delete_all
 
   def cost_or_retail_price_method
-    return if use_product_details?
+    return if use_product_details? || price_calc_method.blank?
 
     # we need to skip this if all costs, markup and selection method are blank - means use the product level details
     if price_calc_method.blank?

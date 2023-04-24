@@ -4,7 +4,7 @@ class Catalogue::VariantsController < ApplicationController
   before_action :authenticate_user!
   before_action :variant_with_sku_code, only: [:new]
   before_action :sanitize_params, only: %i[create update]
-  before_action :attribute_types, only: %i[new edit]
+  before_action :attribute_types, only: %i[new edit create update]
   before_action :existing_variant, only: %i[edit update destroy show]
   before_action :calculation_methods, only: %i[new create edit update]
 
@@ -25,7 +25,7 @@ class Catalogue::VariantsController < ApplicationController
 
   def create
     @variant = product.variants.new(variant_params)
-    return render(:new, status: :unprocessable_entity) unless @variant.save!
+    return render(:new, status: :unprocessable_entity) unless @variant.save
 
     redirect_to catalogue_supplier_path(supplier.id)
   end
