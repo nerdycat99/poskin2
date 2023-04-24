@@ -12,24 +12,10 @@
     <% index = 0 %>
     <h5><%= f.label "Please select applicable attributes for this variant" %></h5>
     <%= f.simple_fields_for :product_attributes_variants do |attribute_fields| %>
-      <% if index == 0 || index % 3 == 0 %>
-        <div class="row">
-      <% end %>
-          <div class="col-4">
-            <%= attribute_fields.label @attribute_types[index] %>
-            <%= attribute_fields.collection_select :product_attribute_id, ProductAttribute.atributes_for(@attribute_types[index]).order(:value),:id, :display_value, include_blank: false %>
-          </div>
-        <% index += 1 %>
-    <% end %>
-    <!-- temp fix!!! only works upto a specific number of characteristics -->
-    <% if (index.to_f / 3.0 ) <= 1  %>
-      </div>
-    <% elsif (index.to_f / 3.0 ) <= 2  %>
-      </div></div>
-    <% elsif (index.to_f / 3.0 ) <= 3  %>
-      </div></div></div>
-    <% elsif (index.to_f / 3.0 ) <= 4  %>
-      </div></div></div></div>
+      <%= attribute_fields.label @attribute_types[index] %>
+      <%= attribute_fields.collection_select :product_attribute_id, ProductAttribute.atributes_for(@attribute_types[index]).order(:value),:id, :display_value, include_blank: false %>
+      <% index += 1 %>
+      <br />
     <% end %>
     <br />
     <%= link_to '<button type="button" class="btn btn-outline-primary">Add Attribute Values</button>'.html_safe, new_catalogue_supplier_product_product_attribute_path(@product.supplier.id, @product) %>
