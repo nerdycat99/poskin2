@@ -5,6 +5,7 @@ class Catalogue::VariantsController < ApplicationController
   before_action :variant_with_sku_code, only: [:new]
   before_action :sanitize_params, only: %i[create update]
   before_action :attribute_types, only: %i[new edit create update]
+  before_action :number_of_rows_for_attribute_types, only: %i[new edit create update]
   before_action :existing_variant, only: %i[edit update destroy show]
   before_action :calculation_methods, only: %i[new create edit update]
 
@@ -55,13 +56,16 @@ class Catalogue::VariantsController < ApplicationController
 
   private
 
-
   def calculation_methods
     @calculation_methods = [OpenStruct.new(name: 'Cost Price Method', value: 0), OpenStruct.new(name: 'Retail Price Method', value: 1)]
   end
 
   def attribute_types
     @attribute_types = ProductAttribute.valid_attribute_types
+  end
+
+  def number_of_rows_for_attribute_types
+    @number_of_rows_for_attribute_types ||= Variant.number_of_attribute_tows
   end
 
   def existing_variant

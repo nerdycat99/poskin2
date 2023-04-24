@@ -11,12 +11,23 @@
 
     <% index = 0 %>
     <h5><%= f.label "Please select applicable attributes for this variant" %></h5>
+
     <%= f.simple_fields_for :product_attributes_variants do |attribute_fields| %>
-      <%= attribute_fields.label @attribute_types[index] %>
-      <%= attribute_fields.collection_select :product_attribute_id, ProductAttribute.atributes_for(@attribute_types[index]).order(:value),:id, :display_value, include_blank: false %>
-      <% index += 1 %>
-      <br />
+      <% if index == 0 || index % 3 == 0 %>
+        <div class="row">
+      <% end %>
+          <div class="col-4">
+            <%= attribute_fields.label @attribute_types[index] %>
+            <%= attribute_fields.collection_select :product_attribute_id, ProductAttribute.atributes_for(@attribute_types[index]).order(:value),:id, :display_value, include_blank: false %>
+          </div>
+        <% index += 1 %>
     <% end %>
+    <% @number_of_rows_for_attribute_types.times do  %>
+      </div>
+    <% end %>
+
+
+
     <br />
     <%= link_to '<button type="button" class="btn btn-outline-primary">Add Attribute Values</button>'.html_safe, new_catalogue_supplier_product_product_attribute_path(@product.supplier.id, @product) %>
     <%= link_to '<button type="button" class="btn btn-outline-secondary">New Attribute Type</button>'.html_safe, new_catalogue_supplier_product_product_attribute_type_path(@product.supplier.id, @product) %>
