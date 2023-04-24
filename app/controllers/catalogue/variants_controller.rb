@@ -25,7 +25,7 @@ class Catalogue::VariantsController < ApplicationController
 
   def create
     @variant = product.variants.new(variant_params)
-    return render(:new, status: :unprocessable_entity) unless @variant.save
+    return render(:new, status: :unprocessable_entity) unless @variant.save!
 
     redirect_to catalogue_supplier_path(supplier.id)
   end
