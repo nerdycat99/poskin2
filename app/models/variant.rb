@@ -4,6 +4,8 @@ class Variant < ApplicationRecord
   include ActionView::Helpers::NumberHelper
   include ApplicationHelper
 
+  ROWS_FOR_ATTR_TYPES = 3
+
   # TO DO: when we create a variant we should only create product_attributes_variants that are NOT blank.
   belongs_to :product
   has_many :product_attributes_variants, dependent: :destroy
@@ -16,6 +18,12 @@ class Variant < ApplicationRecord
   validate :cost_or_retail_price_method
 
   before_save :clean_up_calculation_methods
+
+  def self.number_of_attribute_tows
+    attribute_types_count = ProductAttribute.valid_attribute_types.count
+    complete_row = attribute_types_count % ROWS_FOR_ATTR_TYPES == 0
+    complete_row ? attribute_types_count / ROWS_FOR_ATTR_TYPES : (attribute_types_count / ROWS_FOR_ATTR_TYPES) + 1
+  end
 
   def self.search(target)
     return if target.blank?
@@ -49,6 +57,8 @@ class Variant < ApplicationRecord
   def selected_price_calc_method_id
     Variant.price_calc_methods[self.price_calc_method]
   end
+
+
 
   def generated_sku
     unique_sku
