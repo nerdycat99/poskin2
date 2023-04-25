@@ -340,8 +340,8 @@ class Variant < ApplicationRecord
     stock_adjustments.any?
   end
 
-  def sold(quantity:, user_id:)
-    adjustment = stock_adjustments.new(quantity:, adjustment_type: 'purchased', user_id:)
+  def sold(quantity:, user_id:, order_id:)
+    adjustment = stock_adjustments.new(quantity:, adjustment_type: 'purchased', user_id:, order_id:)
     adjustment.save
   end
 

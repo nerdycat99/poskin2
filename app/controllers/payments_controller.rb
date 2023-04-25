@@ -30,7 +30,7 @@ class PaymentsController < ApplicationController
   end
 
   def adjust_stock_count
-    responses = @existing_order.order_items.map { |item| item.adjust_stock(current_user.id) }
+    responses = @existing_order.order_items.map { |item| item.adjust_stock(current_user.id, @existing_order.id) }
     # responses will be an array of true/false like this [true] we can use in transaction above?
   end
 

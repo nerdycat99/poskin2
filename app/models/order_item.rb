@@ -15,8 +15,8 @@ class OrderItem < ApplicationRecord
 
   # TO DO: should we associate the adjustment to the item or handle this thru variant and
   # remove the stock_adjustment from order_item???
-  def adjust_stock(user_id)
-    variant.sold(quantity:, user_id:)
+  def adjust_stock(user_id, order_id)
+    variant.sold(quantity:, user_id:, order_id:)
   end
 
   def invoice_display_details
