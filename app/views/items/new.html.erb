@@ -44,7 +44,7 @@
     <br />
     <%= simple_form_for @item, builder: TailwindFormBuilder, class: "mt-6", url: order_items_path do |f| %>
       <%= f.label "Item SKU Code" %>
-      <%= f.text_field :variant_id, placeholder: '971507' %>
+      <%= f.text_field :variant_id, placeholder: 'enter sku for variant then click add item to order' %>
       <br />
       <br />
       <%= f.label "Quantity" %>
