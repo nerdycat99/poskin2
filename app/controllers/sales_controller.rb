@@ -7,7 +7,7 @@ class SalesController < ApplicationController
 
   def all
     # @orders = Order.includes(:order_items, :receipts).all.order(updated_at: :desc)
-    @orders = Order.includes(:order_items, :receipts).where(payment_other_method: nil).order(updated_at: :desc)
+    @orders = Order.includes(:order_items, :receipts).where(payment_other_method: nil).order(created_at: :desc)
   end
 
   def show
