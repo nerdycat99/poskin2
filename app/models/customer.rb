@@ -6,7 +6,8 @@ class Customer < ApplicationRecord
 
   has_many :orders
 
-  validates :email_address, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
+  # removed this validation so a customer can be created with just a name
+  # validates :email_address, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
 
   def display_date
     convert_to_users_timezone(created_at).to_fs(:long)
