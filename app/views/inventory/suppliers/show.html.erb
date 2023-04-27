@@ -12,6 +12,7 @@
     </thead>
 
     <tbody>
+      <br />
       <% @products.each do |product| %>
         <tr>
           <td><%= product.title %></td>
@@ -32,8 +33,7 @@
             </td>
           </tr>
         <% end %>
-        <br />
-        <tr><td colspan="7"><hr></td></tr>
+        <tr><td colspan="6"><hr></td></tr>
       <% end %>
     </tbody>
   </table>
