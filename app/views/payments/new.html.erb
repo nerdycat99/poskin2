@@ -39,9 +39,7 @@
     <div data-controller="sales">
       <div class="d-none" data-sales-target="totalWithoutDeliveryOrDiscount"><%= @existing_order.display_order_price_total_including_tax %></div>
       <%= simple_form_for @existing_order, builder: TailwindFormBuilder, class: "mt-6", url: order_payments_path, method: :post do |f| %>
-      <!-- needs js to adjust the calculated total amount -->
         <%= f.hidden_field :state, :value =>'paid' %>
-        <button data-action="click->sales#testMe", class="btn btn-outline-secondary">Add Variants</button>
         <div class="row">
           <div class="col-4">
             <h5><%= f.label "Select Payment Method" %></h5>
