@@ -36,6 +36,14 @@ class Order < ApplicationRecord
     items.none?
   end
 
+  def has_delivery_charges?
+    delivery_amount.present?
+  end
+
+  def discounted?
+    adjustment_amount.present?
+  end
+
   def customer_details
     if customer.present?
       customer.email_address || "#{customer.first_name} #{customer.last_name}"
@@ -60,6 +68,22 @@ class Order < ApplicationRecord
     items.map(&:total_retail_price_in_cents_as_float).compact.sum
   end
 
+  def discount_amount_as_float
+    discount = adjustment_amount.present? ? (adjustment_amount.to_f / 100) * -1 : 0.0
+  end
+
+  def delivery_amount_as_float
+    delivery_charge = delivery_amount.present? ? (delivery_amount.to_f / 100) : 0.0
+  end
+
+  def discount_or_delivery_amount_as_float
+    delivery_amount_as_float + discount_amount_as_float
+  end
+
+  def order_price_total_including_tax_with_delivery_or_discount
+    ((order_price_total_including_tax_as_float.to_f / 100) + delivery_amount_as_float) + discount_amount_as_float
+  end
+
   def verification_check?
     order_price_total_including_tax_as_float == ( order_price_total_as_float + order_tax_total_as_float )
   end
@@ -72,8 +96,24 @@ class Order < ApplicationRecord
     number_to_currency(format('%.2f', (order_tax_total_as_float.to_f / 100))) unless order_tax_total_as_float.nil?
   end
 
+  def display_order_price_total_including_tax_with_delivery_or_discount
+    number_to_currency(format('%.2f', order_price_total_including_tax_with_delivery_or_discount)) unless order_price_total_including_tax_with_delivery_or_discount.nil?
+  end
+
+  def display_delivery_amount
+    number_to_currency(format('%.2f', delivery_amount_as_float)) unless delivery_amount_as_float.nil?
+  end
+
+  def display_discount_amount
+    number_to_currency(format('%.2f', discount_amount_as_float)) unless discount_amount_as_float.nil?
+  end
+
   def display_order_price_total_including_tax
     number_to_currency(format('%.2f', (order_price_total_including_tax_as_float.to_f / 100))) unless order_price_total_including_tax_as_float.nil?
+  end
+
+  def display_order_discount_or_delivery
+    number_to_currency(format('%.2f', discount_or_delivery_amount_as_float)) unless discount_or_delivery_amount_as_float.nil?
   end
 
   def display_date

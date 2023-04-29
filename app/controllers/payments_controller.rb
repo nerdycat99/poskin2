@@ -36,10 +36,20 @@ class PaymentsController < ApplicationController
 
   def sanitize_params
     params[:order]['payment_amount'] = payment_amount
+    params[:order]['adjustment_amount'] = adjustment_amount
+    params[:order]['delivery_amount'] = delivery_amount
   end
 
   def unmatched_params
-    @unmatched_params ||= params.require(:order).extract!(:payment_amount)
+    @unmatched_params ||= params.require(:order).extract!(:payment_amount, :adjustment_amount, :delivery_amount)
+  end
+
+  def adjustment_amount
+    (unmatched_params['adjustment_amount'].gsub(/[^0-9.]/, '').to_f * 100).to_i
+  end
+
+  def delivery_amount
+    (unmatched_params['delivery_amount'].gsub(/[^0-9.]/, '').to_f * 100).to_i
   end
 
   def payment_amount
@@ -55,7 +65,7 @@ class PaymentsController < ApplicationController
   end
 
   def order_payment_params
-    params.require(:order).permit(:state, :payment_method, :payment_amount, :notes)
+    params.require(:order).permit(:state, :payment_method, :payment_amount, :notes, :adjustment_amount, :delivery_amount)
     # params.require(:order).permit(:customer_id, :state, :payment_method, :payment_other_method, :payment_amount, :adjustments, :delivery, :notes, :first_name, :last_name, :email_address, :phone_number)
   end
 end
