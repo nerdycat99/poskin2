@@ -98,6 +98,31 @@
           <th><%= @order.display_order_price_total_including_tax %></th>
         <% end %>
       </tr>
+      <% if @order.discounted? %>
+        <tr>
+          <th>Discount Amount</th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th><%= @order.display_discount_amount %></th>
+        </tr>
+      <% end %>
+      <% if @order.has_delivery_charges? %>
+        <tr>
+          <th>Delivery Charges</th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th><%= @order.display_delivery_amount %></th>
+        </tr>
+      <% end %>
+      <tr>
+        <th>Total Amount Paid</th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th><%= @order.display_order_price_total_including_tax_with_delivery_or_discount %></th>
+      </tr>
     </table>
     <br />
       <%= link_to "Back", all_sales_path, class: "btn btn-primary" %>

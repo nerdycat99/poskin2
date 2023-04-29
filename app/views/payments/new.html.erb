@@ -36,21 +36,38 @@
       </table>
     <% end %>
     <br />
-    <%= simple_form_for @existing_order, builder: TailwindFormBuilder, class: "mt-6", url: order_payments_path, method: :post do |f| %>
-      <%= f.hidden_field :state, :value =>'paid' %>
-      <h5><%= f.label "Select Payment Method" %></h5>
-      <h5><%= f.collection_select :payment_method, @payment_methods, :display_name, :name, include_blank: true %></h5>
-      <br />
-      <h6><%= f.label "Calculated Total Payment Amount" %></h6>
-      <h6><%= f.text_field :payment_amount, value: @existing_order.display_order_price_total_including_tax, readonly: true %></h6>
-      <br />
-      <br />
-      <%= f.label "Notes" %>
-      <%= f.text_field :notes, placeholder: 'optional' %>
-      <br />
-      <br />
-      <%= f.submit_button "Confirm Order" %>
-      <%= link_to "Cancel", order_path(@existing_order.id), class: "btn btn-outline-secondary", data: {turbo_method: :delete } %>
-    <% end %>
+    <div data-controller="sales">
+      <div class="d-none" data-sales-target="totalWithoutDeliveryOrDiscount"><%= @existing_order.display_order_price_total_including_tax %></div>
+      <%= simple_form_for @existing_order, builder: TailwindFormBuilder, class: "mt-6", url: order_payments_path, method: :post do |f| %>
+      <!-- needs js to adjust the calculated total amount -->
+        <%= f.hidden_field :state, :value =>'paid' %>
+        <button data-action="click->sales#testMe", class="btn btn-outline-secondary">Add Variants</button>
+        <div class="row">
+          <div class="col-4">
+            <h5><%= f.label "Select Payment Method" %></h5>
+            <h5><%= f.collection_select :payment_method, @payment_methods, :display_name, :name, include_blank: true %></h5>
+          </div>
+          <div class="col-4">
+            <%= f.label "Discount Amount" %>
+            <%= f.text_field :adjustment_amount, placeholder: 'Amount of discount to apply in $', value: @existing_order.display_discount_amount, data: { action: "change->sales#discountAmountEntered", target: "sales.discountAmount" } %>
+          </div>
+          <div class="col-4">
+            <%= f.label "Delivery Charges" %>
+            <%= f.text_field :delivery_amount, placeholder: 'Delivery charges for order in$', value: @existing_order.display_delivery_amount, data: { action: "change->sales#deliveryAmountEntered", target: "sales.deliveryAmount" } %>
+          </div>
+        </div>
+        <br />
+        <h6><%= f.label "Calculated Total Payment Amount" %></h6>
+        <h6><%= f.text_field :payment_amount, value: @existing_order.display_order_price_total_including_tax_with_delivery_or_discount, readonly: true, data: { target: "sales.totalAmount" } %></h6>
+        <br />
+        <br />
+        <%= f.label "Notes" %>
+        <%= f.text_field :notes, placeholder: 'optional' %>
+        <br />
+        <br />
+        <%= f.submit_button "Confirm Order" %>
+        <%= link_to "Cancel", order_path(@existing_order.id), class: "btn btn-outline-secondary", data: {turbo_method: :delete } %>
+      <% end %>
+    </div>
   </div>
 </div>

@@ -6,9 +6,10 @@
       <tr>
         <th>Date</th>
         <th>State</th>
-        <th>Manually Raised?</th>
-        <th>Payment Method</th>
-        <th>Payment Amount (incl. Tax)</th>
+        <th>Payment Amount</th>
+        <th>Discount</th>
+        <th>Delivery</th>
+        <th>Total Paid</th>
         <th>Customer Details</th>
         <th></th>
       </tr>
@@ -17,13 +18,15 @@
           <td><%= order.display_date %></td>
           <td><%= order.state&.upcase %></td>
           <% if order.manual_order? %>
-            <td>YES</td>
-            <td>Not Recorded</td>
             <td><%= order.receipts&.first&.display_total_amount_including_tax %></td>
+            <td>XX</td>
+            <td>XX</td>
+            <td>XX</td>
           <% else %>
-            <td></td>
-            <td><%= order.payment_method&.titleize %></td>
             <td><%= order.display_order_price_total_including_tax %></td>
+            <td><%= order.display_discount_amount %></td>
+            <td><%= order.display_delivery_amount %></td>
+            <td><%= order.display_order_price_total_including_tax_with_delivery_or_discount %></td>
           <% end %>
           <td><%= order.customer_details %></td>
           <td><%= link_to "View Details", sale_path(order.id), class: "btn btn-primary" %></td>
