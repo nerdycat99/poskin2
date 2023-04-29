@@ -32,6 +32,13 @@
           <td><%= link_to "View Details", sale_path(order.id), class: "btn btn-primary" %></td>
         </tr>
       <% end %>
+      <tr><td colspan="8"></td></tr>
+      <tr>
+        <th>All Sales</th>
+        <th colspan="4">
+        <th>$<%= @orders.map(&:order_price_total_including_tax_with_delivery_or_discount).compact.sum.round(2) %></th>
+        <th></th>
+      </tr>
     </table>
   </div>
 </div>
