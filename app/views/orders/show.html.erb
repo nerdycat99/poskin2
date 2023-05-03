@@ -30,6 +30,11 @@
         <%= f.text_field :email_address, placeholder: 'name or email address' %>
         <br />
       <% end %>
+      <input type="radio" id="show_cust_name" name="show_cust_name" value=0>
+      <label for="show_cust_name">Don't show customer name on receipt</label><br />
+      <input type="radio" id="show_cust_name" name="show_cust_name" value=1>
+      <label for="show_cust_name">Show customer name on receipt</label><br />
+      <br />
       <%= f.submit_button "Generate Receipt" %>
       <%= link_to "Done", sales_path, class: "btn btn-secondary" %>
     <% end %>
