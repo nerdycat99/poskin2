@@ -23,13 +23,15 @@ class OrdersController < ApplicationController
   end
 
   def update
-    if email_address.present?
+    # changed to no longer check email address present before proceeding, this allows a customer to be created
+    # with just a first and last name
+    # if email_address.present?
       if existing_customer.present?
         @existing_order.update(customer_id: existing_customer.id)
       else
         create_new_customer_and_update_order
       end
-    end
+    # end
     redirect_to new_order_payment_path(@existing_order)
   end
 
@@ -44,7 +46,8 @@ class OrdersController < ApplicationController
   end
 
   def existing_customer
-    Customer.find_by(email_address:)
+    # might need to change this to try and find by first and lastname as well or phone number
+    Customer.find_by(email_address: email_address) if email_address.present?
   end
 
   def create_new_customer_and_update_order
