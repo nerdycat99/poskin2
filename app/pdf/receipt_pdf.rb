@@ -11,9 +11,10 @@ class ReceiptPdf < BaseReceiptPdf
   CELL_PADDING = [2, 4.5, 4.5, 5].freeze
   CELL_PADDING_PATIENT = [0, 5, 5, 0].freeze
 
-  def initialize(receipt:, order:)
+  def initialize(receipt:, order:, include_customer_name:)
     @receipt = receipt
     @order = order
+    @include_customer_name = include_customer_name
     date = DateTime.now
     @date = date_formatter(date, '%a %d/%m/%Y %H:%M:%S')
     # @date = date_formatter(date, '%A %e %B %Y')
@@ -32,7 +33,13 @@ class ReceiptPdf < BaseReceiptPdf
     move_down 10
     transaction_reference
     move_down 30
-    transaction_details
+    if @include_customer_name  && @receipt.order.customer.present?
+      customer_details
+      move_down 30
+      transaction_details
+    else
+      transaction_details
+    end
   end
 
   def company_info
@@ -66,6 +73,12 @@ class ReceiptPdf < BaseReceiptPdf
   def transaction_reference
     indent(230, 0) do
       text "Order Reference: #{@receipt.order_reference_display}", size: 12, style: :light, color: BOX_TEXT_COLOUR
+    end
+  end
+
+  def customer_details
+    indent(90, 0) do
+      text "Customer: #{@receipt.order.customer_details_for_receipt}", size: 12, style: :normal, color: BOX_TEXT_COLOUR
     end
   end
 

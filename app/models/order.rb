@@ -52,6 +52,12 @@ class Order < ApplicationRecord
     end
   end
 
+  def customer_details_for_receipt
+    if customer.present?
+      customer.first_name && customer.last_name ? "#{customer.first_name} #{customer.last_name}" : "#{customer.email_address}"
+    end
+  end
+
   def number_of_items
     items.map(&:quantity).compact.sum
   end

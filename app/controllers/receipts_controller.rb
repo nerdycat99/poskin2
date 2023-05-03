@@ -4,6 +4,7 @@ class ReceiptsController < ApplicationController
   include ApplicationHelper
 
   before_action :authenticate_user!, only: %i[create show]
+  before_action :show_customer_name_on_receipt, only: %i[create]
 
   def show
     # opens the receipt generated in the create method
@@ -19,16 +20,24 @@ class ReceiptsController < ApplicationController
     # generate pdf and update order status using either the order details or those passed in via the manual
     # process pdf is stored in public from where it can be shown and printed in the show method
     pdf = if order.paid?
-            ReceiptPdf.new(receipt:, order:)
+            ReceiptPdf.new(receipt:, order:, include_customer_name: show_customer_name_on_receipt?)
           else
             order.update(state: 'paid')
-            ReceiptPdf.new(receipt:, order: nil)
+            ReceiptPdf.new(receipt:, order: nil, include_customer_name: false)
           end
     pdf.render_file(Rails.public_path.join('receipt.pdf'))
     redirect_to order_path(order)
   end
 
   private
+
+  def show_customer_name_on_receipt
+    @show_customer_name_on_receipt ||= params['show_cust_name'].to_i
+  end
+
+  def show_customer_name_on_receipt?
+    @show_customer_name_on_receipt == 1
+  end
 
   def receipt_params
     params.require(:receipt).permit(:email_address, :item_one_name, :item_one_price_minus_tax, :item_two_name, :item_two_price_minus_tax,
