@@ -183,7 +183,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_03_040850) do
     t.string "bank_acount_number"
     t.string "bank_bsb"
     t.string "bank_name"
-    t.integer "abn_number"
+    t.string "abn_number"
     t.index ["address_id"], name: "index_suppliers_on_address_id"
   end
 
