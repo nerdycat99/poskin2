@@ -8,23 +8,27 @@
 
   <%= simple_form_for @supplier, builder: TailwindFormBuilder, class: "mt-6", url: suppliers_path do |f| %>
     <div class="row">
-      <div class="col-6">
+      <div class="col-4">
         <%= f.label "Suppliers Name" %>
         <%= f.text_field :name, placeholder: 'My Supplier Ltd' %>
       </div>
-      <div class="col-6">
+      <div class="col-4">
         <%= f.label "Suppliers Email" %>
         <%= f.text_field :email, placeholder: 'person@supplier.com' %>
+      </div>
+      <div class="col-4">
+        <%= f.label "Suppliers Contact Number" %>
+        <%= f.text_field :phone, placeholder: '0414 444 444' %>
       </div>
     </div>
     <br />
     <div class="row">
-      <div class="col-6">
-        <%= f.label "Suppliers Contact Number" %>
-        <%= f.text_field :phone, placeholder: '0414 444 444' %>
-      </div>
-      <div class="col-6">
+      <div class="col-4">
         <%= f.input :sales_tax_registered, as: :select, collection: [true, false], required: true, include_blank: false, label: 'Registered for Sales Tax?', selected: @supplier.sales_tax_registered %>
+      </div>
+      <div class="col-4">
+        <%= f.label "ABN Number" %>
+        <%= f.text_field :abn_number, placeholder: 'suppliers abn if registered for tax' %>
       </div>
     </div>
     <br />

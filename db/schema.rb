@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_27_114503) do
+ActiveRecord::Schema[7.0].define(version: 2023_05_03_040850) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -183,6 +183,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_27_114503) do
     t.string "bank_acount_number"
     t.string "bank_bsb"
     t.string "bank_name"
+    t.integer "abn_number"
     t.index ["address_id"], name: "index_suppliers_on_address_id"
   end
 
