@@ -38,7 +38,7 @@ class SuppliersController < ApplicationController
   end
 
   def supplier_params
-    params.require(:supplier).permit(:name, :email, :phone, :tax_rate_id, :address_id, :notes, :sales_tax_registered, :bank_account_name, :bank_acount_number, :bank_bsb, :bank_name,
-                                     abn_number:, address_attributes: %i[country_id first_line second_line city state postcode])
+    params.require(:supplier).permit(:name, :email, :phone, :tax_rate_id, :address_id, :notes, :sales_tax_registered, :abn_number, :bank_account_name, :bank_acount_number, :bank_bsb, :bank_name,
+                                     address_attributes: %i[country_id first_line second_line city state postcode])
   end
 end
