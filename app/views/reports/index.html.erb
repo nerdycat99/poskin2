@@ -1,0 +1,13 @@
+<div class="p-12 mx-auto text-gray-800 max-w-7xl">
+  <h2>Reports</h2>
+  <table style="width:100%">
+    <% @available_reports.each_with_index do |report, index|  %>
+      <tr>
+        <td colspan="3"><%= report.second.titleize %></td>
+        <td colspan="3">
+          <%= link_to "View Report", report_path(index), class: "btn btn-outline-primary" %>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+</div>
