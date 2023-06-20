@@ -313,8 +313,29 @@ class Variant < ApplicationRecord
     end
   end
 
+  def total_stock_cost_price_without_tax_as_float
+    stock_count * cost_price_in_cents_as_float
+  end
 
+  def total_stock_cost_price_tax_amount_as_float
+    stock_count * cost_price_tax_amount_in_cents_as_float
+  end
 
+  def total_stock_cost_price_including_tax_as_float
+    stock_count * total_cost_price_in_cents_as_float
+  end
+
+  def total_stock_retail_price_without_tax_as_float
+    stock_count * retail_price_before_tax_in_cents_as_float
+  end
+
+  def total_stock_retail_price_tax_amount_as_float
+    stock_count * retail_price_tax_amount_in_cents_as_float
+  end
+
+  def total_stock_retail_price_including_tax_as_float
+    stock_count * total_retail_price_in_cents_as_float
+  end
 
   def attribute_types_set
     tagged_attributes.map(&:name)
