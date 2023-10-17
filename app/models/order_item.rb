@@ -24,7 +24,7 @@ class OrderItem < ApplicationRecord
   end
 
   def display_name
-    variant.display_with_product_details
+    variant&.display_with_product_details
   end
 
   def display_retail_amount_per_unit
@@ -32,7 +32,7 @@ class OrderItem < ApplicationRecord
   end
 
   def display_retail_amount_per_unit_including_tax
-    variant.display_total_retail_price_including_tax
+    variant&.display_total_retail_price_including_tax
   end
 
   def display_retail_amount
