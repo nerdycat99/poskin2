@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
 class Report
-  # include ActionView::Helpers::NumberHelper
-  # include ApplicationHelper
-
   attr_accessor :report_identifier, :report_title
 
   def initialize(report)
@@ -11,7 +8,7 @@ class Report
     self.report_title = report[1]
   end
 
-  # we pass id in to reports show and use that to determine the report to show
+  # we pass id in to reports show and use that to determine the report to show, define them here
   def self.available_reports
     [
       [:total_stock_summary, 'All stock summary'],
