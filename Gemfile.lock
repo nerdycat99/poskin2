@@ -290,6 +290,7 @@ DEPENDENCIES
   jbuilder
   jsbundling-rails
   matrix
+  nokogiri
   pg (~> 1.1)
   prawn
   puma (~> 5.0)

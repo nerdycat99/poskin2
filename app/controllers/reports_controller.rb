@@ -11,25 +11,41 @@ class ReportsController < ApplicationController
 
   def show
     @report = report
-    @selected_report = selected_report
-    @products = products
+    @view_model = report.view_model
+    respond_to do |format|
+      format.html
+      format.csv { send_data @view_model.to_csv, filename: @view_model.filename}
+      # format.csv { send_data Reports::Stock.to_csv, filename: "stock-#{DateTime.now.strftime("%d%m%Y%H%M")}.csv"}
+    end
   end
 
   private
 
   def available_reports
-    @available_reports ||= report.available_reports
+    @available_reports ||= Report.available_reports
   end
 
   def report
-    @report ||= Report.new
+    @report ||= Report.new(selected_report)
   end
 
+  # selected report will be an array i.e. [:total_sales_summary, 'All sales summary']
   def selected_report
     @selected_report ||= available_reports[params['id'].to_i]
   end
 
-  def products
-    @products ||= Product.includes(:variants).all
-  end
+  # def view_model
+  #   case report.report_identifier
+  #   when :total_stock_summary
+  #     @view_model = Reports::Stock.new()
+  #   end
+  # end
+
+  # def fetch_products
+  #   @products ||= Product.includes(:supplier, variants: [:stock_adjustments, product_attributes_variants: [:product_attribute]]).all
+  # end
+
+  # def fetch_orders
+  #   @orders ||= Order.includes(:order_items).all
+  # end
 end

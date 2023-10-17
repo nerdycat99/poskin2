@@ -50,6 +50,9 @@ gem 'devise'
 # added to resolve heroku deploy error
 gem 'matrix'
 
+# added to enable us to export csv from html table
+gem 'nokogiri'
+
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"
 

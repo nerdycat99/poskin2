@@ -19,6 +19,7 @@ Rails.application.routes.draw do
 
   resources :customers, only: [:new, :create, :edit, :update, :show, :index, :destroy]
   resources :reports, only: [:index, :show]
+  # get 'reports/:type', to: 'reports#export', as: 'reports_stat'
 
   resources :orders, only: [:create, :edit, :update, :show, :destroy] do
     resources :receipts, only: [:create, :show]#, defaults: { format: :pdf }
