@@ -57,7 +57,8 @@ module Reports
 
     def orders
       @orders = []
-      Order.includes(:order_items).each do |order|
+      Order.includes(:order_items).order(created_at: :desc).each do |order|
+        next if order.number_of_items < 1
         sales_report_item = SalesReportItem.new
         sales_report_item.populate_from(order)
         @orders << sales_report_item
