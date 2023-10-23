@@ -28,6 +28,14 @@ class OrderItem < ApplicationRecord
     variant&.sku_code
   end
 
+  def order_id
+    order.id
+  end
+
+  def order_display_date
+    order.display_date
+  end
+
   def display_date_of_sale
     order.display_date
   end

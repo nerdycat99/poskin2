@@ -27,6 +27,7 @@ class Report
     [
       [:total_stock_summary, 'All stock summary'],
       [:total_sales_summary, 'All sales summary'],
+      [:total_items_sold_summary, 'All items sold summary'],
       [:total_sales_by_supplier, 'Sales by supplier']
     ]
   end
@@ -39,6 +40,8 @@ class Report
       @view_model = Reports::Sales.new()
     when :total_sales_by_supplier
       @view_model = Reports::SupplierSales.new()
+    when :total_items_sold_summary
+      @view_model = Reports::ItemsSold.new()
     end
   end
 end
