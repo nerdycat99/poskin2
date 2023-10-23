@@ -73,9 +73,6 @@ module Reports
       filtered_orders = all_orders.where(:created_at => self.from_date.beginning_of_day..self.to_date.end_of_day)
       filtered_orders.each do |order|
         next if order.number_of_items < 1
-        # sales_report_item = Item.new
-        # sales_report_item.populate_from(order)
-        # orders_for_display << sales_report_item
         order.order_items.each do |order_item|
           items_sold = Item.new
           items_sold.populate_from(order_item)
