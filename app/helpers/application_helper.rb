@@ -15,17 +15,35 @@ module ApplicationHelper
     Variant.all.map(&:sku_code)
   end
 
-  # def convert_date(date)
-  #   date.to_date
-  # rescue Date::Error => e
-  #   e
-  # end
+  def extract_classes(options = {})
+    classes = {field: [], label: [], input: []}
+    if options[:class].present?
+      classes[:field] << options.delete(:class)
+    end
 
-  # def convert_to_datetime(date)
-  #   date.to_datetime
-  # rescue Date::Error => e
-  #   e
-  # end
+    return classes if options.delete(:auto_width)
+    parent_widths = options.delete(:parent_widths) || {}
+    field_factor = options.delete(:field_factor) || 1.0
+    field_widths = [12, 6, 4, 4, 3]
+
+    parent_fraction = 1.0
+    [:xs, :sm, :md, :lg, :xl].each.with_index do |sz,i|
+      prefix = (sz == :xs) ? "col" : "col-#{sz}"
+      if parent_widths[sz].present?
+        parent_fraction = parent_widths[sz].to_f / 12.0
+      end
+      field_size = [field_widths[i].to_f * field_factor.to_f / parent_fraction, 12.0].min
+      classes[:field] << "#{prefix}-#{field_size.round.to_i}"
+    end
+
+    classes
+  end
+
+  def tooltip_icon(tooltip)
+    if tooltip.present?
+      content_tag(:i, nil, class: "mdi mdi-information-outline", title: html_escape(tooltip))
+    end
+  end
 
   def convert_to_users_timezone(datetime)
     zone = ActiveSupport::TimeZone.new('Australia/Sydney')

@@ -7,10 +7,6 @@ class Order < ApplicationRecord
   has_many :order_items, dependent: :destroy
   has_many :receipts, dependent: :destroy #added temporarily so orders can be raised ad hoc
 
-  # how to have this but make it optional
-  # belongs_to :customer
-  # accepts_nested_attributes_for :customer
-
   enum state: { raised: 0, paid: 1, failed: 2, refunded: 3, cancelled: 4 }
   enum payment_method: { credit_card: 0, debit_card: 1, other: 2 } # this needs to allow nil
 
@@ -25,7 +21,11 @@ class Order < ApplicationRecord
   end
 
   def items
-    @items ||= order_items.persisted
+    # WE HAD TO CHANGE THIS AS IT CAUSED ISSUES CALCULATING PRICES IN REPORTS
+    # (each item in report was hitting DB, so we upfront now chain ".where.not(id: nil)" into all_orders
+    # means if we use this elsewhere we will need to perform where.not as above and NOT rely in persisted
+    # @items ||= order_items.persisted
+    @items ||= order_items
   end
 
   def paid?

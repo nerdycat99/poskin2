@@ -4,14 +4,11 @@ class OrderItem < ApplicationRecord
   include ActionView::Helpers::NumberHelper
 
   belongs_to :order
+  belongs_to :variant, inverse_of: :order_items, foreign_key: :variant_id
 
   validates :quantity, presence: true
 
   scope :persisted, -> { where.not(id: nil) }
-
-  def variant
-    @variant ||= Variant.includes(:product).find_by(id: variant_id)
-  end
 
   # TO DO: should we associate the adjustment to the item or handle this thru variant and
   # remove the stock_adjustment from order_item???
@@ -25,6 +22,14 @@ class OrderItem < ApplicationRecord
 
   def display_name
     variant&.display_with_product_details
+  end
+
+  def sku_code
+    variant&.sku_code
+  end
+
+  def display_date_of_sale
+    order.display_date
   end
 
   def display_retail_amount_per_unit
@@ -47,6 +52,30 @@ class OrderItem < ApplicationRecord
     number_to_currency(format('%.2f', (total_retail_price_in_cents_as_float.to_f / 100))) unless total_retail_price_in_cents_as_float.nil?
   end
 
+  def display_cost_price_amount
+    number_to_currency(format('%.2f', (cost_price_in_cents_as_float.to_f / 100))) unless cost_price_in_cents_as_float.nil?
+  end
+
+  def display_cost_price_amount_tax
+    number_to_currency(format('%.2f', (cost_price_tax_amount_in_cents_as_float.to_f / 100))) unless cost_price_tax_amount_in_cents_as_float.nil?
+  end
+
+  def display_total_cost_price_amount
+    number_to_currency(format('%.2f', (total_cost_price_in_cents_as_float.to_f / 100))) unless total_cost_price_in_cents_as_float.nil?
+  end
+
+  def display_gross_profit
+    number_to_currency(format('%.2f', (gross_profit.to_f / 100))) unless gross_profit.nil?
+  end
+
+  def display_share_of_retail_tax_responsible_for
+    number_to_currency(format('%.2f', (share_of_retail_tax_responsible_for_as_float.to_f / 100))) unless share_of_retail_tax_responsible_for_as_float.nil?
+  end
+
+  def display_net_profit
+    number_to_currency(format('%.2f', (net_profit.to_f / 100))) unless net_profit.nil?
+  end
+
   def total_retail_price_in_cents_as_float
     variant.total_retail_price_in_cents_as_float * quantity if variant.present? && quantity.present?
   end
@@ -57,5 +86,29 @@ class OrderItem < ApplicationRecord
 
   def retail_price_in_cents_as_float
     variant.retail_price_before_tax_in_cents_as_float * quantity if variant.present? && quantity.present?
+  end
+
+  def gross_profit
+    total_retail_price_in_cents_as_float - total_cost_price_in_cents_as_float
+  end
+
+  def share_of_retail_tax_responsible_for_as_float
+    variant.share_of_retail_tax_responsible_for * quantity if variant.present? && quantity.present?
+  end
+
+  def net_profit
+    gross_profit - share_of_retail_tax_responsible_for_as_float
+  end
+
+  def total_cost_price_in_cents_as_float
+    variant.total_cost_price_in_cents_as_float * quantity if variant.present? && quantity.present?
+  end
+
+  def cost_price_tax_amount_in_cents_as_float
+    variant.cost_price_tax_amount_in_cents_as_float * quantity if variant.present? && quantity.present?
+  end
+
+  def cost_price_in_cents_as_float
+    variant.cost_price_in_cents_as_float * quantity if variant.present? && quantity.present?
   end
 end

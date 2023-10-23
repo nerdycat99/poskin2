@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 class TailwindFormBuilder < ActionView::Helpers::FormBuilder
+  include ApplicationHelper
+  include ERB::Util
+
   delegate :tag, :safe_join, to: :@template
 
   def text_field(method, opts = {})
@@ -26,6 +29,71 @@ class TailwindFormBuilder < ActionView::Helpers::FormBuilder
                           end
 
     send("#{override_input_type || input_type}_input", method, options)
+  end
+
+  def labelled_date(label, attr_name, min_date, max_date, options = {})
+    classes = extract_classes(options)
+    min = min_date.to_date.iso8601
+    max = max_date.to_date.iso8601
+    div_id = "datepicker_#{rand(1000000)}"
+    field_data = options.delete(:field_data)
+    view_mode = (options[:data] && options[:data].delete("view-mode")) || (options.delete("data-view-mode")) || "months"
+    options.delete(:data) if (options[:data] && options[:data].empty?)
+
+    if label.nil?
+      label_div = ""
+    else
+      label_div = @template.content_tag(:div, class: "label") {
+        @template.label_tag(attr_name, html_escape(label), class: "#{options.delete(:label_class)} col-form-label") + tooltip_icon(options.delete(:tooltip))
+      }
+    end
+
+    display_placeholder = options['data-format'].nil? ? "#{options.delete(:placeholder) || label} (dd/mm/yyyy)" : "#{options.delete(:placeholder) || label} (#{options['data-format'].downcase})"
+
+
+    value = self.object.try(attr_name)
+    if value.presence.respond_to?(:to_date)
+      date_val = value.to_date
+      if date_val < min_date.to_date
+        min = date_val.iso8601
+      end
+      if max_date.to_date < date_val
+        max = date_val.iso8601
+      end
+    end
+
+    tag_options = {
+      object: self.object,
+      min: min,
+      max: max,
+      placeholder: display_placeholder,
+      class: "#{options.delete(:input_class)} form-control",
+      data: {target: "##{div_id}", toggle: "datetimepicker"}
+    }.merge(options)
+
+    field = ActionView::Helpers::Tags::TextField.new(self.object_name, attr_name, @template, tag_options)
+
+    rendered_field = @template.content_tag(:div, {"id"=>div_id, "class"=>"#{options.delete(:input_class)} input-group date", "data-target-input"=>"nearest", "data-view-mode"=>view_mode}.merge(options)) {[
+      field.render.html_safe,
+      label_div,
+      @template.content_tag(:div, class: "input-group-append", data: {target: "##{div_id}", toggle: "datetimepicker"}) {
+        @template.content_tag(:div, class: "input-group-text") {
+          @template.content_tag(:i, nil, class: "mdi mdi-calendar")
+        }
+      }
+    ].join.html_safe}
+
+    # field.object > is the report model and att_name is an attribute in the report
+
+    if field.object && (error = field.object.errors[attr_name].presence)
+      classes[:field] << "field_with_errors"
+      error_field = @template.content_tag(:div, "#{label} #{error.to_sentence}", class: "error")
+      rendered_field = rendered_field + error_field
+    end
+
+    @template.content_tag(:div, class: classes[:field].join(' '), data: field_data) {
+      @template.content_tag(:div, rendered_field, class: 'form-group form-row with-floating-label')
+    }.html_safe
   end
 
   def submit_button(text, opts: {})

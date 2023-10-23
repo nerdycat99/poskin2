@@ -34,6 +34,16 @@ module Reports
   end
 
   class Sales
+    attr_accessor :from_date, :string
+    attr_accessor :to_date, :string
+    attr_accessor :orders, :array
+
+    def initialize
+      self.from_date = all_orders.last.created_at.to_date
+      self.to_date = all_orders.first.created_at.to_date
+      self.orders = orders_for_display
+    end
+
     def to_csv
       CSV.generate do |csv|
         csv << column_names.map{|column_name| column_name.titleize}
@@ -51,26 +61,37 @@ module Reports
       'reports/sales'
     end
 
+    def update_with(params)
+      self.from_date = params['from_date'].to_date
+      self.to_date = params['to_date'].to_date
+      self.orders = orders_for_display
+    end
+
     def column_names
       SalesReportItem.attribute_names
     end
 
-    def orders
-      @orders = []
-      Order.includes(:order_items).order(created_at: :desc).each do |order|
+    def all_orders
+      @all_orders ||= Order.includes(order_items:[variant:[:product, :stock_adjustments, product_attributes_variants: [:product_attribute]]]).order(created_at: :desc)
+    end
+
+    def orders_for_display
+      orders_for_display = []
+      filtered_orders = all_orders.where(:created_at => self.from_date.beginning_of_day..self.to_date.end_of_day)
+      filtered_orders.each do |order|
         next if order.number_of_items < 1
         sales_report_item = SalesReportItem.new
         sales_report_item.populate_from(order)
-        @orders << sales_report_item
+        orders_for_display << sales_report_item
         if order.number_of_items > 1
           order.order_items.each do |order_item|
             sales_report_item = SalesReportItem.new
             sales_report_item.populate_from(order_item)
-            @orders << sales_report_item
+            orders_for_display << sales_report_item
           end
         end
       end
-      @orders
+      orders_for_display
     end
   end
 end

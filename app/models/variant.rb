@@ -8,6 +8,9 @@ class Variant < ApplicationRecord
 
   # TO DO: when we create a variant we should only create product_attributes_variants that are NOT blank.
   belongs_to :product
+
+  has_many :order_items, inverse_of: :variant
+
   has_many :product_attributes_variants, dependent: :destroy
   has_many :stock_adjustments
 

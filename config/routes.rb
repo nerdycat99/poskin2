@@ -18,7 +18,7 @@ Rails.application.routes.draw do
   end
 
   resources :customers, only: [:new, :create, :edit, :update, :show, :index, :destroy]
-  resources :reports, only: [:index, :show]
+  resources :reports, only: [:index, :show, :edit, :update]
 
   resources :orders, only: [:create, :edit, :update, :show, :destroy] do
     resources :receipts, only: [:create, :show]#, defaults: { format: :pdf }
