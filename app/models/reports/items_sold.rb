@@ -9,20 +9,24 @@ module Reports
 
     attribute :date, :string
     attribute :order_ref, :string
+    attribute :discount_or_shipping, :boolean
     attribute :sku_code, :string
     attribute :description, :string
     attribute :unit_amount_paid, :string
     attribute :quantity, :string
+    attribute :total_retail_amount, :string
     attribute :total_amount_paid, :string
 
     def populate_from(item)
       self.date = item.order_display_date
       self.order_ref = item.order_id
+      self.discount_or_shipping = item.order_has_shipping_or_discount?
       self.sku_code = item.sku_code
       self.description = item.display_name
       self.unit_amount_paid = item.display_retail_amount_per_unit_including_tax
       self.quantity = item.quantity
-      self.total_amount_paid = item.display_total_retail_amount
+      self.total_retail_amount = item.display_total_retail_amount
+      self.total_amount_paid = item.order.display_order_price_total_including_tax_with_delivery_or_discount
     end
   end
 

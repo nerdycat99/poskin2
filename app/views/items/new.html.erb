@@ -7,7 +7,7 @@
          <p class="text-red-700 text-base"><%= message %> </p>
       <%end%>
     <%end%>
-    <% if @order.items.any? %>
+    <% if @order.number_of_items > 0 %>
       <br />
       <table style="width:100%">
         <tr>
@@ -21,42 +21,63 @@
         </tr>
         <% @order.items.each do |item| %>
           <tr>
-            <td><%= item.display_name%></td>
-            <td><%= item.quantity %></td>
-            <td><%= item.display_retail_amount_per_unit %></td>
-            <td><%= item.display_retail_amount %></td>
-            <td><%= item.display_retail_amount_tax %></td>
-            <td><%= item.display_total_retail_amount %></td>
-            <td><%= link_to "Remove", order_item_path(@order.id, item.id), class: "btn btn-danger", data: {turbo_method: :delete } %></td>
+            <% if item.persisted? %>
+              <td><%= item.display_name%></td>
+              <td><%= item.quantity %></td>
+              <td><%= item.display_retail_amount_per_unit %></td>
+              <td><%= item.display_retail_amount %></td>
+              <td><%= item.display_retail_amount_tax %></td>
+              <td><%= item.display_total_retail_amount %></td>
+              <td><%= link_to "Remove", order_item_path(@order.id, item.id), class: "btn btn-danger", data: {turbo_method: :delete } %></td>
+            <% end %>
           </tr>
         <% end %>
-      <tr>
-        <th>Total</th>
-        <th><%= @order.number_of_items %></th>
-        <th></th>
-        <th><%= @order.display_order_price_total %></th>
-        <th><%= @order.display_order_tax_total %></th>
-        <th><%= @order.display_order_price_total_including_tax %></th>
-      </tr>
+
+        <tr>
+          <th>Total</th>
+          <th><%= @order.number_of_items %></th>
+          <th></th>
+          <th><%= @order.display_order_price_total %></th>
+          <th><%= @order.display_order_tax_total %></th>
+          <th><%= @order.display_order_price_total_including_tax %></th>
+        </tr>
       </table>
+      <br /><br /><br /><br /><br /><br />
     <% end %>
 
-    <br />
-    <%= simple_form_for @item, builder: TailwindFormBuilder, class: "mt-6", url: order_items_path do |f| %>
-      <%= f.label "Item SKU Code" %>
-      <%= f.text_field :variant_id, placeholder: 'enter sku for variant then click add item to order' %>
-      <br />
-      <br />
-      <%= f.label "Quantity" %>
-      <%= f.text_field :quantity, placeholder: '1' %>
-      <br />
-      <br />
-      <%= f.submit_button "Add Item to Order" %>
-      <%= link_to "Continue", edit_order_path(@order.id), class: "btn btn-secondary" %>
-      <% unless @order.items.any? %>
-        <%= link_to "Skip Ahead / Manual Receipt", order_path(@order.id), class: "btn btn-warning" %>
-      <% end %>
-      <%= link_to "Cancel", order_path(@order.id), class: "btn btn-outline-secondary", data: {turbo_method: :delete } %>
+      <footer class="bg-white text-center text-lg-start fixed-bottom">
+        <div class="col-10 offset-1">
+          <!-- <div class="pt-6 pb-6 pl-10 text-gray-800 max-w-7xl"> -->
+            <%= simple_form_for @item, builder: TailwindFormBuilder, class: "mt-6", url: order_items_path do |f| %>
+            <div class="row">
+              <div class="col-3">
+                <b><%= f.label "Enter item SKU Code" %></b>
+                <%= f.text_field :variant_id, value: @item.sku_code, placeholder: 'enter item sku or scan' %>
+              </div>
+              <div class="col-3">
+                <b><%= f.label "Enter Quantity" %></b>
+                <%= f.text_field :quantity, value: @item.quantity, placeholder: '1' %>
+              </div>
+              <div class="col-6">
+                <b><%= f.label "Description" %></b>
+                <% if @item.sku_code.present? %>
+                  <br /><%= @item.display_name %>
+                <% end %>
+              </div>
+            </div>
+            <br />
+            <row>
+              <%= f.submit_button "Add Item to Order" %>
+              <%= link_to "Continue", edit_order_path(@order.id), class: "btn btn-secondary" %>
+              <% unless @order.items.any? %>
+                <%= link_to "Skip Ahead / Manual Receipt", order_path(@order.id), class: "btn btn-warning" %>
+              <% end %>
+              <%= link_to "Cancel", order_path(@order.id), class: "btn btn-outline-secondary", data: {turbo_method: :delete } %>
+            </row>
+          <!-- </div> -->
+        </div>
+        <br />
+      </footer>
     <% end %>
   </div>
 </div>

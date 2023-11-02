@@ -30,8 +30,12 @@ class ItemsController < ApplicationController
   end
 
   def destroy
-    flash[:notice] = 'There was a problem removing the item' unless @item&.delete
-    render(:new, status: :unprocessable_entity)
+    if @item&.delete
+      redirect_to new_order_item_path(@order)
+    else
+      flash[:notice] = 'There was a problem removing the item' unless @item&.delete
+      render(:new, status: :unprocessable_entity)
+    end
   end
 
   private

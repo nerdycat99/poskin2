@@ -37,11 +37,11 @@ class Order < ApplicationRecord
   end
 
   def has_delivery_charges?
-    delivery_amount.present?
+    delivery_amount.present? && delivery_amount > 0
   end
 
   def discounted?
-    adjustment_amount.present?
+    adjustment_amount.present? && adjustment_amount > 0
   end
 
   def customer_details
