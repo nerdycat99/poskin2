@@ -8,22 +8,26 @@
     <table style="width: 100%">
       <colgroup>
          <col span="1" style="width: 15%;">
+         <col span="1" style="width: 5%;">
+         <col span="1" style="width: 5%;">
          <col span="1" style="width: 10%;">
+         <col span="1" style="width: 30%;">
          <col span="1" style="width: 10%;">
-         <col span="1" style="width: 35%;">
-         <col span="1" style="width: 10%;">
+         <col span="1" style="width: 5%;">
          <col span="1" style="width: 10%;">
          <col span="1" style="width: 10%;">
       </colgroup>
       <thead>
         <tr>
           <th>Date</th>
-          <th>Order Ref</th>
+          <th>Order</th>
+          <th>Shipping/Discount</th>
           <th>Sku</th>
           <th>Description</th>
           <th style="text-align: right">Item Amount</th>
-          <th style="text-align: center">Quantity</th>
-          <th style="text-align: right">Total Amount</th>
+          <th style="text-align: center">Quant</th>
+          <th style="text-align: right">Total Retail</th>
+          <th style="text-align: right">Amount Paid</th>
         </tr>
       </thead>
       <tbody>
@@ -32,10 +36,12 @@
           <tr>
             <td style="text-align: left"><%= item.date %></td>
             <td style="text-align: left"><%= item.order_ref %></td>
+            <td style="text-align: left"><%= item.discount_or_shipping %></td>
             <td style="text-align: left"><%= item.sku_code %></td>
             <td style="text-align: left"><%= item.description %></td>
             <td style="text-align: right"><%= item.unit_amount_paid %></td>
             <td style="text-align: center"><%= item.quantity %></td>
+            <td style="text-align: right"><%= item.total_retail_amount %></td>
             <td style="text-align: right"><%= item.total_amount_paid %></td>
           </tr>
         <% end %>

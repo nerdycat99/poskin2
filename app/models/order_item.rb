@@ -36,12 +36,32 @@ class OrderItem < ApplicationRecord
     order.display_date
   end
 
+  def order_has_shipping_or_discount?
+    order_discounted? || order_has_shipping?
+  end
+
+  def order_discounted?
+    order.discounted?
+  end
+
+  def order_has_shipping?
+    order.has_delivery_charges?
+  end
+
+  def percentage_of_order
+    @percentage_of_order =  order.number_of_items > 1 ? retail_price_in_cents_as_float / order.order_price_total_as_float : 1
+  end
+
+  def delivery_charges_for_item
+    order.delivery_amount * percentage_of_order
+  end
+
   def display_date_of_sale
     order.display_date
   end
 
   def display_retail_amount_per_unit
-    variant.display_retail_price
+    variant&.display_retail_price
   end
 
   def display_retail_amount_per_unit_including_tax

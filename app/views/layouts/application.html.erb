@@ -59,12 +59,14 @@
       </div>
     </nav>
 
-    <% if notice.present? %>
-        <p class="notice"><%= notice %></p>
+    <div class="col-10 offset-1">
+      <% if notice.present? %>
+          <p class="notice"><%= notice %></p>
+        <% end %>
+        <% if alert.present? %>
+          <p class="alert"><%= alert %></p>
       <% end %>
-      <% if alert.present? %>
-        <p class="alert"><%= alert %></p>
-    <% end %>
+    </div>
     <%= yield %>
   </body>
 </html>
