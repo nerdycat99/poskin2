@@ -29,7 +29,8 @@
             <td><%= variant.stock_count %></td>
             <td colspan="3">
               <%= link_to "Receive Stock", new_inventory_supplier_product_variant_adjustment_path(@supplier.id, product.id, variant.id), class: "btn btn-primary" %>
-              <%= link_to "View History", inventory_supplier_product_variant_adjustments_path(@supplier.id, product.id, variant.id), class: "btn btn-outline-secondary" %>
+              <%= link_to "View History", inventory_supplier_product_variant_adjustments_path(@supplier.id, product.id, variant.id), class: "btn btn-secondary" %>
+              <%= link_to "Print Labels", print_catalogue_supplier_product_variant_path(@supplier.id, product.id, variant.id), class: "btn btn-outline-secondary", target: :_blank %>
             </td>
           </tr>
         <% end %>
