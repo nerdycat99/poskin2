@@ -54,6 +54,12 @@ class Catalogue::VariantsController < ApplicationController
     redirect_to catalogue_supplier_path(supplier.id)
   end
 
+  def print
+    pdf = LabelPdf.new(existing_variant)
+    pdf.render_file(Rails.public_path.join('label.pdf'))
+    redirect_to '/label.pdf', allow_other_host: true
+  end
+
   private
 
   def calculation_methods

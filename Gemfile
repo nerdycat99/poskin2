@@ -32,8 +32,10 @@ gem 'simple_form'
 # printing - removed to deploy to heroku
 # gem 'cupsffi'
 
-# PDF Generation
+# PDF Generation / Barcode
 gem 'prawn'
+gem 'barby'
+gem 'chunky_png'
 
 # Bundle and process CSS [https://github.com/rails/cssbundling-rails]
 gem 'cssbundling-rails'

@@ -22,11 +22,13 @@ class BasePdf
   FONT_LARGE = 16
 
   DATE_FORMAT = '%d/%m/%Y'
+  LABEL_WIDTH = 56.692913386
+  LABEL_HEIGHT = 113.38582677
 
+  # TO DO: Allow this to create any size the user wishes
+  # 1 mm = 2.8346456693, so if a user wants 40 x 20 then that is going to be 113.38582677 x 56.692913386
   def document
-    # page_size => [324, 684], :page_layout => :portrait
-    @document ||= Prawn::Document.new(page_size: [100, 250], page_layout: :portrait, margin: [0, 0, 0, 0])
-    # @document ||= Prawn::Document.new(page_size: 'A4', margin: [0, 0, 39, 0])
+    @document ||= Prawn::Document.new(page_size: [LABEL_HEIGHT, LABEL_WIDTH], page_layout: :portrait, margin: [0, 0, 0, 0])
   end
 
   def initialize
