@@ -51,6 +51,32 @@ class Product < ApplicationRecord
     end
   end
 
+  def stage
+    return :completed_saved if self.persisted?
+
+    # sku and publish will always have a value, notes is optional
+    if title.blank? && description.blank? && accounting_code_id.blank? && price_calc_method.blank?
+      :step_zero
+    elsif title.blank? || description.blank? || accounting_code_id.blank? || price_calc_method.blank?
+      self.errors.add :base, 'Please complete all required data then press Next' unless self.errors.present?
+      :step_one
+    elsif retail_price.blank? && cost_price.blank?
+      :step_two
+    else
+      message = price_calc_method == 'via_retail_price' ? 'retail price including tax' : 'cost price excluding tax'
+      self.errors.add :base, "Please enter the #{message} and markup percentage then press Save" unless self.errors.present?
+      :completed_unsaved
+    end
+  end
+
+  def display_stage_title
+    if stage == :step_zero || stage == :step_one
+      "Create a new product for #{supplier.name}"
+    else
+      "Enter the price and markup for new product: #{title}"
+    end
+  end
+
   def clean_up_calculation_methods
     self.cost_price = nil if price_calc_method == 'via_retail_price'
     self.retail_price = nil if price_calc_method == 'via_cost_price'

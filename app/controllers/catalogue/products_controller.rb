@@ -8,15 +8,24 @@ class Catalogue::ProductsController < ApplicationController
   before_action :existing_product, only: %i[edit update destroy show]
 
   def show; end
-  def new; end
+
+  def new
+    session.delete(:product_params)
+  end
 
   def edit; end
 
   def create
-    @product = supplier.products.new(product_params)
-    return render(:new, status: :unprocessable_entity) unless @product.save
+    session[:product_params] = params[:product] #gets the params passed into create and pushes them back into new
 
-    redirect_to catalogue_supplier_path(supplier.id)
+    if (valid_cost_price? || valid_retail_price?) && product_params[:markup].present?
+      new_product = supplier.products.new(product_params) if session[:product_params].present?
+      if new_product.save
+        session.delete(:product_params)
+        return redirect_to catalogue_supplier_path(supplier.id)
+      end
+    end
+    redirect_to new_catalogue_supplier_product_path(supplier.id)
   end
 
   def update
@@ -42,6 +51,14 @@ class Catalogue::ProductsController < ApplicationController
 
   private
 
+  def valid_retail_price?
+    product_params[:retail_price].present? && product_params[:retail_price] > 0
+  end
+
+  def valid_cost_price?
+    product_params[:cost_price].present? && product_params[:cost_price] > 0
+  end
+
   def calculation_methods
     @calculation_methods = [OpenStruct.new(name: 'Cost Price Method', value: 0), OpenStruct.new(name: 'Retail Price Method', value: 1)]
   end
@@ -55,6 +72,8 @@ class Catalogue::ProductsController < ApplicationController
   end
 
   def product_with_sku_code
+    return product.assign_attributes(session[:product_params]) if session[:product_params].present?
+
     product.sku_code = sku_code
     product
   end
@@ -94,7 +113,7 @@ class Catalogue::ProductsController < ApplicationController
   end
 
   def markup
-    unmatched_params['markup'].gsub(/[^0-9]/, '')
+    unmatched_params['markup'].present? ? unmatched_params['markup'].gsub(/[^0-9]/, '') : nil
   end
 
   def publish
