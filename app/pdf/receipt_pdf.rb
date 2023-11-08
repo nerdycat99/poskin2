@@ -43,43 +43,27 @@ class ReceiptPdf < BaseReceiptPdf
   end
 
   def company_info
-    indent(200, 0) do
-      text 'Queen Victoria Building Level 2', size: 14, style: :light, color: BOX_TEXT_COLOUR
-    end
+    text 'Shop 9', size: 14, style: :light, align: :center, color: BOX_TEXT_COLOUR
     move_down 5
-    indent(235, 0) do
-      text '455 George Street', size: 14, style: :light, color: BOX_TEXT_COLOUR
-    end
+    text '601-611 Military Road', size: 14, style: :light, align: :center, color: BOX_TEXT_COLOUR
     move_down 5
-    indent(232, 0) do
-      text 'Sydney, 2000, NSW', size: 14, style: :light, color: BOX_TEXT_COLOUR
-    end
+    text 'Mosman, 2088, NSW', size: 14, style: :light, align: :center, color: BOX_TEXT_COLOUR
     move_down 20
-    indent(237, 0) do
-      text 'ABN 97 346 099 695', size: 12, style: :normal, color: BOX_TEXT_COLOUR
-    end
+    text 'ABN 97 346 099 695', size: 12, style: :normal, align: :center, color: BOX_TEXT_COLOUR
     move_down 5
-    indent(200, 0) do
-      text 'www.australian-glass.com.au', size: 14, style: :bold, color: BOX_TEXT_COLOUR
-    end
+    text 'www.australian-glass.com.au', size: 14, style: :bold, align: :center, color: BOX_TEXT_COLOUR
   end
 
   def transaction_timestamp
-    indent(230, 0) do
-      text @date, size: 12, style: :light, color: BOX_TEXT_COLOUR
-    end
+    text @date, size: 12, style: :light, align: :center, color: BOX_TEXT_COLOUR
   end
 
   def transaction_reference
-    indent(230, 0) do
-      text "Order Reference: #{@receipt.order_reference_display}", size: 12, style: :light, color: BOX_TEXT_COLOUR
-    end
+    text "Order Reference: #{@receipt.order_reference_display}", size: 12, style: :light, align: :center, color: BOX_TEXT_COLOUR
   end
 
   def customer_details
-    indent(90, 0) do
-      text "Customer: #{@receipt.order.customer_details_for_receipt}", size: 12, style: :normal, color: BOX_TEXT_COLOUR
-    end
+    text "Customer: #{@receipt.order.customer_details_for_receipt}", size: 12, style: :normal, align: :center, color: BOX_TEXT_COLOUR
   end
 
   def transaction_details
@@ -181,7 +165,7 @@ class ReceiptPdf < BaseReceiptPdf
 
   def header_logo(width:, image:)
     logo = Rails.root.join("app/assets/images/#{image}.png")
-    image logo, width:
+    image logo, width:, position: :center
   rescue StandardError => e
     Rails.logger.error "header image error: #{e.message}"
   end
@@ -191,9 +175,9 @@ class ReceiptPdf < BaseReceiptPdf
 
     move_down 0
 
-    indent(145, 0) do
+    # indent(145, 0) do
       header_logo(width: logo_width, image: 'ag_logo')
       move_cursor_to bounds.height
-    end
+    # end
   end
 end

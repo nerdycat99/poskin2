@@ -61,7 +61,7 @@
               <div class="col-6">
                 <b><%= f.label "Description" %></b>
                 <% if @item.sku_code.present? %>
-                  <br /><%= @item.display_name %>
+                  <br /><%= @item.display_name %>&nbsp;<%= @item.display_retail_amount_per_unit_including_tax %>
                 <% end %>
               </div>
             </div>
