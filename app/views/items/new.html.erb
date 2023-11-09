@@ -68,7 +68,9 @@
             <br />
             <row>
               <%= f.submit_button "Add Item to Order" %>
-              <%= link_to "Continue", edit_order_path(@order.id), class: "btn btn-secondary" %>
+              <% if @order.number_of_items > 0 %>
+                <%= link_to "Continue", edit_order_path(@order.id), class: "btn btn-secondary" %>
+              <% end %>
               <% unless @order.items.any? %>
                 <%= link_to "Skip Ahead / Manual Receipt", order_path(@order.id), class: "btn btn-warning" %>
               <% end %>

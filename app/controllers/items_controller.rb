@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class ItemsController < ApplicationController
+  before_action :order_item_quantity, only: %i[create]
   before_action :order, only: %i[new create destroy]
   before_action :item, only: %i[destroy]
 
@@ -11,15 +12,23 @@ class ItemsController < ApplicationController
   end
 
   def create
-    variant = Variant.find_by(sku_code:)
+    variant = Variant.includes(:stock_adjustments).find_by(sku_code:)
     if variant.present?
-      params[:order_item]['variant_id'] = variant.id # this is because we pass in the sku not id of variant
-      @item = order.order_items.new(item_params)
-      if @item.save
-        flash[:notice] = 'Item successfully added to order'
-        redirect_to new_order_item_path(@order.id)
+      if variant.stock_for_order?(@quantity)
+        params[:order_item]['variant_id'] = variant.id # this is because we pass in the sku not id of variant
+        @item = order.order_items.new(item_params)
+        if @item.save
+          flash[:notice] = 'Item successfully added to order'
+          redirect_to new_order_item_path(@order.id)
+        else
+          flash[:notice] = "Unable to add item with sku code: #{sku_code} to order" unless @item.save
+          render(:new, status: :unprocessable_entity)
+        end
       else
-        flash[:notice] = "Unable to add item with sku code: #{sku_code} to order" unless @item.save
+        item_quantity_text = @quantity == 1 ? "#{@quantity} item" : "#{@quantity} items"
+        stock_quantity_text = variant.stock_count == 1 ? "is only #{variant.stock_count} item" : "are only #{variant.stock_count} items"
+        flash[:notice] = "Cannot add #{item_quantity_text}, there #{stock_quantity_text} in stock."
+        @item = order.order_items.new
         render(:new, status: :unprocessable_entity)
       end
     else
@@ -39,6 +48,10 @@ class ItemsController < ApplicationController
   end
 
   private
+
+  def order_item_quantity
+    @quantity = params[:order_item]['quantity']
+  end
 
   def item
     @item ||= @order.order_items.find_by(id: params['id'])
