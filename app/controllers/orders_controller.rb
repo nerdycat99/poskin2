@@ -1,72 +1,112 @@
 # frozen_string_literal: true
 
 class OrdersController < ApplicationController
-  before_action :existing_order, only: %i[edit update show destroy]
+  include ItemsHelper
+
+  before_action :sanitize_params, only: %i[create]
 
   def show
     order = Order.find_by(id: params['id'])
-    @receipt = order.receipts.new # see if we can prevent this from happening if a receipt already exists?
+    @receipt = order.receipts.new #not sure why we have this here??
   end
 
-  def new; end
+  def new
+    @order = Order.new(state: 'raised')
+    add_items_to_order(@order, items) if items.present?
+    @item = @order.items.new
+    @items = items
+    @quantity = quantity
+    @sku_code = sku_code
+  end
+
+  def new_customer
+    @items = items
+    @customer = Customer.new
+  end
 
   def edit; end
 
-  def create
-    @order = Order.new(state: 'raised')
-    if @order.save
-      redirect_to new_order_item_path(@order.id)
-    else
-      flash[:notice] = 'There was a problem registering a new order, please try again'
-      redirect_to sales_path
-    end
-  end
+  def update; end
 
-  def update
-    # changed to no longer check email address present before proceeding, this allows a customer to be created
-    # with just a first and last name
-    # if email_address.present?
-      if existing_customer.present?
-        @existing_order.update(customer_id: existing_customer.id)
+  def create
+    @order = Order.new(order_params)
+    add_items_to_order(@order, items) if items.present?
+
+    # TO DO: put this in a transaction AND validate fields on order
+    if @order.update(customer_id: customer_id, state: 'paid')
+      adjust_stock_count
+      flash[:notice] = 'Order was successfully created'
+      redirect_to order_path(@order.id)
+    else
+      flash[:alert] = 'Please select a payment method'
+      if customer_id.present?
+        redirect_to new_order_payments_path(items: items_as_params(@order.order_items), customer: customer_id)
       else
-        create_new_customer_and_update_order
+        redirect_to new_order_without_customer_payments_path(items: items_as_params(@order.order_items))
       end
-    # end
-    redirect_to new_order_payment_path(@existing_order)
+    end
   end
 
   def destroy
     redirect_to sales_path if @existing_order.destroy
   end
 
+  def remove_item
+    redirect_to item_to_be_added_to_orders_path(items: remove_item_from_items(item, items))
+  end
+
   private
 
-  def email_address
-    order_params['email_address']
+  def quantity
+    params['quantity']
   end
 
-  def existing_customer
-    # might need to change this to try and find by first and lastname as well or phone number
-    Customer.find_by(email_address: email_address) if email_address.present?
+  def sku_code
+    params['sku']
   end
 
-  def create_new_customer_and_update_order
-    customer = Customer.new(first_name: order_params['first_name'], last_name: order_params['last_name'],
-                            email_address: order_params['email_address'], phone_number: order_params['phone_number'])
-    @existing_order.update(customer_id: customer.id) if customer.save
+  def item
+    @item ||= params['item']
   end
 
-  def existing_order
-    @existing_order ||= Order.includes(:order_items).find_by(id: params['id'])
+  def items
+    @items ||= params['items']
+  end
+
+  def customer_id
+    @customer_id ||= params['customer']
   end
 
   def order_params
     params.require(:order).permit(:customer_id, :state, :payment_method, :payment_other_method, :payment_amount, :adjustments, :delivery, :notes,
-                                  :first_name, :last_name, :email_address, :phone_number)
+                                  :first_name, :last_name, :email_address, :phone_number, :adjustment_amount, :delivery_amount)
     # params.require(:order).permit(:customer_id, :state, :payment_method, :payment_other_method, :payment_amount, :adjustments, :delivery, :notes, :first_name, :last_name, :email_address, :phone_number, customer_attributes: [:first_name, :last_name, :email_address, :phone_number])
   end
-end
 
-# initially just record the email address in the order!!!
-# in create show the list of customers by email address
-# user can select (in time will be search) - ot click on create new
+  def sanitize_params
+    params[:order]['payment_amount'] = payment_amount
+    params[:order]['adjustment_amount'] = adjustment_amount
+    params[:order]['delivery_amount'] = delivery_amount
+  end
+
+  def unmatched_params
+    @unmatched_params ||= params.require(:order).extract!(:payment_amount, :adjustment_amount, :delivery_amount)
+  end
+
+  def adjustment_amount
+    (unmatched_params['adjustment_amount'].gsub(/[^0-9.]/, '').to_f * 100).to_i
+  end
+
+  def delivery_amount
+    (unmatched_params['delivery_amount'].gsub(/[^0-9.]/, '').to_f * 100).to_i
+  end
+
+  def payment_amount
+    (unmatched_params['payment_amount'].gsub(/[^0-9.]/, '').to_f * 100).to_i
+  end
+
+  def adjust_stock_count
+    responses = @order.order_items.map { |item| item.adjust_stock(current_user.id, @order.id) }
+    # responses will be an array of true/false like this [true] we can use in transaction above?
+  end
+end

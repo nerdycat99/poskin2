@@ -1,15 +1,14 @@
 <div class="p-12 mx-auto text-gray-800 max-w-7xl">
   <h2>New Sale - Step 2 of 4</h2>
-  <h5>Add Customer Details to Order <%= @existing_order.id %></h5>
+  <h5>Add Customer Details to Order</h5>
   <div data-controller="hello">
-    <% if @existing_order.errors.any? %>
-      <% @existing_order.errors.full_messages.each do |message|%>
+    <% if @customer.errors.any? %>
+      <% @customer.errors.full_messages.each do |message|%>
          <p class="text-red-700 text-base"><%= message %> </p>
       <%end%>
     <%end%>
     <br />
-    <%= simple_form_for @existing_order, builder: TailwindFormBuilder, class: "mt-6", url: order_path do |f| %>
-      <%= f.hidden_field :state, :value =>'raised' %>
+    <%= simple_form_for @customer, builder: TailwindFormBuilder, class: "mt-6", url: customers_path do |f| %>
       <%= f.label "Customer Email" %>
       <%= f.text_field :email_address, placeholder: 'optional' %>
       <br />
@@ -26,9 +25,10 @@
       <%= f.text_field :phone_number, placeholder: 'optional' %>
       <br />
       <br />
+      <%= hidden_field_tag 'items', @items %>
       <%= f.submit_button "Add and Continue" %>
-      <%= f.submit_button "Skip and Continue" %>
-      <%= link_to "Cancel", order_path(@existing_order.id), class: "btn btn-outline-secondary", data: {turbo_method: :delete } %>
+      <%= link_to "Skip and Continue",  new_order_without_customer_payments_path(items: @items), class: "btn btn-primary" %>
+      <%= link_to "Cancel", sales_path, class: "btn btn-outline-secondary", data: {turbo_method: :delete } %>
     <% end %>
   </div>
 </div>

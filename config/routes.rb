@@ -19,12 +19,24 @@ Rails.application.routes.draw do
 
   resources :customers, only: [:new, :create, :edit, :update, :show, :index, :destroy]
   resources :reports, only: [:index, :show, :edit, :update]
-
-  resources :orders, only: [:create, :edit, :update, :show, :destroy] do
-    resources :receipts, only: [:create, :show]#, defaults: { format: :pdf }
+  resources :orders, only: [:new, :create, :update, :show, :destroy] do
+    collection do
+      get 'new/:items', :action => 'new', :as => 'item_to_be_added_to'
+      get 'edit/:items', :action => 'new_customer', :as => 'new_customer_for'
+      delete 'remove/:items, :item', :action => 'remove_item', :as => 'remove_item_from'
+    end
+    resources :receipts, only: [:create, :show]
     resources :payments, only: [:new, :create]
     resources :items, only: [:new, :create, :destroy]
   end
+  resources :payments do
+    collection do
+      get 'new/:items, :customer', :action => 'new_order_payment', :as => 'new_order'
+      get 'new/:items', :action => 'new_order_payment', :as => 'new_order_without_customer'
+    end
+  end
+
+  resources :items, only: [:create]
   resources :catalogue, only: [:index]
   resources :suppliers, only: [:index, :new, :create, :show, :edit, :update]
 
