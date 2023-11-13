@@ -60,10 +60,10 @@
     </nav>
     <div class="col-10 offset-1">
       <% if notice.present? %>
-          <p class="notice"><%= notice %></p>
+          <h1 class="alert alert-success"><%= notice %></h1>
         <% end %>
         <% if alert.present? %>
-          <p class="alert"><%= alert %></p>
+          <h1 class="alert alert-danger"><%= alert %></h1>
       <% end %>
     </div>
     <%= yield %>

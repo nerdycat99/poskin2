@@ -16,6 +16,10 @@ class OrderItem < ApplicationRecord
     variant.sold(quantity:, user_id:, order_id:)
   end
 
+  def is_empty?
+    self.attributes.values.all?(&:blank?)
+  end
+
   def invoice_display_details
     "#{variant.invoice_display_details} - Quanity: #{quantity}"
   end

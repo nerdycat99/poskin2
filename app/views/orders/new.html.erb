@@ -1,0 +1,80 @@
+<div class="p-12 mx-auto text-gray-800 max-w-7xl">
+  <h2>New Sale - Step 1 of 4</h2>
+  <h5>Add Items to Order</h5>
+  <div data-controller="hello">
+    <% if @item.errors.any? %>
+      <% @item.errors.full_messages.each do |message|%>
+         <p class="text-red-700 text-base"><%= message %> </p>
+      <%end%>
+    <%end%>
+    <% if @order.number_of_items > 0 %>
+      <br />
+      <table style="width:100%">
+        <tr>
+          <th>Item</th>
+          <th>Quantity</th>
+          <th>Price per Item</th>
+          <th>Total</th>
+          <th>Tax</th>
+          <th>Total (incl Tax)</th>
+          <th></th>
+        </tr>
+        <% @order.items.each do |item| %>
+          <% unless item.is_empty? %>
+            <tr>
+              <td><%= item.display_name%></td>
+              <td><%= item.quantity %></td>
+              <td><%= item.display_retail_amount_per_unit %></td>
+              <td><%= item.display_retail_amount %></td>
+              <td><%= item.display_retail_amount_tax %></td>
+              <td><%= item.display_total_retail_amount %></td>
+              <td><%= link_to "Remove", remove_item_from_orders_path(items: @items, item: "quantity=#{item.quantity}&variant_id=#{item.variant_id}"), class: "btn btn-danger", data: {turbo_method: :delete } %></td>
+            </tr>
+          <% end %>
+        <% end %>
+
+        <tr>
+          <th>Total</th>
+          <th><%= @order.number_of_items %></th>
+          <th></th>
+          <th><%= @order.display_order_price_total %></th>
+          <th><%= @order.display_order_tax_total %></th>
+          <th><%= @order.display_order_price_total_including_tax %></th>
+        </tr>
+      </table>
+      <br /><br /><br /><br /><br /><br />
+    <% end %>
+
+      <footer class="bg-white text-center text-lg-start fixed-bottom">
+        <div class="col-10 offset-1">
+          <%= simple_form_for @item, builder: TailwindFormBuilder, class: "mt-6", url: items_path do |f| %>
+          <div class="row">
+            <div class="col-3">
+              <b><%= f.label "Enter item SKU Code" %></b>
+              <%= f.text_field :variant_id, value: @sku_code, placeholder: 'enter item sku or scan' %>
+            </div>
+            <div class="col-3">
+              <b><%= f.label "Enter Quantity" %></b>
+              <%= f.text_field :quantity, value: @quantity, placeholder: '1' %>
+            </div>
+            <div class="col-6">
+              <b><%= f.label "Description" %></b>
+              <% if @item.sku_code.present? %>
+                <br /><%= @item.display_name %>&nbsp;<%= @item.display_retail_amount_per_unit_including_tax %>
+              <% end %>
+              <%= hidden_field_tag 'items', @items %>
+            </div>
+          </div>
+          <br />
+          <row>
+            <%= f.submit_button "Add Item to Order" %>
+            <% if @order.number_of_items > 0 %>
+              <%= link_to "Continue", new_customer_for_orders_path(items: @items), class: "btn btn-secondary" %>
+            <% end %>
+          </row>
+        </div>
+        <br />
+      </footer>
+    <% end %>
+  </div>
+</div>

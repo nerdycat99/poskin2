@@ -1,0 +1,73 @@
+<!-- in here we will save the order and order items as long as required stuff is provided -->
+<div class="p-12 mx-auto text-gray-800 max-w-7xl">
+  <h2>New Sale - Step 3 of 4</h2>
+  <h5>Select Payment Method and Confirm Order</h5>
+  <div data-controller="hello">
+    <% if @order.errors.any? %>
+      <% @order.errors.full_messages.each do |message|%>
+         <p class="text-red-700 text-base"><%= message %> </p>
+      <%end%>
+    <%end%>
+    <% if @order.items.any? %>
+      <br />
+      <table style="width:100%">
+        <tr>
+          <th>Item</th>
+          <th>Quantity</th>
+          <th>Price per Item</th>
+          <th>Tax</th>
+          <th>Total (incl Tax)</th>
+        </tr>
+        <% @order.items.each do |item| %>
+          <tr>
+            <td><%= item.display_name%></td>
+            <td><%= item.quantity %></td>
+            <td><%= item.display_retail_amount %></td>
+            <td><%= item.display_retail_amount_tax %></td>
+            <td><%= item.display_total_retail_amount %></td>
+          </tr>
+        <% end %>
+      <tr>
+        <th>Total</th>
+        <th><%= @order.number_of_items %></th>
+        <th><%= @order.display_order_price_total %></th>
+        <th><%= @order.display_order_tax_total %></th>
+        <th><%= @order.display_order_price_total_including_tax %></th>
+      </tr>
+      </table>
+    <% end %>
+    <br />
+    <div data-controller="sales">
+      <div class="d-none" data-sales-target="totalWithoutDeliveryOrDiscount"><%= @order.display_order_price_total_including_tax %></div>
+      <%= simple_form_for @order, builder: TailwindFormBuilder, class: "mt-6", url: orders_path, method: :post do |f| %>
+        <div class="row">
+          <div class="col-4">
+            <h5><%= f.label "Select Payment Method" %></h5>
+            <h5><%= f.collection_select :payment_method, @payment_methods, :display_name, :name, include_blank: true %></h5>
+          </div>
+          <div class="col-4">
+            <%= f.label "Discount Amount" %>
+            <%= f.text_field :adjustment_amount, placeholder: 'Amount of discount to apply in $', value: @order.display_discount_amount, data: { action: "change->sales#discountAmountEntered", target: "sales.discountAmount" } %>
+          </div>
+          <div class="col-4">
+            <%= f.label "Delivery Charges" %>
+            <%= f.text_field :delivery_amount, placeholder: 'Delivery charges for order in$', value: @order.display_delivery_amount, data: { action: "change->sales#deliveryAmountEntered", target: "sales.deliveryAmount" } %>
+          </div>
+        </div>
+        <br />
+        <h6><%= f.label "Calculated Total Payment Amount" %></h6>
+        <h6><%= f.text_field :payment_amount, value: @order.display_order_price_total_including_tax_with_delivery_or_discount, readonly: true, data: { target: "sales.totalAmount" } %></h6>
+        <br />
+        <br />
+        <%= f.label "Notes" %>
+        <%= f.text_field :notes, placeholder: 'optional' %>
+        <br />
+        <br />
+        <%= hidden_field_tag 'items', @items %>
+        <%= hidden_field_tag 'customer', @customer %>
+        <%= f.submit_button "Confirm Order" %>
+        <%= link_to "Cancel", sales_path, class: "btn btn-outline-secondary" %>
+      <% end %>
+    </div>
+  </div>
+</div>

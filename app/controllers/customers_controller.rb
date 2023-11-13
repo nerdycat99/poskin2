@@ -19,12 +19,28 @@ class CustomersController < ApplicationController
     @orders ||= @customer.orders.order(created_at: :desc)
   end
 
-  def create
-    @customer = Customer.new(customer_params)
-    return render(:new, status: :unprocessable_entity) unless @customer.save
+  def existing_items
+    @existing_items = JSON.parse(items) if items.present?
+  end
 
-    flash[:notice] = 'New customer successfully created'
-    redirect_to customers_path
+  def create
+    @customer = if existing_customer.present?
+                  existing_customer
+                else
+                  Customer.create(customer_params)
+                end
+
+    if items.present?
+      return redirect_to new_order_payments_path(items: items, customer: @customer.id) if @customer.persisted?
+
+      redirect_to new_customer_for_orders_path(items: items)
+      flash[:alert] = 'There was a problem creating the customer, plese provide either a first and last name or an email address'
+    else
+      return render(:new, status: :unprocessable_entity) unless @customer.persisted?
+
+      flash[:notice] = 'New customer successfully created'
+      redirect_to customers_path
+    end
   end
 
   def update
@@ -36,6 +52,15 @@ class CustomersController < ApplicationController
 
   private
 
+  def items
+    params['items']
+  end
+
+  def existing_customer
+    Customer.find_by(email_address: customer_params['email_address']) unless customer_params['email_address'].blank?
+  end
+
+  # we can probably removed the new part as we are doing that elswhere, only used on edit/update and show now
   def customer
     @customer ||= if params[:id].present?
                     Customer.find_by(id: params[:id])
@@ -45,6 +70,7 @@ class CustomersController < ApplicationController
   end
 
   def customer_params
+    # we may need to remove the items first
     params.require(:customer).permit(:first_name, :last_name, :email_address, :phone_number)
   end
 end

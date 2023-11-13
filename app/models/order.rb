@@ -8,12 +8,20 @@ class Order < ApplicationRecord
   has_many :receipts, dependent: :destroy #added temporarily so orders can be raised ad hoc
 
   enum state: { raised: 0, paid: 1, failed: 2, refunded: 3, cancelled: 4 }
-  enum payment_method: { credit_card: 0, debit_card: 1, other: 2 } # this needs to allow nil
+  enum payment_method: { credit_card: 0, debit_card: 1, other: 2 }
+
+  validate :valid_payment_method
 
   def self.display_payment_methods
     display_payment_methods = []
     Order.payment_methods.keys.map{|method| display_payment_methods << OpenStruct.new(name: method.humanize, display_name: method) }
     display_payment_methods
+  end
+
+  def valid_payment_method
+    if payment_method.blank?
+      self.errors.add :payment_method, 'Please select a payment method'
+    end
   end
 
   def customer

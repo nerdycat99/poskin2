@@ -1,59 +1,29 @@
 # frozen_string_literal: true
 
 class PaymentsController < ApplicationController
-  before_action :existing_order, only: %i[new create]
-  before_action :payment_methods, only: %i[new create]
-  before_action :sanitize_params, only: %i[create]
+  include ItemsHelper
 
-  def new; end
+  before_action :payment_methods, only: %i[new_order_payment]
 
-  def create
-    # put this in a transaction
-    if valid_payment_method? && @existing_order.update(order_payment_params)
-      adjust_stock_count
-      redirect_to order_path(@existing_order.id)
-    else
-      @existing_order.errors.add :payment_method, 'cannot be blank'
-      render(:new, status: :unprocessable_entity)
-    end
+  def new_order_payment
+    @order = Order.new(state: 'raised')
+    add_items_to_order(@order, items) if items.present?
+    @items = items
+    @customer = customer
   end
 
   private
 
+  def customer
+    params['customer']
+  end
+
+  def items
+    params['items']
+  end
+
   def payment_methods
     @payment_methods ||= Order.display_payment_methods
-  end
-
-  # this has to be done outside of standard validations as it's okay to have nil until this point
-  def valid_payment_method?
-    params[:order]['payment_method'].present?
-  end
-
-  def adjust_stock_count
-    responses = @existing_order.order_items.map { |item| item.adjust_stock(current_user.id, @existing_order.id) }
-    # responses will be an array of true/false like this [true] we can use in transaction above?
-  end
-
-  def sanitize_params
-    params[:order]['payment_amount'] = payment_amount
-    params[:order]['adjustment_amount'] = adjustment_amount
-    params[:order]['delivery_amount'] = delivery_amount
-  end
-
-  def unmatched_params
-    @unmatched_params ||= params.require(:order).extract!(:payment_amount, :adjustment_amount, :delivery_amount)
-  end
-
-  def adjustment_amount
-    (unmatched_params['adjustment_amount'].gsub(/[^0-9.]/, '').to_f * 100).to_i
-  end
-
-  def delivery_amount
-    (unmatched_params['delivery_amount'].gsub(/[^0-9.]/, '').to_f * 100).to_i
-  end
-
-  def payment_amount
-    (unmatched_params['payment_amount'].gsub(/[^0-9.]/, '').to_f * 100).to_i
   end
 
   def order_id

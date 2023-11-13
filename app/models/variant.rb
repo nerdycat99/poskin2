@@ -61,8 +61,6 @@ class Variant < ApplicationRecord
     Variant.price_calc_methods[self.price_calc_method]
   end
 
-
-
   def generated_sku
     unique_sku
   end
@@ -131,9 +129,6 @@ class Variant < ApplicationRecord
     @tagged_attributes ||= product_attributes_variants.map(&:product_attribute)
   end
 
-
-
-  # DONE
   def display_cost_price
     number_to_currency(format('%.2f', (cost_price_in_cents_as_float / 100))) unless cost_price_in_cents_as_float.nil?
   end
@@ -148,7 +143,6 @@ class Variant < ApplicationRecord
     number_to_currency(format('%.2f', ((total_cost_price_in_cents_as_float) / 100))) unless total_cost_price_in_cents_as_float.nil?
   end
 
-  # DONE
   def cost_price_tax_amount_in_cents_as_float
     if use_product_details?
       product.cost_price_tax_amount_in_cents_as_float
@@ -157,26 +151,13 @@ class Variant < ApplicationRecord
     end
   end
 
-  # DONE
   def total_cost_price_in_cents_as_float
     if use_product_details?
-      # product.cost_price_in_cents_as_float
       product.cost_price_total_in_cents_as_float
     else
       cost_price_in_cents_as_float + cost_price_tax_amount_in_cents_as_float
     end
   end
-
-  # DONE
-  # def cost_price_in_cents_as_float
-  #   if use_product_details?
-  #     product.cost_price_in_cents_as_float
-  #   else
-  #     cost_price.to_f
-  #   end
-  # end
-
-
 
   def cost_price_in_cents_as_float
     return product.cost_price_in_cents_as_float if use_product_details?
@@ -187,9 +168,6 @@ class Variant < ApplicationRecord
       (retail_price_before_tax_in_cents_as_float / ((markup.to_f / 100.0) + 1)).round(0).to_f
     end
   end
-
-
-
 
   def retail_mark_up_amount_in_cents
     markup_percentage = markup ? markup.to_f / 100.0 : product.markup.to_f / 100.0
@@ -204,7 +182,6 @@ class Variant < ApplicationRecord
     markup.present? ? "#{markup}%" : product.display_markup
   end
 
-  # DONE
   def display_retail_mark_up_amount
     if use_product_details?
       product.display_retail_mark_up_amount
@@ -213,7 +190,6 @@ class Variant < ApplicationRecord
     end
   end
 
-  # DONE
   def display_profit_amount
     if use_product_details?
       product.display_profit_amount
@@ -222,7 +198,6 @@ class Variant < ApplicationRecord
     end
   end
 
-  # DONE
   def profit_amount_in_cents_as_float
     if use_product_details?
       profit_amount_in_cents_as_float
@@ -231,7 +206,6 @@ class Variant < ApplicationRecord
     end
   end
 
-  # DONE
   def share_of_retail_tax_responsible_for
     return product.share_of_retail_tax_responsible_for if use_product_details?
 
@@ -242,7 +216,6 @@ class Variant < ApplicationRecord
     end
   end
 
-  # DONE
   def display_retail_sales_tax_liability_amount
     if use_product_details?
       product.display_retail_sales_tax_liability_amount
@@ -255,7 +228,6 @@ class Variant < ApplicationRecord
     number_to_currency(format('%.2f', (total_retail_price_in_cents_as_float / 100))) unless total_retail_price_in_cents_as_float.nil?
   end
 
-  # DONE
   def display_retail_price
     if use_product_details?
       product.display_retail_price
@@ -264,7 +236,6 @@ class Variant < ApplicationRecord
     end
   end
 
-  # DONE
   def display_retail_price_tax_amount
     if use_product_details?
       product.display_retail_price_tax_amount
@@ -273,7 +244,6 @@ class Variant < ApplicationRecord
     end
   end
 
-  # DONE
   def display_total_retail_price_including_tax
     if use_product_details?
       product.display_total_retail_price_including_tax
@@ -282,7 +252,6 @@ class Variant < ApplicationRecord
     end
   end
 
-  # DONE
   def retail_price_before_tax_in_cents_as_float
     return product.retail_price_before_tax_in_cents_as_float if use_product_details?
 
@@ -296,15 +265,6 @@ class Variant < ApplicationRecord
   def retail_price_tax_amount_in_cents_as_float
     retail_price_before_tax_in_cents_as_float * tax_rate
   end
-
-  # DONE
-  # def total_retail_price_in_cents_as_float
-  #   if use_product_details?
-  #     product.total_retail_price_in_cents_as_float
-  #   else
-  #     retail_price_tax_amount_in_cents_as_float + retail_price_before_tax_in_cents_as_float
-  #   end
-  # end
 
   def total_retail_price_in_cents_as_float
     return product.total_retail_price_in_cents_as_float if use_product_details?
