@@ -1,0 +1,37 @@
+<div class="p-12 mx-auto text-gray-800 max-w-7xl">
+  <h2>Find a product</h2>
+  <%= simple_form_for :search, url: search_catalogue_variants_path do |f| %>
+    <%= f.input :sku_code, as: :string, placeholder: 'search by sku code', input_html: { :value => @query_params['sku'] } %>
+    <%= f.input :description, as: :string, placeholder: 'search by product text', input_html: { :value => @query_params['description'] } %>
+    <%= f.submit "Search for Product", class: 'btn btn-primary' %>
+    <%= link_to "Done", catalogue_index_path, class: "btn btn-secondary" %>
+    <%= link_to "Clear", catalogue_variants_path, class: "btn btn-outline-secondary" %>
+  <% end %>
+  <br />
+  <% if @query_params['description'].present? %>
+    <h4>Search results</h4>
+    <% if @results.present? %>
+      <table style="width:100%">
+        <tr>
+          <th>Title</th>
+          <th>Description</th>
+          <th>Sku Code</th>
+          <th>Retail Amount (incl. tax)</th>
+          <th>Quantity</th>
+        </tr>
+        <% @results.each do |result| %>
+          <tr>
+            <td><%= result.display_title %></th>
+            <td><%= result.display_with_product_details %></th>
+            <td><%= result.sku_code %></th>
+            <td><%= result.display_total_retail_price_including_tax %></th>
+            <td><%= result.stock_count %></th>
+          </tr>
+        <% end %>
+      </table>
+    <% else %>
+      <br / >
+      <h5>No matches found for query</h5>
+    <% end %>
+  <% end %>
+</div>

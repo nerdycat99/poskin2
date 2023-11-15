@@ -50,6 +50,12 @@ Rails.application.routes.draw do
         resources :product_attribute_types, only: [:index, :new, :create, :destroy]
       end
     end
+    resources :variants do
+      collection do
+        get 'index/:results, :query_params', :action => 'index', :as => 'index'
+        post 'search', :action => 'search', :as => 'search'
+      end
+    end
   end
 
   namespace :inventory do
