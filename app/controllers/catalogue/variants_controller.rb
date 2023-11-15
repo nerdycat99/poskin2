@@ -8,6 +8,7 @@ class Catalogue::VariantsController < ApplicationController
   before_action :number_of_rows_for_attribute_types, only: %i[new edit create update]
   before_action :existing_variant, only: %i[edit update destroy show]
   before_action :calculation_methods, only: %i[new create edit update]
+  before_action :search_criteria, only: %i[index search]
 
   def new
     0.upto(@attribute_types.count - 1) do |_loop_index|
@@ -19,6 +20,15 @@ class Catalogue::VariantsController < ApplicationController
     0.upto(@existing_variant.attribute_types_not_set.count - 1) do
       @existing_variant.product_attributes_variants.build
     end
+  end
+
+  def index
+    @results = Search.variants_for(result_params)
+    @query_params = query_params
+  end
+
+  def search
+    redirect_to catalogue_variants_path(results: @search.results, query_params: query_params)
   end
 
   def show
@@ -61,6 +71,30 @@ class Catalogue::VariantsController < ApplicationController
   end
 
   private
+
+  def query_params
+    params['query_params'] || {'sku' => sku_search_string, 'description' => description_search_string }
+  end
+
+  def result_params
+    params['results']
+  end
+
+  def search_params
+    params['search']
+  end
+
+  def sku_search_string
+    search_params['sku_code'] if search_params.present?
+  end
+
+  def description_search_string
+    search_params['description'] if search_params.present?
+  end
+
+  def search_criteria
+    @search = Search.new(sku_code: sku_search_string, description: description_search_string)
+  end
 
   def calculation_methods
     @calculation_methods = [OpenStruct.new(name: 'Cost Price Method', value: 0), OpenStruct.new(name: 'Retail Price Method', value: 1)]
