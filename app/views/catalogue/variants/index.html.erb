@@ -8,7 +8,7 @@
     <%= link_to "Clear", catalogue_variants_path, class: "btn btn-outline-secondary" %>
   <% end %>
   <br />
-  <% if @query_params['description'].present? %>
+  <% if @query_params['description'].present? || @query_params['sku'].present? %>
     <h4>Search results</h4>
     <% if @results.present? %>
       <table style="width:100%">

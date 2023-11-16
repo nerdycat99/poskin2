@@ -27,6 +27,10 @@ class LabelPdf < BasePdf
     text "#{truncate(@variant.display_title, length: 23)}", size: 8.5, style: :bold, align: :center, color: TEXT_COLOUR
   end
 
+  def sku_code
+    text "#{@variant.barcode_sku}", size: 6.5, style: :light, align: :center, color: TEXT_COLOUR
+  end
+
   def price
     text "#{@variant.display_total_retail_price_including_tax}", size: 8.5, style: :bold, align: :center, color: TEXT_COLOUR
   end
@@ -39,18 +43,20 @@ class LabelPdf < BasePdf
     File.open("tmp/barcode.png", 'wb'){|f| f.write barcode.to_png }
 
     barcode = Rails.root.join("tmp/barcode.png")
-    image barcode, width: 85, height: 31, position: :center
+    image barcode, width: 85, height: 29, position: :center, padding: 0
     # image barcode, width: 30, height: 11, position: :center
   rescue StandardError => e
     Rails.logger.error "barcode image error: #{e.message}"
   end
 
   def standard_header(_height = 100)
-    move_down 2.835
+    move_down 2
     item_description
     move_down 0
     barcode_image
-    move_down 2.835
+    move_down -1.5
+    sku_code
+    move_down 2.5
     price
     move_cursor_to bounds.height
   end
