@@ -65,6 +65,10 @@ class Variant < ApplicationRecord
     unique_sku
   end
 
+  def barcode_sku
+    sku_code.scan(/.{1,1}/).join('   ')
+  end
+
   def calculated_via_cost_price?
     price_calc_method == 'via_cost_price' || (price_calc_method.blank? && !use_product_details?)
   end
