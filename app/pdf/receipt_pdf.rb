@@ -11,8 +11,7 @@ class ReceiptPdf < BaseReceiptPdf
   CELL_PADDING = [2, 4.5, 4.5, 5].freeze
   CELL_PADDING_PATIENT = [0, 5, 5, 0].freeze
 
-  def initialize(receipt:, order:, include_customer_name:)
-    @receipt = receipt
+  def initialize(order:, include_customer_name: true)
     @order = order
     @include_customer_name = include_customer_name
     date = DateTime.now
@@ -28,17 +27,22 @@ class ReceiptPdf < BaseReceiptPdf
   def content
     move_down 60
     company_info
-    move_down 80
+    move_down 60
     transaction_timestamp
     move_down 10
     transaction_reference
-    move_down 30
-    if @include_customer_name  && @receipt.order.customer.present?
+    if @include_customer_name  && @order.customer.present?
+      move_down 10
       customer_details
       move_down 30
       transaction_details
     else
+      move_down 30
       transaction_details
+    end
+    if @order.notes.present?
+      move_down 40
+      notes
     end
   end
 
@@ -59,11 +63,15 @@ class ReceiptPdf < BaseReceiptPdf
   end
 
   def transaction_reference
-    text "Order Reference: #{@receipt.order_reference_display}", size: 12, style: :light, align: :center, color: BOX_TEXT_COLOUR
+    text "Order Reference: #{@order.reference_display}", size: 12, style: :light, align: :center, color: BOX_TEXT_COLOUR
   end
 
   def customer_details
-    text "Customer: #{@receipt.order.customer_details_for_receipt}", size: 12, style: :normal, align: :center, color: BOX_TEXT_COLOUR
+    text "Customer: #{@order.customer_details_for_receipt}", size: 12, style: :normal, align: :center, color: BOX_TEXT_COLOUR
+  end
+
+  def notes
+    text "Notes: #{@order.notes}", size: 10, style: :light, align: :center, color: BOX_TEXT_COLOUR
   end
 
   def transaction_details
@@ -101,63 +109,6 @@ class ReceiptPdf < BaseReceiptPdf
       text 'Total Amount (including Tax)', size: 12, style: :bold, color: BOX_TEXT_COLOUR
       move_up 12
       text @order.display_order_price_total_including_tax, size: 12, style: :bold, color: BOX_TEXT_COLOUR, align: :right
-    end
-  end
-
-  def transaction_details_for_receipt
-    if @receipt.item_one_name.present?
-      indent(90, 0) do
-        text @receipt.item_one_name, size: 12, style: :normal, color: BOX_TEXT_COLOUR
-        move_up 12
-        text @receipt.item_one_price_minus_tax, size: 12, style: :normal, color: BOX_TEXT_COLOUR, align: :right
-      end
-    end
-
-    if @receipt.item_two_name.present?
-      move_down 10
-      indent(90, 0) do
-        text @receipt.item_two_name, size: 12, style: :normal, color: BOX_TEXT_COLOUR
-        move_up 12
-        text @receipt.item_two_price_minus_tax, size: 12, style: :normal, color: BOX_TEXT_COLOUR, align: :right
-      end
-    end
-
-    if @receipt.item_three_name.present?
-      move_down 10
-      indent(90, 0) do
-        text @receipt.item_three_name, size: 12, style: :normal, color: BOX_TEXT_COLOUR
-        move_up 12
-        text @receipt.item_three_price_minus_tax, size: 12, style: :normal, color: BOX_TEXT_COLOUR, align: :right
-      end
-    end
-
-    if @receipt.item_four_name.present?
-      move_down 10
-      indent(90, 0) do
-        text @receipt.item_four_name, size: 12, style: :normal, color: BOX_TEXT_COLOUR
-        move_up 12
-        text @receipt.item_four_price_minus_tax, size: 12, style: :normal, color: BOX_TEXT_COLOUR, align: :right
-      end
-    end
-
-    move_down 30
-    indent(90, 0) do
-      text 'Total Amount', size: 12, style: :bold, color: BOX_TEXT_COLOUR
-      move_up 12
-      text @receipt.display_total_amount, size: 12, style: :bold, color: BOX_TEXT_COLOUR, align: :right
-    end
-    move_down 10
-    indent(90, 0) do
-      text 'Sales Tax', size: 12, style: :bold, color: BOX_TEXT_COLOUR
-      move_up 12
-      text @receipt.display_tax_amount, size: 12, style: :bold, color: BOX_TEXT_COLOUR, align: :right
-    end
-
-    move_down 10
-    indent(90, 0) do
-      text 'Total Amount (including Tax)', size: 12, style: :bold, color: BOX_TEXT_COLOUR
-      move_up 12
-      text @receipt.display_total_amount_including_tax, size: 12, style: :bold, color: BOX_TEXT_COLOUR, align: :right
     end
   end
 

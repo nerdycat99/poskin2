@@ -4,10 +4,10 @@ class OrdersController < ApplicationController
   include ItemsHelper
 
   before_action :sanitize_params, only: %i[create]
+  before_action :remember_page, only: [:new, :show]
 
   def show
-    order = Order.find_by(id: params['id'])
-    @receipt = order.receipts.new #not sure why we have this here??
+    @order = Order.find_by(id: params['id'])
   end
 
   def new

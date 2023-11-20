@@ -25,7 +25,7 @@ Rails.application.routes.draw do
       get 'edit/:items', :action => 'new_customer', :as => 'new_customer_for'
       delete 'remove/:items, :item', :action => 'remove_item', :as => 'remove_item_from'
     end
-    resources :receipts, only: [:create, :show]
+    resources :receipts, only: [:new], defaults: { format: :pdf }
     resources :payments, only: [:new, :create]
     resources :items, only: [:new, :create, :destroy]
   end

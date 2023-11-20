@@ -6,6 +6,7 @@ class Order < ApplicationRecord
 
   has_many :order_items, dependent: :destroy
   has_many :receipts, dependent: :destroy #added temporarily so orders can be raised ad hoc
+  belongs_to :customer, optional: true
 
   enum state: { raised: 0, paid: 1, failed: 2, refunded: 3, cancelled: 4 }
   enum payment_method: { credit_card: 0, debit_card: 1, other: 2 }
@@ -24,8 +25,8 @@ class Order < ApplicationRecord
     end
   end
 
-  def customer
-    @customer ||= Customer.find_by(id: customer_id)
+  def reference_display
+    self.id.to_s.rjust(5, '0')
   end
 
   def items
@@ -61,9 +62,9 @@ class Order < ApplicationRecord
   end
 
   def customer_details_for_receipt
-    if customer.present?
-      customer.first_name && customer.last_name ? "#{customer.first_name} #{customer.last_name}" : "#{customer.email_address}"
-    end
+    return unless customer.present?
+
+    customer.first_name.present? || customer.last_name.present? ? "#{customer.first_name} #{customer.last_name}" : "#{customer.email_address}"
   end
 
   def number_of_items

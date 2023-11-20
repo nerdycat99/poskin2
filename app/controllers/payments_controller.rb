@@ -4,6 +4,7 @@ class PaymentsController < ApplicationController
   include ItemsHelper
 
   before_action :payment_methods, only: %i[new_order_payment]
+  before_action :remember_page, only: [:new_order_payment]
 
   def new_order_payment
     @order = Order.new(state: 'raised')
