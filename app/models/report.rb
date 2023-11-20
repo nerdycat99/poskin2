@@ -28,7 +28,8 @@ class Report
       [:total_stock_summary, 'All stock summary'],
       [:total_sales_summary, 'All sales summary'],
       [:total_items_sold_summary, 'All items sold summary'],
-      [:total_sales_by_supplier, 'Sales by supplier']
+      [:total_sales_by_supplier, 'Sales by supplier'],
+      [:supplier_consignment_payment, 'Supplier consignment payment']
     ]
   end
 
@@ -42,6 +43,8 @@ class Report
       @view_model = Reports::SupplierSales.new()
     when :total_items_sold_summary
       @view_model = Reports::ItemsSold.new()
+    when :supplier_consignment_payment
+      @view_model = Reports::SupplierConsignment.new()
     end
   end
 end

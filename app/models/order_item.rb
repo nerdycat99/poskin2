@@ -64,6 +64,10 @@ class OrderItem < ApplicationRecord
     order.display_date
   end
 
+  def display_date_month_and_year
+    order.display_date_month_and_year
+  end
+
   def display_retail_amount_per_unit
     variant&.display_retail_price
   end

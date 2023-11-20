@@ -1,0 +1,72 @@
+<div>
+  <%= simple_form_for @report, method: :put, builder: TailwindFormBuilder, class: "mt-6", url: report_path(@report.id) do |f| %>
+    <%= f.label "Showing sales for supplier: " %>
+    <% if @view_model.supplier_id.blank? %>
+      <%= f.collection_select :supplier_id, Supplier.order(:name),:id,:name, include_blank: true %>
+    <% else %>
+      <%= f.collection_select :supplier_id, Supplier.order(:name),:id,:name, { :selected => @view_model.supplier&.id  }, include_blank: true %>
+    <% end %>
+    <%= f.label "from: " %>
+    <%= f.date_field :from_date, value: @view_model.from_date %>
+    <%= f.label "until: " %>
+    <%= f.date_field :to_date, value: @view_model.to_date %>
+
+    <% if @view_model.supplier_id.blank? %>
+      <br /><br />
+      <h5>Please select a supplier and dates above then click the Apply Filter button.</h5>
+    <% else %>
+      <br />
+      <h6><%= @view_model.supplier.sales_tax_registered_text %></h6><br />
+      <table style="width: 100%">
+        <colgroup>
+           <col span="1" style="width: 8%;">
+           <col span="1" style="width: 29%;">
+           <col span="1" style="width: 7%;">
+           <col span="1" style="width: 17%;">
+           <col span="1" style="width: 13%;">
+           <col span="1" style="width: 13%;">
+           <col span="1" style="width: 13%;">
+        </colgroup>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Item</th>
+            <th>Quantity</th>
+            <th>Retail Amount (incl tax)</th>
+            <th>Cost Price</th>
+            <th>Tax Amount</th>
+            <th>Cost Price (incl tax)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <br />
+          <% @view_model.orders.each do |order| %>
+            <tr>
+              <td style="text-align: left"><%= order.date %></td>
+              <td style="text-align: left"><%= order.item_sold %></td>
+              <td style="text-align: left"><%= order.quantity %></td>
+              <td style="text-align: left"><%= order.retail_including_tax %></td>
+              <td style="text-align: left"><%= order.cost_price_without_tax %></td>
+              <td style="text-align: left"><%= order.tax_amount %></td>
+              <td style="text-align: left"><%= order.cost_price_with_tax %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+      <br />
+      <h5>Total due to supplier: <%= @view_model.total_cost_of_goods %></h5>
+      <h5>Total tax to be paid: <%= @view_model.total_tax_due %></h5>
+      <h5>Total net profit: <%= @view_model.total_net_profit %></h5>
+      <br /><br />
+    <% end %>
+    <footer class="bg-white text-center text-lg-start fixed-bottom">
+      <div class="pt-6 pb-6 pl-10 text-gray-800 max-w-7xl">
+        <row>
+          <%= f.submit_button "Apply Filter" %>
+          <%= link_to "Reset Filter", report_path, class: "btn btn-secondary" %>
+          <%= link_to "Export as CSV", report_path(format: 'csv', filter: { supplier_id: @view_model.supplier_id, from_date: @view_model.from_date, to_date: @view_model.to_date }), class: "btn btn-outline-primary" %>
+        </div>
+      </row>
+    </footer>
+  <% end %>
+</div>
