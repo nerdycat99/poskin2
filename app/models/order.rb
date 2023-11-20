@@ -134,4 +134,8 @@ class Order < ApplicationRecord
   def display_date
     convert_to_users_timezone(created_at).to_fs(:long)
   end
+
+  def display_date_month_and_year
+    convert_to_users_timezone(created_at).strftime("%b %Y")
+  end
 end
