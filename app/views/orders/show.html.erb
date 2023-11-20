@@ -1,45 +1,10 @@
 <div class="p-12 mx-auto text-gray-800 max-w-7xl">
   <h2>New Sale - Step 4 of 4</h2>
-  <h5>Finalise the Order: <%= @receipt.order.id %> and Generate Receipt</h5>
+  <h5>Order was successfuly created with reference: <%= @order.reference_display %></h5>
   <br />
-  <!-- if we have not yet saved the receipt we show the Generate Receipt button -->
-  <!-- if this is for a true order with order items then we don't show the manual overwrite controls -->
-  <!-- if we have saved the receipt we come back here and then show the print button -->
-  <% if @receipt.order.receipts.first.id.blank? %>
-    <%= simple_form_for @receipt, builder: TailwindFormBuilder, class: "mt-6", url: order_receipts_path(@receipt.order.id) do |f| %>
-      <% if @receipt.order.state == 'paid' %>
-        <%= f.hidden_field :item_one_name, value: nil %>
-      <% else %>
-        <%= f.label "Item one description and price including sales tax" %>
-        <%= f.text_field :item_one_name, placeholder: 'Large Green Vase' %>
-        <%= f.text_field :item_one_price_minus_tax, placeholder: '$290.99' %>
-        <br />
-        <%= f.label "Item two description and price including sales tax" %>
-        <%= f.text_field :item_two_name, placeholder: 'Large Green Vase' %>
-        <%= f.text_field :item_two_price_minus_tax, placeholder: '$290.99' %>
-        <br />
-        <%= f.label "Item three description and price including sales tax" %>
-        <%= f.text_field :item_three_name, placeholder: 'Large Green Vase' %>
-        <%= f.text_field :item_three_price_minus_tax, placeholder: '$290.99' %>
-        <br />
-        <%= f.label "Item four description and price including sales tax" %>
-        <%= f.text_field :item_four_name, placeholder: 'Large Green Vase' %>
-        <%= f.text_field :item_four_price_minus_tax, placeholder: '$290.99' %>
-        <br />
-        <%= f.label "Customer email address or name" %>
-        <%= f.text_field :email_address, placeholder: 'name or email address' %>
-        <br />
-      <% end %>
-      <input type="radio" id="show_cust_name" name="show_cust_name" value=0>
-      <label for="show_cust_name">Don't show customer name on receipt</label><br />
-      <input type="radio" id="show_cust_name" name="show_cust_name" value=1>
-      <label for="show_cust_name">Show customer name on receipt</label><br />
-      <br />
-      <%= f.submit_button "Generate Receipt" %>
-      <%= link_to "Done", sales_path, class: "btn btn-secondary" %>
-    <% end %>
-  <% else %>
-    <%= link_to "Print Receipt", order_receipt_path(@receipt.order, @receipt.order.receipts.first), target: "_blank", class: "btn btn-primary" %>
-    <%= link_to "Done", sales_path, class: "btn btn-secondary" %>
+  <%= link_to "Print Receipt", new_order_receipt_path(@order, customer_name: false), target: "_blank", class: "btn btn-primary" %>
+  <% if @order.customer.present? %>
+    <%= link_to "Print with Customer Name", new_order_receipt_path(@order, customer_name: true), target: "_blank", class: "btn btn-primary" %>
   <% end %>
+  <%= link_to "Done", sales_path, class: "btn btn-secondary" %>
 </div>

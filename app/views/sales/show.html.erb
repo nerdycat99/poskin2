@@ -16,7 +16,7 @@
       </tr>
       <tr>
         <th>Customer Details:</th>
-        <td><%= @order.customer_details %></td>
+        <td><%= @order.customer_details_for_receipt %></td>
       </tr>
     </table>
     <br />
@@ -126,5 +126,9 @@
     </table>
     <br />
       <%= link_to "Back", all_sales_path, class: "btn btn-primary" %>
+      <%= link_to "Print Receipt", new_order_receipt_path(@order, customer_name: false), target: "_blank", class: "btn btn-secondary" %>
+      <% if @order.customer.present? %>
+        <%= link_to "Print with Customer Name", new_order_receipt_path(@order, customer_name: true), target: "_blank", class: "btn btn-secondary" %>
+      <% end %>
   </div>
 </div>

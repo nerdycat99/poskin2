@@ -3,69 +3,28 @@
 class ReceiptsController < ApplicationController
   include ApplicationHelper
 
-  before_action :authenticate_user!, only: %i[create show]
-  before_action :show_customer_name_on_receipt, only: %i[create]
+  before_action :authenticate_user!, only: %i[new]
 
-  def show
-    # opens the receipt generated in the create method
-    redirect_to '/receipt.pdf', allow_other_host: true
-    # TO DO: generate with order number in create and clean up
-  end
+  def new
+    respond_to do |format|
+      format.pdf do
+        pdf = ReceiptPdf.new(order:, include_customer_name: show_customer_name_on_receipt?)
 
-  def create
-    receipt = order.receipts.new(receipt_params)
-
-    return unless receipt.save
-
-    # generate pdf and update order status using either the order details or those passed in via the manual
-    # process pdf is stored in public from where it can be shown and printed in the show method
-    pdf = if order.paid?
-            ReceiptPdf.new(receipt:, order:, include_customer_name: show_customer_name_on_receipt?)
-          else
-            order.update(state: 'paid')
-            ReceiptPdf.new(receipt:, order: nil, include_customer_name: false)
-          end
-    pdf.render_file(Rails.public_path.join('receipt.pdf'))
-    redirect_to order_path(order)
+        send_data pdf.render,
+                  filename: "receipt_#{@order.id}.pdf",
+                  type: 'application/pdf',
+                  disposition: 'inline'
+      end
+    end
   end
 
   private
 
-  def show_customer_name_on_receipt
-    @show_customer_name_on_receipt ||= params['show_cust_name'].to_i
-  end
-
   def show_customer_name_on_receipt?
-    @show_customer_name_on_receipt == 1
-  end
-
-  def receipt_params
-    params.require(:receipt).permit(:email_address, :item_one_name, :item_one_price_minus_tax, :item_two_name, :item_two_price_minus_tax,
-                                    :item_three_name, :item_three_price_minus_tax, :item_four_name, :item_four_price_minus_tax)
+    params['customer_name'].present? && params['customer_name'] == 'true'
   end
 
   def order
     @order ||= Order.find_by(id: params['order_id'])
   end
-
-  # def invalid_params
-  #   invalid_params = []
-  #   # invalid_params << 'No referral content was provided.' if @content.blank?
-  #   # invalid_params << 'Please provide a valid date.' if @date.blank?
-  #   # invalid_params << 'User not found.' if current_user.blank?
-  #   invalid_params
-  # end
-
-  # def content
-  #   @content ||= params.dig('data', 'referrals')
-  # end
-
-  # def date_params
-  #   params.dig('data', 'date')
-  # end
-
-  # def date
-  #   date = convert_to_datetime(date_params) if date_params.present?
-  #   @date = current_user&.datetime_in_users_timezone(date: date) if date.is_a?(Date) && current_user.present?
-  # end
 end

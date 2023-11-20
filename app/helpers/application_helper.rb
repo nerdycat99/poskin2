@@ -3,6 +3,21 @@
 module ApplicationHelper
   include ItemsHelper
 
+  def back_paged_to_created_order?
+    return unless session[:previous_pages].present?
+
+
+    second_to_last_page.include?('/orders/') && !second_to_last_page.include?('orders/new/quantity') && last_page.include?('/payments/new/quantity=')
+  end
+
+  def last_page
+    session[:previous_pages].last
+  end
+
+  def second_to_last_page
+    session[:previous_pages].first
+  end
+
   def unique_sku
     candidate_sku = (SecureRandom.random_number(9e5) + 1e5).to_i
     unique_sku if [product_sku_codes, variant_sku_codes].flatten.compact_blank.include?(candidate_sku)

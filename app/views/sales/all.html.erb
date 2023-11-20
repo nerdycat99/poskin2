@@ -17,18 +17,11 @@
         <tr>
           <td><%= order.display_date %></td>
           <td><%= order.state&.upcase %></td>
-          <% if order.manual_order? %>
-            <td><%= order.receipts&.first&.display_total_amount_including_tax %></td>
-            <td>XX</td>
-            <td>XX</td>
-            <td>XX</td>
-          <% else %>
-            <td><%= order.display_order_price_total_including_tax %></td>
-            <td><%= order.display_discount_amount %></td>
-            <td><%= order.display_delivery_amount %></td>
-            <td><%= order.display_order_price_total_including_tax_with_delivery_or_discount %></td>
-          <% end %>
-          <td><%= order.customer_details %></td>
+          <td><%= order.display_order_price_total_including_tax %></td>
+          <td><%= order.display_discount_amount %></td>
+          <td><%= order.display_delivery_amount %></td>
+          <td><%= order.display_order_price_total_including_tax_with_delivery_or_discount %></td>
+          <td><%= order.customer_details_for_receipt %></td>
           <td><%= link_to "View Details", sale_path(order.id), class: "btn btn-primary" %></td>
         </tr>
       <% end %>
