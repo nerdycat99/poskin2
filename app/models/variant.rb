@@ -20,7 +20,7 @@ class Variant < ApplicationRecord
 
   validate :cost_or_retail_price_method
 
-  before_save :clean_up_calculation_methods
+  before_save :clean_up_calculation_methods, :remove_blank_attributes
 
   def self.number_of_attribute_tows
     attribute_types_count = ProductAttribute.valid_attribute_types.count
@@ -55,6 +55,10 @@ class Variant < ApplicationRecord
   def clean_up_calculation_methods
     self.cost_price = nil if price_calc_method == 'via_retail_price' || use_product_details?
     self.retail_price = nil if price_calc_method == 'via_cost_price' || use_product_details?
+  end
+
+  def remove_blank_attributes
+    self.product_attributes_variants = product_attributes_variants.select{ |attribute| attribute.description.present? }
   end
 
   def selected_price_calc_method_id

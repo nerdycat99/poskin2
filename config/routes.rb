@@ -43,8 +43,13 @@ Rails.application.routes.draw do
   namespace :catalogue do
     resources :suppliers, only: [:index, :new, :create, :show] do
       resources :products, only: [:index, :new, :create, :edit, :update, :destroy, :show] do
-        resources :variants, only: [:new, :create, :edit, :update, :destroy, :show] do
+        resources :variants, only: [:create, :edit, :update, :destroy, :show] do
           get :print, on: :member
+        end
+        resource :variant do
+          collection do
+            get "new/:variant_attributes", :action => 'new', :as => 'new', :defaults => { :variant_attributes => "" }
+          end
         end
         resources :product_attributes, only: [:new, :create]
         resources :product_attribute_types, only: [:index, :new, :create, :destroy]
