@@ -2,7 +2,7 @@
 
 class Catalogue::VariantsController < ApplicationController
   before_action :authenticate_user!
-  before_action :variant_with_sku_code, only: [:new]
+  before_action :variant_with_sku_code, only: %i[new create]
   before_action :sanitize_params, only: %i[create update]
   before_action :attribute_types, only: %i[new edit create update]
   before_action :number_of_rows_for_attribute_types, only: %i[new edit create update]
@@ -11,8 +11,20 @@ class Catalogue::VariantsController < ApplicationController
   before_action :search_criteria, only: %i[index search]
 
   def new
-    0.upto(@attribute_types.count - 1) do |_loop_index|
-      @variant.product_attributes_variants.build
+    @variant_attributes = fetch_variant_attributes(ids: variant_attribute_ids) if variant_attribute_ids.present?
+    has_blank_variant_attributes ||= @variant_attributes&.map(&:is_blank?)&.all?
+
+    flash[:alert] = 'Please select at least one attribute for variant' if has_blank_variant_attributes
+
+    # create product_attributes_variants for new variant to be created
+    if @variant_attributes.nil? || has_blank_variant_attributes
+      @variant_attributes = nil #used in view to determine stage, if it's nil it's stage one
+      0.upto(@attribute_types.count - 1) do |_loop_index|
+        @variant.product_attributes_variants.build
+      end
+    else
+      # create associated product_attributes_variants for new variant - stage two
+      @variant_attributes.map{ |variant_attribute| @variant.product_attributes_variants.new(product_attribute_id: variant_attribute.id) }
     end
   end
 
@@ -35,10 +47,30 @@ class Catalogue::VariantsController < ApplicationController
   end
 
   def create
-    @variant = product.variants.new(variant_params)
-    return render(:new, status: :unprocessable_entity) unless @variant.save
+    product_attribute_ids = variant_params['product_attributes_variants_attributes'].to_h.map{ |key, value| value.map { |k,v| v } }.flatten
+    product_attributes = fetch_variant_attributes(ids: product_attribute_ids)
+    has_blank_variant_attributes ||= product_attributes&.map(&:is_blank?)&.all?
 
-    redirect_to catalogue_supplier_path(supplier.id)
+    # in stage 1 we are using quantity to determine whether to use product pricing - 1 is Yes 0 is No
+    if variant_params['quantity'] == '1' && price_calc_method.blank?
+      if has_blank_variant_attributes
+        redirect_to new_catalogue_supplier_product_variant_path(supplier_id: supplier.id, product_id: product.id, variant_attributes: product_attribute_ids)
+      else
+        return render(:new, status: :unprocessable_entity) unless @variant.update(variant_params)
+
+        flash[:alert] = nil
+        redirect_to catalogue_supplier_path(supplier.id)
+      end
+    elsif variant_params['quantity'] == '0' && price_calc_method.blank?
+      # advance to stage two
+      flash[:alert] = nil
+      redirect_to new_catalogue_supplier_product_variant_path(supplier_id: supplier.id, product_id: product.id, variant_attributes: product_attribute_ids)
+    else
+      # remove the empty attributes so we only save those that don't have a value that is blank
+      return render(:new, status: :unprocessable_entity) unless @variant.update(variant_params)
+
+      redirect_to catalogue_supplier_path(supplier.id)
+    end
   end
 
   def update
@@ -72,6 +104,20 @@ class Catalogue::VariantsController < ApplicationController
 
   private
 
+  def variant_attribute_ids
+    return unless params['variant_attributes'].present?
+
+    params['variant_attributes'].split('/')
+  end
+
+  def fetch_variant_attributes(ids: nil)
+    begin
+      return variant_attributes ||= ProductAttribute.find(ids)
+    rescue ActiveRecord::RecordNotFound => e
+      @error = e
+    end
+  end
+
   def query_params
     params['query_params'] || {'sku' => sku_search_string, 'description' => description_search_string }
   end
@@ -101,7 +147,7 @@ class Catalogue::VariantsController < ApplicationController
   end
 
   def attribute_types
-    @attribute_types = ProductAttribute.valid_attribute_types
+    @attribute_types ||= ProductAttribute.valid_attribute_types
   end
 
   def number_of_rows_for_attribute_types

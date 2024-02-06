@@ -35,4 +35,8 @@ class ProductAttribute < ApplicationRecord
   def in_use?
     product_attributes_variants.any?
   end
+
+  def is_blank?
+    value.blank?
+  end
 end
