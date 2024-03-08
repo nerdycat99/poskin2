@@ -47,13 +47,13 @@ class ReceiptPdf < BaseReceiptPdf
   end
 
   def company_info
-    text 'Shop 9', size: 14, style: :light, align: :center, color: BOX_TEXT_COLOUR
+    text 'Shop 7', size: 14, style: :light, align: :center, color: BOX_TEXT_COLOUR
     move_down 5
-    text '601-611 Military Road', size: 14, style: :light, align: :center, color: BOX_TEXT_COLOUR
+    text '573 Military Road', size: 14, style: :light, align: :center, color: BOX_TEXT_COLOUR
     move_down 5
     text 'Mosman, 2088, NSW', size: 14, style: :light, align: :center, color: BOX_TEXT_COLOUR
     move_down 20
-    text 'ABN 97 346 099 695', size: 12, style: :normal, align: :center, color: BOX_TEXT_COLOUR
+    text 'ABN 36 674 780 628', size: 12, style: :normal, align: :center, color: BOX_TEXT_COLOUR
     move_down 5
     text 'www.australian-glass.com.au', size: 14, style: :bold, align: :center, color: BOX_TEXT_COLOUR
   end
